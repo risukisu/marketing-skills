@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#0e100d; --panel:#151813; --panel2:#181c16; --line:#262b23;
+    --ink:#e9ebe3; --mut:#899084; --mut2:#b4bab0; --dim:#5b6156;
+    --acc:#3fd68c; --amb:#e8a13d; --blu:#7c8cf0;
+    --mono:Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1200px;height:1140px;background:var(--bg);color:var(--ink);
+    font-family:var(--mono);position:relative;overflow:hidden}
+  body::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(#1d211b 1.4px, transparent 1.4px);
+    background-size:36px 36px;opacity:.55}
+  #stage{position:absolute;inset:0;padding:40px 56px}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;
+    font-size:15px;color:var(--mut);letter-spacing:.4px}
+  .topbar .id{display:flex;align-items:center;gap:12px;color:var(--ink)}
+  .topbar .id b{font-size:18px;letter-spacing:.3px}
+  .topbar .live{display:flex;align-items:center;gap:10px}
+  #livedot{width:9px;height:9px;border-radius:50%;background:var(--acc)}
+
+  /* pixel wordmark */
+  #wordmark{display:block;margin-top:58px;height:64px}
+  .tagline{font-size:21px;color:var(--mut);margin-top:22px;letter-spacing:.2px}
+  .tagline em{color:var(--amb);font-style:normal}
+  .tagline .sep{color:var(--dim);margin:0 10px}
+
+  .hero{position:relative;margin-top:8px;height:0}
+  #constellation{position:absolute;right:-8px;top:-176px;width:280px;height:222px}
+  #wires{position:absolute;inset:0;pointer-events:none;z-index:0}
+
+  .panels{display:flex;gap:20px;margin-top:64px;position:relative;z-index:1}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:0 20px 18px;flex:1;position:relative;overflow:hidden}
+  .panel .bar{height:4px;margin:0 -20px 0;background:var(--acc);opacity:.85}
+  .panel.p2 .bar{background:var(--amb)}
+  .panel.p3 .bar{background:var(--blu)}
+  .phead{display:flex;align-items:baseline;gap:12px;margin-top:20px}
+  .pnum{font-size:15px;color:var(--dim)}
+  .phead h2{font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;font-size:24px;font-weight:800;letter-spacing:.6px}
+  .lbl{font-size:13px;letter-spacing:1.6px;color:var(--dim);text-transform:uppercase;margin:14px 0 8px}
+
+  .asks{width:100%}
+  .ask{display:flex;flex-direction:column;gap:1px;padding:4px 0 5px;border-bottom:1px solid #20241d}
+  .ask:last-child{border-bottom:none}
+  .ask .q{font-size:18px;color:var(--mut2);white-space:nowrap}
+  .ask b{font-size:19px;font-weight:700;color:var(--acc);white-space:nowrap}
+  .ask b::before{content:"› ";color:var(--dim);font-weight:400}
+  .p2 .ask b{color:var(--amb)}
+  .p3 .ask b{color:var(--blu)}
+
+  .rows{width:100%}
+  .rows div{display:flex;justify-content:space-between;border-bottom:1px solid #20241d;
+    padding:5px 0;font-size:17px;color:var(--mut)}
+  .rows div:last-child{border-bottom:none}
+  .rows b{color:var(--ink);font-weight:700}
+  .rows .ok{color:var(--acc)}
+
+  .term{background:#0e100d;border:1px solid #20241d;border-radius:10px;padding:9px 12px;font-size:14.5px;color:var(--mut2);line-height:1.5;white-space:nowrap}
+  .term .pr{color:var(--blu)}
+  .term .ok{color:var(--acc)}
+  .chips{display:flex;gap:12px;margin-top:18px;position:relative;z-index:1;justify-content:center}
+  .chip{font-size:15px;color:var(--mut2);
+    border:1px solid var(--line);background:var(--panel);border-radius:24px;
+    padding:9px 18px;display:flex;align-items:center;gap:10px}
+  .chip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  .status{position:absolute;left:56px;right:56px;bottom:40px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+    font-size:16px;color:var(--mut);
+    display:flex;align-items:center;padding:16px 22px;gap:0;z-index:1}
+  .status .seg{padding:0 18px;border-right:1px solid #242821;white-space:nowrap}
+  .status .seg:first-child{padding-left:0}
+  .status .seg:last-child{border-right:none}
+  .status b{color:var(--ink);font-size:20px}
+  .status .k{color:var(--acc)}
+  .status .git{margin-left:auto;color:var(--dim);border:none}
+</style>
+</head>
+<body>
+<svg id="wires" width="1200" height="1140"></svg>
+
+<div id="stage">
+  <div class="topbar">
+    <div class="id">
+      <svg width="26" height="26" viewBox="0 0 22 22"><rect x="1" y="1" width="20" height="20" rx="6" fill="none" stroke="#3fd68c" stroke-width="1.4"/><circle cx="8" cy="8" r="1.8" fill="#3fd68c"/><circle cx="14.5" cy="9.5" r="1.4" fill="#e9ebe3"/><circle cx="9.5" cy="14.5" r="1.4" fill="#e9ebe3"/><path d="M8 8 L14.5 9.5 L9.5 14.5 Z" stroke="#3fd68c" stroke-width=".7" fill="none" opacity=".7"/></svg>
+      <b>marketing-skills</b>
+    </div>
+    <div class="live"><span id="livedot"></span> CLAUDE CODE &middot; 44 SKILLS &middot; 3 CATEGORIES</div>
+  </div>
+
+  <svg id="wordmark"></svg>
+  <div class="tagline">ask in plain words<span class="sep">&middot;</span>answer a couple of questions<span class="sep">&middot;</span><em>get the work done</em></div>
+
+  <div class="hero"><svg id="constellation" viewBox="0 0 300 250"></svg></div>
+
+  <div class="panels" id="panels">
+    <div class="panel p1" id="p1">
+      <div class="bar"></div>
+      <div class="phead"><span class="pnum">01</span><h2>RANK</h2></div>
+      <div class="lbl">seo &middot; 32 skills &middot; you say &rarr; it runs</div>
+      <div class="asks">
+        <div class="ask"><span class="q">&ldquo;audit the whole site&rdquo;</span><b>/seo-audit</b></div>
+        <div class="ask"><span class="q">&ldquo;why isn&rsquo;t this ranking?&rdquo;</span><b>/seo-sxo</b></div>
+        <div class="ask"><span class="q">&ldquo;does ChatGPT cite us?&rdquo;</span><b>/seo-geo</b></div>
+        <div class="ask"><span class="q">&ldquo;schema, sitemaps, hreflang&rdquo;</span><b>/seo-schema &middot; /seo-sitemap</b></div>
+        <div class="ask"><span class="q">&ldquo;how&rsquo;s search this month?&rdquo;</span><b>/seo-report</b></div>
+        <div class="ask"><span class="q">&ldquo;brief the next article&rdquo;</span><b>/seo-content-brief</b></div>
+        <div class="ask"><span class="q">&ldquo;did the deploy break SEO?&rdquo;</span><b>/seo-drift</b></div>
+      </div>
+      <div class="lbl" style="margin-top:16px">real numbers, not guesses</div>
+      <div class="rows">
+        <div><span>traffic, conversions</span><b>GA4</b></div>
+        <div><span>queries, rankings</span><b>Search Console</b></div>
+        <div><span>SERPs, keywords, links</span><b>DataForSEO</b></div>
+      </div>
+    </div>
+
+    <div class="panel p2" id="p2">
+      <div class="bar"></div>
+      <div class="phead"><span class="pnum">02</span><h2>PLAN &amp; CONVERT</h2></div>
+      <div class="lbl">strategy &middot; research &middot; cro &middot; paid</div>
+      <div class="asks">
+        <div class="ask"><span class="q">&ldquo;the blog brings no leads&rdquo;</span><b>/content-strategy</b></div>
+        <div class="ask"><span class="q">&ldquo;what do buyers really say?&rdquo;</span><b>/customer-research</b></div>
+        <div class="ask"><span class="q">&ldquo;this page isn&rsquo;t converting&rdquo;</span><b>/cro</b></div>
+        <div class="ask"><span class="q">&ldquo;what do we give away?&rdquo;</span><b>/lead-magnets</b></div>
+        <div class="ask"><span class="q">&ldquo;we launch in two weeks&rdquo;</span><b>/product-launch</b></div>
+        <div class="ask"><span class="q">&ldquo;how much for LinkedIn?&rdquo;</span><b>/linkedin-ads</b></div>
+        <div class="ask"><span class="q">&ldquo;what would Ogilvy say?&rdquo;</span><b>/marketing-council</b></div>
+      </div>
+      <div class="lbl" style="margin-top:16px">how every skill behaves</div>
+      <div class="rows">
+        <div><span>first move</span><b>asks, never assumes</b></div>
+        <div><span>your files</span><b>read only with a yes</b></div>
+        <div><span>no data</span><b class="ok">labeled, not invented</b></div>
+      </div>
+    </div>
+
+    <div class="panel p3" id="p3">
+      <div class="bar"></div>
+      <div class="phead"><span class="pnum">03</span><h2>WRITE &amp; SHIP</h2></div>
+      <div class="lbl">writing &middot; design &middot; presence</div>
+      <div class="asks">
+        <div class="ask"><span class="q">&ldquo;help me draft this post&rdquo;</span><b>/writing-assistant</b></div>
+        <div class="ask"><span class="q">&ldquo;sounds like AI wrote it&rdquo;</span><b>/copy-deslop</b></div>
+        <div class="ask"><span class="q">&ldquo;copyedit the whole ebook&rdquo;</span><b>/copy-longform</b></div>
+        <div class="ask"><span class="q">&ldquo;a landing page, not slop&rdquo;</span><b>/frontend-design-anti-slop</b></div>
+        <div class="ask"><span class="q">&ldquo;make the README look good&rdquo;</span><b>/beautify-github-readme</b></div>
+      </div>
+      <div class="lbl" style="margin-top:16px">writing guardrails</div>
+      <div class="rows">
+        <div><span>AI tells</span><b>scrubbed, every draft</b></div>
+        <div><span>your voice</span><b>profiles, not defaults</b></div>
+        <div><span>every draft</span><b class="ok">saved as a file</b></div>
+      </div>
+      <div class="lbl" style="margin-top:16px">get it</div>
+      <div class="term">
+        <div><span class="pr">$</span> git clone github.com/</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;risukisu/marketing-skills</div>
+        <div><span class="pr">$</span> ./install.ps1</div>
+        <div class="ok">&#10003; 44 skills linked &middot; 18 agents</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips" id="chips">
+    <div class="chip"><i style="background:#d97757"></i>claude code</div>
+    <div class="chip"><i style="background:#f9ab00"></i>ga4</div>
+    <div class="chip"><i style="background:#1a73e8"></i>search console</div>
+    <div class="chip"><i style="background:#22b8a0"></i>dataforseo</div>
+    <div class="chip"><i style="background:#ff6b35"></i>firecrawl</div>
+    <div class="chip"><i style="background:#e9ebe3"></i>github</div>
+  </div>
+
+  <div class="status" id="status">
+    <span class="seg"><b>44</b> skills</span>
+    <span class="seg"><b>18</b> sub-agents</span>
+    <span class="seg"><b>2</b> <span class="k">lines to install</span></span>
+    <span class="seg git">github.com/risukisu/marketing-skills</span>
+  </div>
+</div>
+
+<script>
+// ---------- pixel wordmark (5x7 bitmap, own letterforms) ----------
+const GLYPHS = {
+  A:["01110","10001","10001","11111","10001","10001","10001"],
+  I:["11111","00100","00100","00100","00100","00100","11111"],
+  M:["10001","11011","10101","10001","10001","10001","10001"],
+  R:["11110","10001","10001","11110","10100","10010","10001"],
+  K:["10001","10010","10100","11000","10100","10010","10001"],
+  E:["11111","10000","10000","11110","10000","10000","11111"],
+  T:["11111","00100","00100","00100","00100","00100","00100"],
+  S:["01111","10000","10000","01110","00001","00001","11110"],
+  O:["01110","10001","10001","10001","10001","10001","01110"],
+  "'":["11","01","10","00","00","00","00"],
+  " ":["000","000","000","000","000","000","000"],
+};
+(function(){
+  const PX = 8, GAP = 1, LETTER_GAP = 1;   // pixel size, in-letter gap, extra cells between letters
+  const text = "AI MARKETER'S OS";
+  const inkFrom = text.indexOf("OS");      // "OS" in ink, the rest in accent
+  let x = 0, out = '', maxRows = 7;
+  for (let i = 0; i < text.length; i++) {
+    const g = GLYPHS[text[i]]; const w = g[0].length;
+    const col = i >= inkFrom ? '#e9ebe3' : '#3fd68c';
+    for (let r = 0; r < g.length; r++) for (let c = 0; c < w; c++)
+      if (g[r][c] === '1') out += `<rect x="${(x + c) * PX + GAP/2}" y="${r * PX + GAP/2}" width="${PX - GAP}" height="${PX - GAP}" rx="1.5" fill="${col}"/>`;
+    x += w + LETTER_GAP;
+  }
+  // cursor block: 5 cells wide, full height, blinks
+  const cx = x * PX + 6;
+  out += `<rect id="cursor" x="${cx}" y="0" width="${4*PX}" height="${maxRows*PX}" rx="2" fill="#3fd68c"/>`;
+  const W = cx + 4*PX, H = maxRows * PX;
+  const svg = document.getElementById('wordmark');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+  svg.style.height = H + 'px';
+  svg.innerHTML = out;
+})();
+
+// ---------- constellation (seeded) ----------
+let CONST_NODES = [];
+(function(){
+  let s = 7;
+  const rnd = () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const W = 300, H = 250, n = [];
+  for (let i = 0; i < 26; i++) n.push({ x: 16 + rnd() * (W - 40), y: 14 + rnd() * (H - 34), r: 1.8 + rnd() * 1.9 });
+  const edges = [];
+  for (let i = 0; i < n.length; i++) {
+    const d = n.map((o, j) => ({ j, d: Math.hypot(o.x - n[i].x, o.y - n[i].y) }))
+      .filter(o => o.j !== i).sort((a, b) => a.d - b.d);
+    for (let k = 0; k < 2; k++) {
+      const j = d[k].j;
+      if (!edges.some(e => (e[0] === i && e[1] === j) || (e[0] === j && e[1] === i))) edges.push([i, j]);
+    }
+  }
+  const acc = [2, 8, 15, 21];
+  const svg = document.getElementById('constellation');
+  let h = '';
+  for (const [a, b] of edges)
+    h += `<line x1="${n[a].x.toFixed(1)}" y1="${n[a].y.toFixed(1)}" x2="${n[b].x.toFixed(1)}" y2="${n[b].y.toFixed(1)}" stroke="#2a2f27" stroke-width="0.9"/>`;
+  n.forEach((o, i) => {
+    const a = acc.includes(i);
+    if (a) h += `<circle class="halo" data-i="${i}" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="6" fill="#3fd68c" opacity="0.12"/>`;
+    h += `<circle class="${a ? 'cnode-acc' : ''}" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${o.r.toFixed(1)}" fill="${a ? '#3fd68c' : '#6f766a'}" opacity="${a ? 1 : (0.4 + 0.5 * rnd()).toFixed(2)}"/>`;
+  });
+  svg.innerHTML = h;
+  CONST_NODES = n;
+})();
+
+// ---------- curved connectors with flowing dashes ----------
+const DASH = 7, GAP = 12, PERIOD = DASH + GAP;
+function buildWires() {
+  const r = id => document.getElementById(id).getBoundingClientRect();
+  const cst = r('constellation');
+  const hub = { x: cst.left + 34, y: cst.bottom - 34 };
+  const heads = ['p1', 'p2', 'p3'].map(id => { const b = r(id); return { x: b.left + b.width / 2, y: b.top }; });
+  const wm = r('wordmark');
+  const tag = { x: wm.right + 40, y: wm.top + wm.height / 2 };
+  const chips = r('chips');
+  const p3b = r('p3');
+  let g = '';
+  const curves = [];
+  const bez = (a, b, sag) => {
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 + sag;
+    return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} Q ${mx.toFixed(1)} ${my.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+  };
+  heads.forEach((hd, i) => curves.push({ d: bez(hub, hd, i === 0 ? 40 : 75 - i * 14), col: '#3fd68c', op: 0.5 }));
+  curves.push({ d: bez(tag, hub, -28), col: '#e8a13d', op: 0.45 });
+  curves.push({ d: bez({ x: p3b.left + p3b.width / 2, y: p3b.bottom }, { x: chips.left + chips.width / 2 + 160, y: chips.top + 18 }, 24), col: '#7c8cf0', op: 0.4 });
+  curves.forEach((c, i) => {
+    g += `<path class="flow" id="flow${i}" d="${c.d}" fill="none" stroke="${c.col}" stroke-opacity="${c.op}" stroke-width="1.8" stroke-dasharray="${DASH} ${GAP}"/>`;
+  });
+  document.getElementById('wires').innerHTML = g;
+}
+
+// ---------- phase ----------
+function setPhase(p) {
+  document.querySelectorAll('.flow').forEach((el, i) => {
+    const dir = i === 3 ? 1 : -1;
+    el.setAttribute('stroke-dashoffset', (dir * p * 2 * PERIOD).toFixed(2));
+  });
+  document.querySelectorAll('.cnode-acc').forEach((el, k) => {
+    const base = parseFloat(el.dataset.r || (el.dataset.r = el.getAttribute('r')));
+    const w = 0.5 + 0.5 * Math.sin(2 * Math.PI * (p + k * 0.25));
+    el.setAttribute('r', (base + 0.8 * w).toFixed(2));
+  });
+  document.querySelectorAll('.halo').forEach((el, k) => {
+    const w = 0.5 + 0.5 * Math.sin(2 * Math.PI * (p + k * 0.25));
+    el.setAttribute('r', (5 + 5 * w).toFixed(2));
+    el.setAttribute('opacity', (0.05 + 0.14 * (1 - w)).toFixed(3));
+  });
+  document.getElementById('cursor').style.opacity = (Math.sin(2 * Math.PI * 2 * p) > -0.2) ? 1 : 0;
+  const lw = 0.5 + 0.5 * Math.sin(2 * Math.PI * p);
+  const ld = document.getElementById('livedot');
+  ld.style.opacity = 0.45 + 0.55 * lw;
+  ld.style.boxShadow = `0 0 ${(3 + 8 * lw).toFixed(1)}px rgba(63,214,140,${(0.3 + 0.5 * lw).toFixed(2)})`;
+}
+
+buildWires();
+setPhase(0);
+window.setPhase = setPhase;
+</script>
+</body>
+</html>

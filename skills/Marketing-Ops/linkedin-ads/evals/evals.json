@@ -1,0 +1,54 @@
+{
+  "skill_name": "linkedin-ads",
+  "evals": [
+    {
+      "id": 0,
+      "name": "tiny-budget-strategy-plan",
+      "prompt": "I'm about to start running LinkedIn ads for the first time at my company. We're a pharma data-science consulting firm (we build R/Shiny apps and do clinical data work for biotech and pharma companies). Our deals are big and take 4-6 months to close, and sales creates most of them manually. Budget is tight - about $750/month for LinkedIn. I want to promote our new SCE ebook to data science and biostatistics leaders at pharma companies. How should I approach this, and what can I realistically expect leadership to see for the money?",
+      "expected_output": "A grounded plan that: refuses to spread $750 across multiple campaigns (budget dilution / below the $50-100/day floor), recommends ONE focused play (remarketing or acceleration against open opps), uses account-list + titles targeting, frames the ebook as the no-brainer offer instead of a demo request, and sets leadership expectations around awareness/halo-effect/leading-vs-lagging KPIs rather than last-touch leads. Should be honest that $750 buys awareness, not closed deals.",
+      "assertions": [
+        "Flags that ~$750/mo (~$25/day) is below the effective $50/day campaign floor and explains the consequence",
+        "Recommends consolidating into ONE focused campaign rather than spreading the budget (names budget dilution)",
+        "Recommends account-list / matched-audience targeting layered with data-science/biostat titles",
+        "Reframes the SCE ebook as a low-friction no-brainer offer instead of a 'book a demo' ask",
+        "Sets leadership expectations on awareness + leading-vs-lagging KPIs / halo effect, not last-touch leads",
+        "Recommends an acceleration campaign (ads against open opportunities) as a cheap, high-ROI starting play",
+        "Proposes an incrementality / holdout test (exposed vs control accounts) to prove ROI and justify more budget"
+      ],
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "first-campaign-setup-walkthrough",
+      "prompt": "Walk me through actually setting up my first campaign in LinkedIn Campaign Manager. I want to retarget people who already visited our service pages and get them to register for a webinar one of our engineers is hosting. I've literally never launched a LinkedIn campaign before and I'm paranoid about clicking the wrong thing and burning money on bad defaults.",
+      "expected_output": "A click-by-click walkthrough that hits the campaign-group/campaign/ad hierarchy, picks an appropriate objective (engagement or website visits, likely paired with thought leader ads for the webinar), and explicitly calls out the trap settings: Classic not Accelerate, uncheck Audience Expansion, uncheck LinkedIn Audience Network, 3 ads not 5, account-level UTMs, conversion tracking, $50-100/day budget floor. Should connect retargeting to the 'keep the party going' remarketing logic.",
+      "assertions": [
+        "Explicitly instructs to choose the Classic campaign type, not Accelerate",
+        "Instructs to uncheck Audience Expansion",
+        "Instructs to turn off the LinkedIn Audience Network",
+        "Recommends ~3 ad variations (not LinkedIn's default 5) and explains why",
+        "States the $50/day floor / $100/day starting point for daily budget",
+        "Recommends the thought leader ad format for the engineer-hosted webinar",
+        "Frames retargeting as awareness ('keep the party going') and warns against judging it on last-touch attribution",
+        "Walks the Campaign Group > Campaign > Ad hierarchy and a naming convention"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "thought-leader-ad-copy",
+      "prompt": "Help me write a thought leader ad. One of our senior data scientists is happy to post from her own profile, and she wants to write about a clinical trial dashboard project she worked on. I want to boost it to promote our statistical computing environment work to data leaders at pharma companies. Give me the actual post copy I can hand her.",
+      "expected_output": "Actual post copy (not just advice) written in a credible human SME voice, leading with a specific felt problem and bridging to the solution, with an optional in-post link/CTA. Should respect TLA format rules (<=4 emojis, native non-ad feel), offer 2-3 angle variations, anchor the creative to a strategy/objective/audience line, and avoid AI-writing tells. Should NOT read like salesy company-page ad copy.",
+      "assertions": [
+        "Produces ready-to-use post copy, not just advice about writing it",
+        "Provides 2-3 distinct angle variations (aligning with the 3-ads-per-campaign guidance)",
+        "Uses de-identified placeholders for client/trial specifics - no named clients and no fabricated metrics",
+        "Leads with a specific felt problem and bridges to the SCE solution in a human, first-person SME voice",
+        "CTA is outcome/value-based (e.g. the ebook or an assessment), not a cold 'book a demo'",
+        "Respects TLA format rules (<=4 emojis, native non-ad feel) and anchors the creative to a strategy/objective/audience line",
+        "Includes a deslop/authenticity check (e.g. have her read it aloud / make it sound like her)"
+      ],
+      "files": []
+    }
+  ]
+}

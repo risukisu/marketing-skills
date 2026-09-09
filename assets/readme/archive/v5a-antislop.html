@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  /* anti-slop palette: warm brown-black, one accent (mint), borders not shadows, 8px radius max */
+  :root{--bg:#12110f;--surface:#1e1c18;--border:#33302a;--text:#e8e4dc;--muted:#8a8578;--dim:#5e5a50;--acc:#4ade80;
+    --mono:Consolas,"Courier New",monospace;--display:Bahnschrift,"Segoe UI",Arial,sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1200px;height:900px;background:var(--bg);color:var(--text);font-family:var(--mono);position:relative;overflow:hidden}
+  #stage{position:absolute;inset:0;padding:44px 56px}
+
+  .top{display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--muted)}
+  .top .id{display:flex;align-items:center;gap:10px;color:var(--text);font-size:16px}
+  .top .id i{width:10px;height:10px;border:1.5px solid var(--acc);border-radius:2px;display:inline-block}
+
+  h1{font-family:var(--display);font-weight:600;font-stretch:condensed;font-size:60px;letter-spacing:-.5px;line-height:1;margin-top:34px;color:var(--text)}
+  .sub{font-family:var(--display);font-weight:400;font-size:24px;color:var(--muted);margin-top:10px;letter-spacing:-.1px}
+
+  .grid{display:flex;gap:24px;margin-top:30px;align-items:stretch}
+
+  /* the product: a session */
+  .term{flex:0 0 700px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0;display:flex;flex-direction:column;height:560px}
+  .term .bar{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)}
+  .term .bar b{color:var(--text);font-weight:400}
+  .term .body{padding:16px 18px;font-size:17px;line-height:1.5;color:var(--text);overflow:hidden;flex:1}
+  .line{white-space:pre-wrap;word-wrap:break-word;min-height:25.5px}
+  .line.u{color:var(--text)}
+  .line.u .p{color:var(--acc);font-weight:700}
+  .line.s{color:var(--text);margin-top:6px}
+  .line.s .who{color:var(--muted);font-size:14px;letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:1px}
+  .line.f{color:var(--muted);margin-top:8px}
+  .line.f .path{color:var(--acc)}
+  #cur{display:inline-block;width:9px;height:19px;background:var(--acc);vertical-align:-3px;margin-left:1px}
+
+  /* the shelf: dense index */
+  .index{flex:1;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:14px 18px 12px;display:flex;flex-direction:column;height:560px}
+  .index h3{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:400;margin:6px 0 4px}
+  .index h3:first-child{margin-top:0}
+  .row{display:flex;gap:12px;font-size:16px;line-height:1.55;color:var(--text);padding-left:8px;border-left:2px solid transparent}
+  .row .n{color:var(--dim);width:24px;flex:none}
+  .row.more{color:var(--muted)}
+  .row.hot{border-left-color:var(--acc);color:var(--acc)}
+  .row.hot .n{color:var(--acc)}
+
+  .foot{position:absolute;left:56px;right:56px;bottom:36px;border-top:1px solid var(--border);padding-top:14px;display:flex;justify-content:space-between;gap:24px;font-size:15px;color:var(--muted);white-space:nowrap}
+  .foot b{color:var(--text);font-weight:400}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="top">
+    <div class="id"><i></i>marketing-skills</div>
+    <div>44 skills for Claude Code &middot; MIT</div>
+  </div>
+
+  <h1>AI Marketer&rsquo;s OS</h1>
+  <div class="sub">Type what you need. The skill asks two questions, reads your files only with a yes, and does the work.</div>
+
+  <div class="grid">
+    <div class="term">
+      <div class="bar"><span><b>~/acme-payroll</b> &nbsp;claude</span><span>content-strategy &middot; build</span></div>
+      <div class="body" id="body"></div>
+    </div>
+
+    <div class="index" id="index">
+      <h3>rank</h3>
+      <div class="row"><span class="n">01</span>/seo-audit</div>
+      <div class="row"><span class="n">02</span>/seo-report</div>
+      <div class="row"><span class="n">03</span>/seo-sxo</div>
+      <div class="row"><span class="n">04</span>/seo-geo</div>
+      <div class="row"><span class="n">05</span>/seo-schema</div>
+      <div class="row"><span class="n">06</span>/seo-drift</div>
+      <div class="row more"><span class="n">&middot;&middot;</span>26 more specialists</div>
+      <h3>plan &amp; convert</h3>
+      <div class="row" id="hot"><span class="n">33</span>/content-strategy</div>
+      <div class="row"><span class="n">34</span>/customer-research</div>
+      <div class="row"><span class="n">35</span>/cro</div>
+      <div class="row"><span class="n">36</span>/lead-magnets</div>
+      <div class="row"><span class="n">37</span>/product-launch</div>
+      <div class="row"><span class="n">38</span>/linkedin-ads</div>
+      <div class="row"><span class="n">39</span>/marketing-council</div>
+      <h3>write &amp; ship</h3>
+      <div class="row"><span class="n">40</span>/writing-assistant</div>
+      <div class="row"><span class="n">41</span>/copy-deslop</div>
+      <div class="row"><span class="n">42</span>/copy-longform</div>
+      <div class="row"><span class="n">43</span>/frontend-design-anti-slop</div>
+      <div class="row"><span class="n">44</span>/beautify-github-readme</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>asks before it acts &nbsp;&middot;&nbsp; reads your files only with a yes &nbsp;&middot;&nbsp; unknown numbers stay <b>unknown</b></span>
+    <span>github.com/risukisu/marketing-skills</span>
+  </div>
+</div>
+
+<script>
+// transcript: typed progressively over the loop, then held
+const LINES = [
+  {k:'u', t:'our blog doesn’t generate leads'},
+  {k:'s', who:'content-strategy', t:'I can build a 7-part strategy from scratch, or audit what you already publish and rank the gaps. Build, audit, or not now?'},
+  {k:'u', t:'build'},
+  {k:'s', who:'content-strategy', t:'Found CLAUDE.md, context/icp.md, context/brand.md. Use these, point me elsewhere, paste the context, or start with none?'},
+  {k:'u', t:'use these'},
+  {k:'s', who:'content-strategy', t:'Tell me about your content program today: what do you publish, for whom, and what is it supposed to do for the business?'},
+  {k:'u', t:'40 posts of payroll tips. zero leads.'},
+  {k:'s', who:'content-strategy', t:'Nothing structural to score yet, so we build. Step 1 of 7, the sales page: which page should generate leads, and what phrase should it rank for?'},
+  {k:'f', t:'→ will write content-strategy-acme.md when we finish'},
+];
+const TOTAL = LINES.reduce((a,l)=>a+l.t.length+2,0);
+const body = document.getElementById('body');
+function render(chars){
+  let html='', left=chars, done=false, hotOn=false;
+  for (const l of LINES){
+    if (left<=0) break;
+    const n = Math.min(l.t.length, left); const txt = l.t.slice(0,n).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const cursor = (n < l.t.length || left - l.t.length - 2 < 0) ? '<span id="cur"></span>' : '';
+    if (l.k==='u') html += `<div class="line u"><span class="p">› </span>${txt}${cursor}</div>`;
+    else if (l.k==='s') { hotOn = true; html += `<div class="line s"><span class="who">${l.who}</span>${txt}${cursor}</div>`; }
+    else html += `<div class="line f">${txt.replace('content-strategy-acme.md','<span class="path">content-strategy-acme.md</span>')}${cursor}</div>`;
+    left -= l.t.length + 2;
+  }
+  body.innerHTML = html;
+  document.getElementById('hot').classList.toggle('hot', hotOn);
+}
+function setPhase(p){
+  // reveal over first 72% of the loop, hold the finished transcript for the rest
+  const reveal = Math.min(1, p / 0.72);
+  const chars = Math.round(reveal * TOTAL);
+  render(chars);
+  const cur = document.getElementById('cur');
+  if (cur) cur.style.opacity = (Math.sin(2*Math.PI*3*p) > -0.2) ? 1 : 0;
+}
+setPhase(1); window.setPhase = setPhase;
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="140" viewBox="0 0 1200 140" role="img" aria-labelledby="t d">
+<title id="t">Section 04: zero drift</title>
+<desc id="d">install once, pull to update, nothing to copy around</desc>
+<rect width="1200" height="140" rx="18" fill="#0e100d"/>
+<defs><pattern id="dots" width="36" height="36" patternUnits="userSpaceOnUse"><circle cx="1.4" cy="1.4" r="1.4" fill="#1d211b"/></pattern></defs><rect width="1200" height="140" rx="18" fill="url(#dots)" opacity=".55"/>
+<rect x="1" y="1" width="1198" height="138" rx="17" fill="none" stroke="#262b23"/>
+<rect x="0" y="0" width="220" height="4" rx="2" fill="#3fd68c" opacity=".9"/>
+<rect x="54.5" y="40.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="60.5" y="40.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="66.5" y="40.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="48.5" y="46.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="72.5" y="46.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="48.5" y="52.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="66.5" y="52.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="72.5" y="52.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="48.5" y="58.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="60.5" y="58.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="72.5" y="58.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="48.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="54.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="72.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="48.5" y="70.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="72.5" y="70.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="54.5" y="76.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="60.5" y="76.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="66.5" y="76.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="102.5" y="40.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="96.5" y="46.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="102.5" y="46.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="90.5" y="52.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="102.5" y="52.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="84.5" y="58.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="102.5" y="58.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="84.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="90.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="96.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="102.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="108.5" y="64.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="102.5" y="70.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<rect x="102.5" y="76.5" width="5" height="5" rx="1" fill="#3fd68c"/>
+<text x="142" y="52" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" letter-spacing="2.4" fill="#5b6156">ZERO DRIFT</text>
+<text x="142" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-0.8" fill="#e9ebe3">zero drift</text>
+<text x="1152" y="86" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="20" fill="#899084">install once, pull to update, nothing to copy around</text>
+<rect x="1138" y="104" width="10" height="10" rx="1.5" fill="#3fd68c" opacity=".9"/>
+<rect x="1122" y="104" width="10" height="10" rx="1.5" fill="#3fd68c" opacity=".45"/>
+<rect x="1106" y="104" width="10" height="10" rx="1.5" fill="#3fd68c" opacity=".2"/>
+</svg>

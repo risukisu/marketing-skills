@@ -1,0 +1,57 @@
+# Machine-local files — company/client context packs and machine-specific routing.
+# Convention: anything named *.local.md is local-only and never ships.
+*.local.md
+**/*.local.md
+
+# claude-seo managed Python runtime (created by `claude-seo setup`), never ships
+skills/SEO/claude-seo/seo/.venv*/
+skills/SEO/claude-seo/seo/.runtime-state*
+
+# Python bytecode
+**/__pycache__/
+*.pyc
+
+# skill-creator eval workspaces
+*-workspace/
+
+# OS noise
+Thumbs.db
+.DS_Store
+skills/SEO/claude-seo/seo/.setup.lock
+
+# On this machine ~/.claude/skills also holds skills that are NOT part of this repo
+# (session tooling, Anthropic document skills, Obsidian bundle, day-job skills). Never ship them.
+docx/
+pptx/
+pdf/
+xlsx/
+doc-coauthoring/
+internal-comms/
+save/
+sync/
+wip/
+resume/
+obsidian-cli/
+obsidian-markdown/
+obsidian-bases/
+json-canvas/
+frontend-design/
+canvas-design/
+theme-factory/
+web-artifacts-builder/
+webapp-testing/
+mcp-builder/
+skill-creator/
+llm-council/
+defuddle/
+grilling/
+grill-with-docs/
+domain-modeling/
+pipeline-analysis/
+campaign-report/
+marketing-monthly/
+skills/SEO/claude-seo/seo/ms-playwright/
+skills/SEO/claude-seo/seo/runtime-state.json
+
+# Internal planning artifacts (superpowers specs/plans) — machine paths and day-job references
+docs/superpowers/

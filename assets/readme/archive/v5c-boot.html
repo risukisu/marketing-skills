@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root{--bg:#0e100d;--panel:#121510;--line:#262b23;--ink:#e9ebe3;--mut:#899084;--mut2:#b4bab0;--dim:#5b6156;--acc:#3fd68c;--amb:#e8a13d;
+    --mono:Consolas,"Courier New",monospace}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1200px;height:800px;background:var(--bg);color:var(--ink);font-family:var(--mono);position:relative;overflow:hidden}
+  body::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#1d211b 1.4px, transparent 1.4px);background-size:36px 36px;opacity:.5}
+  /* scanline breath, very faint */
+  body::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, transparent 1px 3px);pointer-events:none}
+  #stage{position:absolute;inset:0;padding:56px 72px;display:flex;flex-direction:column;align-items:center}
+  .eyebrow{font-size:16px;letter-spacing:3px;color:var(--dim);text-transform:uppercase}
+  #wordmark{display:block;margin-top:26px}
+  .sub{font-size:20px;color:var(--mut);margin-top:22px;letter-spacing:.3px}
+  .sub em{color:var(--amb);font-style:normal}
+
+  .boot{width:100%;margin-top:40px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:22px 26px 20px;font-size:18px;line-height:1.75;color:var(--mut2)}
+  .boot .row{display:flex;gap:0;white-space:pre;height:33px;overflow:hidden}
+  .boot .st{width:88px;flex:none;color:var(--acc)}
+  .boot .st.wait{color:var(--dim)}
+  .boot .st.warn{color:var(--amb)}
+  .boot .k{color:var(--ink);width:190px;flex:none}
+  .boot .dots{color:#2c3129;flex:none;width:130px;overflow:hidden}
+  .boot .v{color:var(--ink);font-weight:700;width:124px;flex:none;text-align:right;padding-right:26px}
+  .boot .d{color:var(--mut)}
+  .boot .blank{height:20px}
+  .boot .ready{color:var(--mut2)}
+  .boot .ready b{color:var(--acc);font-weight:700}
+  .boot .prompt{color:var(--ink)}
+  .boot .prompt .chev{color:var(--acc);font-weight:700}
+  #cur{display:inline-block;width:11px;height:22px;background:var(--acc);vertical-align:-4px;margin-left:2px}
+
+  .foot{position:absolute;left:72px;right:72px;bottom:34px;display:flex;justify-content:space-between;font-size:16px;color:var(--dim)}
+  .foot b{color:var(--mut2);font-weight:400}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="eyebrow">marketing-skills &middot; claude code</div>
+  <svg id="wordmark"></svg>
+  <div class="sub">44 skills for SEO, content, conversion, paid and writing</div><div class="sub" style="margin-top:6px"><em>ask in plain words &middot; answer a couple of questions &middot; get the work done</em></div>
+
+  <div class="boot" id="boot"></div>
+
+  <div class="foot">
+    <span><b>git clone github.com/risukisu/marketing-skills</b> &nbsp;&middot;&nbsp; <b>./install.ps1</b></span>
+    <span>MIT &middot; risu</span>
+  </div>
+</div>
+
+<script>
+// pixel wordmark
+const GLYPHS={A:["01110","10001","10001","11111","10001","10001","10001"],I:["11111","00100","00100","00100","00100","00100","11111"],M:["10001","11011","10101","10001","10001","10001","10001"],R:["11110","10001","10001","11110","10100","10010","10001"],K:["10001","10010","10100","11000","10100","10010","10001"],E:["11111","10000","10000","11110","10000","10000","11111"],T:["11111","00100","00100","00100","00100","00100","00100"],S:["01111","10000","10000","01110","00001","00001","11110"],O:["01110","10001","10001","10001","10001","10001","01110"],"'":["11","01","10","00","00","00","00"]," ":["000","000","000","000","000","000","000"]};
+(function(){const PX=10,GAP=1,text="AI MARKETER'S OS",inkFrom=text.indexOf("OS");let x=0,out='';
+for(let i=0;i<text.length;i++){const g=GLYPHS[text[i]],w=g[0].length,col=i>=inkFrom?'#e9ebe3':'#3fd68c';
+for(let r=0;r<7;r++)for(let c=0;c<w;c++)if(g[r][c]==='1')out+=`<rect x="${(x+c)*PX+GAP/2}" y="${r*PX+GAP/2}" width="${PX-GAP}" height="${PX-GAP}" rx="1.5" fill="${col}"/>`;x+=w+1;}
+const W=(x-1)*PX,H=7*PX,svg=document.getElementById('wordmark');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('width',W);svg.setAttribute('height',H);svg.innerHTML=out;})();
+
+// boot log
+const ROWS=[
+  {k:'rank',            v:'32 skills',  d:'audits, schema, GEO, local, connectors'},
+  {k:'plan & convert',  v:'7 skills',   d:'strategy, research, cro, launches, paid'},
+  {k:'write & ship',    v:'5 skills',   d:'drafts, deslop, longform, ui, readme'},
+  {k:'sub-agents',      v:'18 online',  d:'fan out on audits, report back'},
+  {k:'context',         v:'asks first', d:'scans your folder, reads only with a yes'},
+  {k:'numbers',         v:'from data',  d:'GA4, Search Console, DataForSEO, else unknown'},
+  {k:'api keys',        v:'none',       d:'start without any', warn:true},
+];
+const PROMPT='our blog doesn’t generate leads';
+const SPIN=['|','/','—','\\'];
+const boot=document.getElementById('boot');
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function setPhase(p){
+  // timeline: rows appear over 0..0.58 (each with a short spinner), "ready" at 0.62, prompt types 0.66..0.9, hold
+  const per=0.58/ROWS.length; let html='';
+  ROWS.forEach((r,i)=>{
+    const start=i*per, end=start+per;
+    if (p<start) { html+='<div class="row"></div>'; return; }
+    const dots='.'.repeat(12);
+    if (p<end-per*0.35){ const sp=SPIN[Math.floor(((p-start)/per)*12)%4];
+      html+=`<div class="row"><span class="st wait">[ ${sp}  ]</span><span class="k">${esc(r.k)}</span></div>`; }
+    else {
+      const st = r.warn ? '<span class="st warn">[ -- ]</span>' : '<span class="st">[ ok ]</span>';
+      html+=`<div class="row">${st}<span class="k">${esc(r.k)}</span><span class="dots">${dots}</span><span class="v">${esc(r.v)}</span><span class="d">${esc(r.d)}</span></div>`; }
+  });
+  html+='<div class="blank"></div>';
+  if (p>=0.62) html+=`<div class="row ready"><b>ready.</b>&nbsp; type what you need:</div>`; else html+='<div class="row"></div>';
+  if (p>=0.66){ const n=Math.round(Math.min(1,(p-0.66)/0.24)*PROMPT.length);
+    html+=`<div class="row prompt"><span class="chev">› </span>${esc(PROMPT.slice(0,n))}<span id="cur"></span></div>`; }
+  else html+='<div class="row"></div>';
+  boot.innerHTML=html;
+  const cur=document.getElementById('cur'); if(cur) cur.style.opacity=(Math.sin(2*Math.PI*4*p)>-0.2)?1:0;
+}
+setPhase(0.95); window.setPhase=setPhase;
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+# NOTICE — Licensing Map
+
+This repository mixes original skills with vendored third-party skills. The root
+`LICENSE` (MIT, © Andrzej Białaś) covers only the original skills. Every vendored
+skill keeps its upstream license, shipped as `LICENSE.txt` inside its own folder.
+
+## Original skills (root MIT)
+
+copy-deslop · copy-longform · writing-assistant · seo-report · linkedin-ads ·
+product-launch · content-strategy · frontend-design-anti-slop
+
+Credited methodologies within original skills:
+- `linkedin-ads` is built on the AdConversion methodology (Silvia & AJ Perez,
+  Goncalo Proenca) — credited inline; the expression is original.
+- `product-launch` adapts Luke Harries' product launch guide — credited inline.
+
+## Vendored skills (upstream licenses)
+
+| Skills | Upstream | License |
+|---|---|---|
+| seo, seo-audit, seo-backlinks, seo-competitor-pages, seo-content, seo-dataforseo, seo-firecrawl, seo-geo, seo-google, seo-hreflang, seo-image-gen, seo-images, seo-local, seo-maps, seo-page, seo-plan, seo-programmatic, seo-schema, seo-sitemap, seo-technical | [AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo) | MIT © 2026 AgriciDaniel (`LICENSE.txt` per folder; the "repository root LICENSE" those files reference is the **upstream** repo's, not this repo's) |
+| internal-comms | [Anthropic skills](https://github.com/anthropics/skills) | Apache-2.0 (`LICENSE.txt` in folder) |
+| beautify-github-readme | [oil-oil/beautify-github-readme](https://github.com/oil-oil/beautify-github-readme) | MIT © 2026 oil-oil (`LICENSE` in folder) |

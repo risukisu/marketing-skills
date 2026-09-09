@@ -1,0 +1,265 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#0e100d; --panel:#151813; --panel2:#181c16; --line:#262b23;
+    --ink:#e9ebe3; --mut:#899084; --mut2:#b4bab0; --dim:#5b6156;
+    --acc:#3fd68c; --amb:#e8a13d; --blu:#7c8cf0;
+    --mono:Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:864px;height:780px;background:var(--bg);color:var(--ink);
+    font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;position:relative;overflow:hidden}
+  body::before{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(#1d211b 1px, transparent 1px);
+    background-size:26px 26px;opacity:.55}
+  #stage{position:absolute;inset:0;padding:30px 40px}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:11px;color:var(--mut)}
+  .topbar .id{display:flex;align-items:center;gap:9px;color:var(--ink)}
+  .topbar .id b{font-size:13px;letter-spacing:.3px}
+  .topbar .live{display:flex;align-items:center;gap:7px}
+  #livedot{width:7px;height:7px;border-radius:50%;background:var(--acc)}
+
+  h1{font-size:54px;font-weight:800;letter-spacing:-2.2px;margin-top:42px;line-height:1.02}
+  h1 .dot{color:var(--acc)}
+  #cursor{display:inline-block;width:22px;height:44px;background:var(--acc);
+    vertical-align:-4px;margin-left:10px;border-radius:2px}
+  .tagline{font-family:var(--mono);font-size:12.5px;color:var(--mut);margin-top:14px;letter-spacing:.2px}
+  .tagline em{color:var(--amb);font-style:normal}
+
+  .hero{position:relative;margin-top:8px;height:0}
+  #constellation{position:absolute;right:-6px;top:-158px;width:290px;height:230px}
+  #wires{position:absolute;inset:0;pointer-events:none;z-index:0}
+
+  .panels{display:flex;gap:16px;margin-top:52px;position:relative;z-index:1}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:0 18px 15px;flex:1;position:relative;overflow:hidden}
+  .panel .bar{height:3px;margin:0 -18px 0;background:var(--acc);opacity:.85}
+  .panel.p2 .bar{background:var(--amb)}
+  .panel.p3 .bar{background:var(--blu)}
+  .phead{display:flex;align-items:baseline;gap:10px;margin-top:15px}
+  .pnum{font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .phead h2{font-size:16px;font-weight:800;letter-spacing:.6px}
+  .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;color:var(--dim);
+    text-transform:uppercase;margin:11px 0 6px}
+
+  /* "you say" rows: plain-words ask, then the command that answers it */
+  .asks{width:100%}
+  .ask{display:flex;flex-direction:column;gap:0;padding:3px 0 4px;border-bottom:1px solid #20241d}
+  .ask:last-child{border-bottom:none}
+  .ask .q{font-family:var(--mono);font-size:10px;color:var(--mut2);white-space:nowrap}
+  .ask b{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--acc);white-space:nowrap}
+  .ask b::before{content:"› ";color:var(--dim);font-weight:400}
+  .p2 .ask b{color:var(--amb)}
+  .p3 .ask b{color:var(--blu)}
+
+  .rows{width:100%}
+  .rows div{display:flex;justify-content:space-between;border-bottom:1px solid #20241d;
+    padding:4px 0;font-family:var(--mono);font-size:10px;color:var(--mut)}
+  .rows div:last-child{border-bottom:none}
+  .rows b{color:var(--ink);font-weight:700}
+  .rows .ok{color:var(--acc)}
+
+  .chips{display:flex;gap:8px;margin-top:18px;position:relative;z-index:1;justify-content:center}
+  .chip{font-family:var(--mono);font-size:10px;color:var(--mut2);
+    border:1px solid var(--line);background:var(--panel);border-radius:20px;
+    padding:7px 13px;display:flex;align-items:center;gap:7px}
+  .chip i{width:6px;height:6px;border-radius:50%;display:inline-block}
+
+  .status{position:absolute;left:40px;right:40px;bottom:28px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:9px;
+    font-family:var(--mono);font-size:11px;color:var(--mut);
+    display:flex;align-items:center;padding:12px 16px;gap:0;z-index:1}
+  .status .seg{padding:0 14px;border-right:1px solid #242821;white-space:nowrap}
+  .status .seg:first-child{padding-left:0}
+  .status .seg:last-child{border-right:none}
+  .status b{color:var(--ink);font-size:13px}
+  .status .k{color:var(--acc)}
+  .status .git{margin-left:auto;color:var(--dim);border:none}
+</style>
+</head>
+<body>
+<svg id="wires" width="864" height="780"></svg>
+
+<div id="stage">
+  <div class="topbar">
+    <div class="id">
+      <svg width="20" height="20" viewBox="0 0 22 22"><rect x="1" y="1" width="20" height="20" rx="6" fill="none" stroke="#3fd68c" stroke-width="1.4"/><circle cx="8" cy="8" r="1.8" fill="#3fd68c"/><circle cx="14.5" cy="9.5" r="1.4" fill="#e9ebe3"/><circle cx="9.5" cy="14.5" r="1.4" fill="#e9ebe3"/><path d="M8 8 L14.5 9.5 L9.5 14.5 Z" stroke="#3fd68c" stroke-width=".7" fill="none" opacity=".7"/></svg>
+      <b>marketing-skills</b>
+    </div>
+    <div class="live"><span id="livedot"></span> CLAUDE CODE &middot; 44 SKILLS &middot; 3 CATEGORIES</div>
+  </div>
+
+  <h1>One marketer&rsquo;s OS<span class="dot">.</span><span id="cursor"></span></h1>
+  <div class="tagline">ask in plain words &middot; answer a couple of questions &middot; <em>get the work done</em></div>
+
+  <div class="hero"><svg id="constellation" viewBox="0 0 300 250"></svg></div>
+
+  <div class="panels" id="panels">
+    <div class="panel p1" id="p1" style="flex:1.12">
+      <div class="bar"></div>
+      <div class="phead"><span class="pnum">01</span><h2>RANK</h2></div>
+      <div class="lbl">seo &middot; 32 skills &middot; you say &rarr; it runs</div>
+      <div class="asks">
+        <div class="ask"><span class="q">&ldquo;audit the whole site&rdquo;</span><b>/seo-audit</b></div>
+        <div class="ask"><span class="q">&ldquo;why isn&rsquo;t this page ranking?&rdquo;</span><b>/seo-sxo</b></div>
+        <div class="ask"><span class="q">&ldquo;does ChatGPT cite us?&rdquo;</span><b>/seo-geo</b></div>
+        <div class="ask"><span class="q">&ldquo;schema, sitemaps, hreflang: fix them&rdquo;</span><b>/seo-schema &middot; /seo-sitemap</b></div>
+        <div class="ask"><span class="q">&ldquo;how did we do in search this month?&rdquo;</span><b>/seo-report</b></div>
+        <div class="ask"><span class="q">&ldquo;a brief for the next article&rdquo;</span><b>/seo-content-brief</b></div>
+      </div>
+      <div class="lbl" style="margin-top:14px">real numbers, not guesses</div>
+      <div class="rows">
+        <div><span>traffic, conversions</span><b>GA4</b></div>
+        <div><span>queries, rankings</span><b>Search Console</b></div>
+        <div><span>SERPs, keywords, links</span><b>DataForSEO</b></div>
+      </div>
+    </div>
+
+    <div class="panel p2" id="p2">
+      <div class="bar"></div>
+      <div class="phead"><span class="pnum">02</span><h2>PLAN &amp; CONVERT</h2></div>
+      <div class="lbl">strategy &middot; research &middot; cro</div>
+      <div class="asks">
+        <div class="ask"><span class="q">&ldquo;our blog doesn&rsquo;t generate leads&rdquo;</span><b>/content-strategy</b></div>
+        <div class="ask"><span class="q">&ldquo;what do customers actually say?&rdquo;</span><b>/customer-research</b></div>
+        <div class="ask"><span class="q">&ldquo;this page isn&rsquo;t converting&rdquo;</span><b>/cro</b></div>
+        <div class="ask"><span class="q">&ldquo;what do we give away for emails?&rdquo;</span><b>/lead-magnets</b></div>
+        <div class="ask"><span class="q">&ldquo;we launch in two weeks&rdquo;</span><b>/product-launch</b></div>
+        <div class="ask"><span class="q">&ldquo;how much for LinkedIn ads?&rdquo;</span><b>/linkedin-ads</b></div>
+        <div class="ask"><span class="q">&ldquo;what would Ogilvy say about this?&rdquo;</span><b>/marketing-council</b></div>
+      </div>
+      <div class="lbl" style="margin-top:14px">how every skill behaves</div>
+      <div class="rows">
+        <div><span>first move</span><b>asks, never assumes</b></div>
+        <div><span>your files</span><b>read only with a yes</b></div>
+        <div><span>missing data</span><b class="ok">labeled, not invented</b></div>
+      </div>
+    </div>
+
+    <div class="panel p3" id="p3">
+      <div class="bar"></div>
+      <div class="phead"><span class="pnum">03</span><h2>WRITE &amp; SHIP</h2></div>
+      <div class="lbl">writing &middot; design &middot; presence</div>
+      <div class="asks">
+        <div class="ask"><span class="q">&ldquo;help me draft this post&rdquo;</span><b>/writing-assistant</b></div>
+        <div class="ask"><span class="q">&ldquo;this reads like AI wrote it&rdquo;</span><b>/copy-deslop</b></div>
+        <div class="ask"><span class="q">&ldquo;copyedit the whole ebook&rdquo;</span><b>/copy-longform</b></div>
+        <div class="ask"><span class="q">&ldquo;a landing page that isn&rsquo;t generic&rdquo;</span><b>/frontend-design-anti-slop</b></div>
+        <div class="ask"><span class="q">&ldquo;make the GitHub README look good&rdquo;</span><b>/beautify-github-readme</b></div>
+      </div>
+      <div class="lbl" style="margin-top:14px">writing guardrails</div>
+      <div class="rows">
+        <div><span>AI tells</span><b>scrubbed, every draft</b></div>
+        <div><span>your voice</span><b>profiles, not defaults</b></div>
+        <div><span>every draft</span><b class="ok">saved as a file</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips" id="chips">
+    <div class="chip"><i style="background:#d97757"></i>claude code</div>
+    <div class="chip"><i style="background:#f9ab00"></i>ga4</div>
+    <div class="chip"><i style="background:#1a73e8"></i>search console</div>
+    <div class="chip"><i style="background:#22b8a0"></i>dataforseo</div>
+    <div class="chip"><i style="background:#ff6b35"></i>firecrawl</div>
+    <div class="chip"><i style="background:#e9ebe3"></i>github</div>
+  </div>
+
+  <div class="status" id="status">
+    <span class="seg"><b>44</b> skills</span>
+    <span class="seg"><b>18</b> sub-agents</span>
+    <span class="seg"><b>1</b> <span class="k">command to install</span></span>
+    <span class="seg git">github.com/risukisu/marketing-skills</span>
+  </div>
+</div>
+
+<script>
+// ---------- constellation (seeded) ----------
+let CONST_NODES = [];
+(function(){
+  let s = 7;
+  const rnd = () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const W = 300, H = 250, n = [];
+  for (let i = 0; i < 26; i++) n.push({ x: 16 + rnd() * (W - 40), y: 14 + rnd() * (H - 34), r: 1.8 + rnd() * 1.9 });
+  const edges = [];
+  for (let i = 0; i < n.length; i++) {
+    const d = n.map((o, j) => ({ j, d: Math.hypot(o.x - n[i].x, o.y - n[i].y) }))
+      .filter(o => o.j !== i).sort((a, b) => a.d - b.d);
+    for (let k = 0; k < 2; k++) {
+      const j = d[k].j;
+      if (!edges.some(e => (e[0] === i && e[1] === j) || (e[0] === j && e[1] === i))) edges.push([i, j]);
+    }
+  }
+  const acc = [2, 8, 15, 21];
+  const svg = document.getElementById('constellation');
+  let h = '';
+  for (const [a, b] of edges)
+    h += `<line x1="${n[a].x.toFixed(1)}" y1="${n[a].y.toFixed(1)}" x2="${n[b].x.toFixed(1)}" y2="${n[b].y.toFixed(1)}" stroke="#2a2f27" stroke-width="0.9"/>`;
+  n.forEach((o, i) => {
+    const a = acc.includes(i);
+    if (a) h += `<circle class="halo" data-i="${i}" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="6" fill="#3fd68c" opacity="0.12"/>`;
+    h += `<circle class="${a ? 'cnode-acc' : ''}" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${o.r.toFixed(1)}" fill="${a ? '#3fd68c' : '#6f766a'}" opacity="${a ? 1 : (0.4 + 0.5 * rnd()).toFixed(2)}"/>`;
+  });
+  svg.innerHTML = h;
+  CONST_NODES = n;
+})();
+
+// ---------- curved connectors with flowing dashes ----------
+const DASH = 5, GAP = 9, PERIOD = DASH + GAP;
+function buildWires() {
+  const r = id => document.getElementById(id).getBoundingClientRect();
+  const cst = r('constellation');
+  const hub = { x: cst.left + 30, y: cst.bottom - 30 };
+  const heads = ['p1', 'p2', 'p3'].map(id => { const b = r(id); return { x: b.left + b.width / 2, y: b.top }; });
+  const tag = { x: 480, y: cst.top + 60 };
+  const chips = r('chips');
+  const p3b = r('p3');
+  let g = '';
+  const curves = [];
+  const bez = (a, b, sag) => {
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 + sag;
+    return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} Q ${mx.toFixed(1)} ${my.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+  };
+  heads.forEach((hd, i) => curves.push({ d: bez(hub, hd, i === 0 ? 30 : 55 - i * 10), col: '#3fd68c', op: 0.5 }));
+  curves.push({ d: bez(tag, hub, -20), col: '#e8a13d', op: 0.4 });
+  curves.push({ d: bez({ x: p3b.left + p3b.width / 2, y: p3b.bottom }, { x: chips.left + chips.width / 2 + 120, y: chips.top + 14 }, 18), col: '#7c8cf0', op: 0.4 });
+  curves.forEach((c, i) => {
+    g += `<path class="flow" id="flow${i}" d="${c.d}" fill="none" stroke="${c.col}" stroke-opacity="${c.op}" stroke-width="1.3" stroke-dasharray="${DASH} ${GAP}"/>`;
+  });
+  document.getElementById('wires').innerHTML = g;
+}
+
+// ---------- phase ----------
+function setPhase(p) {
+  document.querySelectorAll('.flow').forEach((el, i) => {
+    const dir = i === 3 ? 1 : -1;
+    el.setAttribute('stroke-dashoffset', (dir * p * 2 * PERIOD).toFixed(2));
+  });
+  document.querySelectorAll('.cnode-acc').forEach((el, k) => {
+    const base = parseFloat(el.dataset.r || (el.dataset.r = el.getAttribute('r')));
+    const w = 0.5 + 0.5 * Math.sin(2 * Math.PI * (p + k * 0.25));
+    el.setAttribute('r', (base + 0.8 * w).toFixed(2));
+  });
+  document.querySelectorAll('.halo').forEach((el, k) => {
+    const w = 0.5 + 0.5 * Math.sin(2 * Math.PI * (p + k * 0.25));
+    el.setAttribute('r', (5 + 5 * w).toFixed(2));
+    el.setAttribute('opacity', (0.05 + 0.14 * (1 - w)).toFixed(3));
+  });
+  document.getElementById('cursor').style.opacity = (Math.sin(2 * Math.PI * 2 * p) > -0.2) ? 1 : 0;
+  const lw = 0.5 + 0.5 * Math.sin(2 * Math.PI * p);
+  const ld = document.getElementById('livedot');
+  ld.style.opacity = 0.45 + 0.55 * lw;
+  ld.style.boxShadow = `0 0 ${(2 + 6 * lw).toFixed(1)}px rgba(63,214,140,${(0.3 + 0.5 * lw).toFixed(2)})`;
+}
+
+buildWires();
+setPhase(0);
+window.setPhase = setPhase;
+</script>
+</body>
+</html>

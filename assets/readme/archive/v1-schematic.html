@@ -1,0 +1,331 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#f4f4f2; --card:#ffffff; --line:#e4e4e0; --ink:#111111;
+    --mut:#8a8a86; --mut2:#555550; --mono:Consolas,"Courier New",monospace;
+    --accent:#22b573; --wire:#d2d2ce; --dot:#4a4a46;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:864px;height:1080px;background:var(--bg);
+    font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;color:var(--ink);
+    position:relative;overflow:hidden}
+  #stage{position:absolute;inset:0;padding:26px 38px}
+  .corner{position:absolute;width:7px;height:7px;border:1.5px solid #b5b5b0}
+  .c-tl{top:24px;left:24px}.c-tr{top:24px;right:24px}
+  .c-bl{bottom:24px;left:24px}.c-br{bottom:24px;right:24px}
+
+  /* header */
+  .brand{display:flex;align-items:center;gap:9px;margin-top:4px}
+  .brand svg{display:block}
+  .brand b{font-size:16px;letter-spacing:-.2px}
+  h1{font-size:52px;letter-spacing:-2.2px;margin-top:26px;font-weight:800}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px}
+
+  /* top row */
+  .toprow{display:flex;gap:14px;margin-top:26px}
+  .topcard{flex:1;display:flex;align-items:center;gap:11px;padding:14px 16px}
+  .topcard .ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none}
+  .topcard b{font-size:14.5px;display:block}
+  .topcard span{font-size:11px;color:var(--mut);display:block;margin-top:2px}
+
+  /* wires layer */
+  #wires{position:absolute;inset:0;pointer-events:none}
+
+  /* columns */
+  .cols{display:flex;gap:14px;margin-top:44px;position:relative;z-index:1}
+  .col{padding:18px 18px 14px}
+  .col h2{font-size:17px;letter-spacing:.4px;font-weight:800}
+  .col .sub{font-family:var(--mono);font-size:10.5px;color:var(--mut);margin-left:8px;font-weight:400}
+  .rule{border-top:1px solid var(--line);margin:10px 0 10px}
+  .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:1px;color:#a9a9a4;text-transform:uppercase;margin:10px 0 6px}
+  .mono2{display:flex;gap:14px}
+  .mono2 ul,.mono1 ul{list-style:none}
+  .mono2 li,.mono1 li{font-family:var(--mono);font-size:10px;color:var(--mut2);line-height:1.62;white-space:nowrap}
+  .rows{width:100%}
+  .rows div{display:flex;justify-content:space-between;border-bottom:1px solid #efefec;
+    padding:4.5px 0;font-family:var(--mono);font-size:10px;color:var(--mut2)}
+  .rows div:last-child{border-bottom:none}
+  .rows b{font-family:Arial,Helvetica,sans-serif;font-size:11px;color:var(--ink)}
+  .readby{display:flex;align-items:center;gap:7px;margin-top:9px;font-size:12px;font-weight:700}
+
+  /* badges */
+  .badges{display:flex;gap:9px;margin-top:16px;position:relative;z-index:1}
+  .badge{display:flex;align-items:center;gap:8px;padding:10px 12px;flex:1;min-width:0}
+  .badge b{font-size:12px;white-space:nowrap}
+  .badge span{font-size:9.5px;color:var(--mut);display:block;margin-top:1px}
+  .badge .ic{width:22px;height:22px;border-radius:5px;flex:none;display:flex;align-items:center;justify-content:center}
+
+  /* stats */
+  .stats{display:flex;justify-content:center;gap:90px;margin-top:16px;padding:22px 0 20px}
+  .stat{text-align:center}
+  .stat .n{font-size:40px;font-weight:800;letter-spacing:-1.5px}
+  .stat .t{font-family:var(--mono);font-size:9.5px;color:var(--mut);margin-top:3px;letter-spacing:.5px}
+
+  .foot{position:absolute;left:38px;right:38px;bottom:30px;display:flex;justify-content:space-between;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:1.2px;color:#a9a9a4}
+</style>
+</head>
+<body>
+<div class="corner c-tl"></div><div class="corner c-tr"></div>
+<div class="corner c-bl"></div><div class="corner c-br"></div>
+<svg id="wires"></svg>
+
+<div id="stage">
+  <div class="brand">
+    <svg width="22" height="22" viewBox="0 0 22 22"><rect x="1" y="1" width="20" height="20" rx="6" fill="#111"/><circle cx="8" cy="8" r="2" fill="#f4f4f2"/><circle cx="14.5" cy="9.5" r="1.6" fill="#22b573"/><circle cx="9.5" cy="14.5" r="1.6" fill="#f4f4f2"/><path d="M8 8 L14.5 9.5 L9.5 14.5 Z" stroke="#f4f4f2" stroke-width=".8" fill="none"/></svg>
+    <b>marketing-skills</b>
+  </div>
+
+  <h1>One marketer&rsquo;s OS.</h1>
+
+  <div class="toprow" id="toprow">
+    <div class="card topcard" id="tc1">
+      <div class="ic" style="background:#fdece5">
+        <svg width="17" height="17" viewBox="0 0 17 17"><g fill="#d97757"><circle cx="8.5" cy="8.5" r="2.1"/><g><rect x="7.8" y="0.5" width="1.4" height="4.2" rx=".7"/><rect x="7.8" y="12.3" width="1.4" height="4.2" rx=".7"/><rect x="0.5" y="7.8" width="4.2" height="1.4" rx=".7"/><rect x="12.3" y="7.8" width="4.2" height="1.4" rx=".7"/><rect x="7.8" y="0.5" width="1.4" height="4.2" rx=".7" transform="rotate(45 8.5 8.5)"/><rect x="7.8" y="12.3" width="1.4" height="4.2" rx=".7" transform="rotate(45 8.5 8.5)"/><rect x="7.8" y="0.5" width="1.4" height="4.2" rx=".7" transform="rotate(-45 8.5 8.5)"/><rect x="7.8" y="12.3" width="1.4" height="4.2" rx=".7" transform="rotate(-45 8.5 8.5)"/></g></g></svg>
+      </div>
+      <div><b>Claude Code</b><span>runs every skill</span></div>
+    </div>
+    <div class="card topcard" id="tc2">
+      <div class="ic" style="background:#111">
+        <svg width="15" height="15" viewBox="0 0 15 15"><path d="M2 2.5 h11 M2 7.5 h11 M2 12.5 h7" stroke="#f4f4f2" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div><b>The live folder is the repo</b><span>~/.claude/skills = the git worktree</span></div>
+    </div>
+    <div class="card topcard" id="tc3">
+      <div class="ic" style="background:#eef2ee">
+        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 1.5V5H9.5" stroke="#22b573" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div><b>/sync</b><span>auto-commit &amp; push, any root</span></div>
+    </div>
+  </div>
+
+  <div class="cols" id="cols">
+    <div class="card col" id="col1" style="flex:1.16">
+      <h2>SEO FLEET<span class="sub">seo-*</span></h2>
+      <div class="rule"></div>
+      <div class="lbl">&#9638; 21 SEO skills &middot; claude-seo v1.8.1</div>
+      <div class="mono2">
+        <ul>
+          <li>seo</li><li>seo-audit</li><li>seo-report</li><li>seo-plan</li>
+          <li>seo-technical</li><li>seo-page</li><li>seo-content</li><li>seo-geo</li>
+          <li>seo-schema</li><li>seo-sitemap</li><li>seo-hreflang</li>
+        </ul>
+        <ul>
+          <li>seo-competitor-pages</li><li>seo-programmatic</li><li>seo-google</li>
+          <li>seo-dataforseo</li><li>seo-firecrawl</li><li>seo-backlinks</li>
+          <li>seo-local</li><li>seo-maps</li><li>seo-images</li><li>seo-image-gen</li>
+        </ul>
+      </div>
+      <div class="lbl" style="margin-top:13px">&#9889; 5 writing skills</div>
+      <div class="mono2">
+        <ul><li>writing-assistant</li><li>copy-deslop</li><li>copy-longform</li></ul>
+        <ul><li>doc-coauthoring</li><li>internal-comms</li></ul>
+      </div>
+      <div class="lbl" style="margin-top:13px">&#9678; wired to live data</div>
+      <div class="rows">
+        <div><span>seo-report &middot; GA4 traffic</span><b>analytics-mcp</b></div>
+        <div><span>search performance</span><b>Search Console</b></div>
+        <div><span>newsletter drafts</span><b>Substack</b></div>
+      </div>
+    </div>
+
+    <div class="card col" id="col2" style="flex:1">
+      <h2>THE SHELF</h2>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--mut);margin-top:5px">49 skills &middot; 8 domains</div>
+      <div class="rule"></div>
+      <div class="lbl">&#9638; one folder, versioned &mdash; drift impossible</div>
+      <svg id="graph" width="100%" height="196" viewBox="0 0 216 196"></svg>
+      <div class="rows">
+        <div><span>seo/</span><b>21</b></div>
+        <div><span>design &amp; build/</span><b>7</b></div>
+        <div><span>writing/</span><b>5</b></div>
+        <div><span>sessions &middot; obsidian/</span><b>4 + 4</b></div>
+        <div><span>docs &middot; ops &middot; research/</span><b>4 + 2 + 2</b></div>
+        <div><span>INVENTORY.md</span><b>catalog</b></div>
+      </div>
+      <div class="readby">
+        <svg width="16" height="16" viewBox="0 0 22 22"><rect x="1" y="1" width="20" height="20" rx="6" fill="#d97757"/><circle cx="11" cy="11" r="3.4" fill="#fff"/></svg>
+        read by Claude Code
+      </div>
+    </div>
+
+    <div class="card col" id="col3" style="flex:1">
+      <h2>OPS &amp; SESSIONS</h2>
+      <div class="rule"></div>
+      <div class="lbl">&#9638; 12 more skills</div>
+      <div class="mono2">
+        <ul>
+          <li>save</li><li>resume</li><li>sync</li><li>wip</li>
+          <li>linkedin-ads</li><li>product-launch</li>
+        </ul>
+        <ul>
+          <li>llm-council</li><li>defuddle</li><li>skill-creator</li>
+          <li>mcp-builder</li><li>frontend-design</li><li>webapp-testing</li>
+        </ul>
+      </div>
+      <div class="lbl" style="margin-top:13px">&#9678; where it all comes from</div>
+      <div class="rows">
+        <div><span>own (risu)</span><b>12</b></div>
+        <div><span>claude-seo &middot; MIT</span><b>20</b></div>
+        <div><span>Anthropic &middot; Apache-2.0</span><b>8</b></div>
+        <div><span>kepano bundle</span><b>4</b></div>
+        <div><span>local-only, never ships</span><b>5</b></div>
+      </div>
+      <div class="lbl" style="margin-top:11px">&#9638; keeps sessions alive</div>
+      <div class="rows">
+        <div><span>session memory &middot; roadmaps</span><b>/save &middot; /resume</b></div>
+        <div><span>this repo, pushed itself</span><b>/sync</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="badges" id="badges">
+    <div class="card badge"><div class="ic" style="background:#111"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 2.5 L5 6 L1 9.5" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 10 h4.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg></div><div><b>Claude Code</b><span>the runtime</span></div></div>
+    <div class="card badge"><div class="ic" style="background:#fff4e0"><svg width="13" height="13" viewBox="0 0 13 13"><rect x="1.5" y="7" width="2.4" height="4.5" rx="1" fill="#e8710a"/><rect x="5.3" y="4" width="2.4" height="7.5" rx="1" fill="#f9ab00"/><rect x="9.1" y="1.5" width="2.4" height="10" rx="1" fill="#e37400"/></svg></div><div><b>GA4</b><span>live traffic</span></div></div>
+    <div class="card badge"><div class="ic" style="background:#e8f0fe"><svg width="13" height="13" viewBox="0 0 13 13"><circle cx="5.6" cy="5.6" r="3.6" stroke="#1a73e8" stroke-width="1.6" fill="none"/><path d="M8.4 8.4 L11.5 11.5" stroke="#1a73e8" stroke-width="1.8" stroke-linecap="round"/></svg></div><div><b>Search Console</b><span>rankings</span></div></div>
+    <div class="card badge"><div class="ic" style="background:#fff1e8"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1.2 h10 M1 4.2 h10 M1 7.4 h10 v3.4 L6 8.6 L1 10.8 Z" fill="#ff6719"/></svg></div><div><b>Substack</b><span>drafts pipe</span></div></div>
+    <div class="card badge"><div class="ic" style="background:#f3eefc"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 .8 L10.8 3 L9.8 9.4 L6 11.2 L2.2 9.4 L1.2 3 Z" fill="#7c3aed"/></svg></div><div><b>Obsidian</b><span>writing desk</span></div></div>
+    <div class="card badge"><div class="ic" style="background:#111"><svg width="13" height="13" viewBox="0 0 16 16"><path fill="#fff" d="M8 .2a8 8 0 0 0-2.5 15.6c.4.1.5-.2.5-.4v-1.4c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.4.7.1-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4a3 3 0 0 1 .8-2.1c-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.6 7.6 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.8-3.6 4 .3.3.6.8.6 1.5v2.2c0 .2.1.5.5.4A8 8 0 0 0 8 .2Z"/></svg></div><div><b>GitHub</b><span>the repo itself</span></div></div>
+  </div>
+
+  <div class="card stats" id="stats">
+    <div class="stat"><div class="n">49</div><div class="t">skills on the shelf</div></div>
+    <div class="stat"><div class="n">8</div><div class="t">domains</div></div>
+    <div class="stat"><div class="n">40</div><div class="t">cleared for the public flip</div></div>
+  </div>
+</div>
+
+<div class="foot">
+  <span>RISUKISU / MARKETING-SKILLS</span>
+  <span>COUNTS READ FROM README + INVENTORY</span>
+</div>
+
+<script>
+// ---------- knowledge graph (seeded, deterministic) ----------
+(function(){
+  let s = 42;
+  const rnd = () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const W = 216, H = 196, nodes = [];
+  for (let i = 0; i < 30; i++) {
+    nodes.push({ x: 14 + rnd() * (W - 28), y: 12 + rnd() * (H - 24), r: 2 + rnd() * 1.8 });
+  }
+  const edges = [];
+  for (let i = 0; i < nodes.length; i++) {
+    const d = nodes.map((n, j) => ({ j, d: Math.hypot(n.x - nodes[i].x, n.y - nodes[i].y) }))
+      .filter(o => o.j !== i).sort((a, b) => a.d - b.d);
+    for (let k = 0; k < 2; k++) {
+      const j = d[k].j;
+      if (!edges.some(e => (e[0] === i && e[1] === j) || (e[0] === j && e[1] === i))) edges.push([i, j]);
+    }
+  }
+  const accentIdx = [3, 11, 19, 26];
+  const svg = document.getElementById('graph');
+  let html = '';
+  for (const [a, b] of edges)
+    html += `<line x1="${nodes[a].x.toFixed(1)}" y1="${nodes[a].y.toFixed(1)}" x2="${nodes[b].x.toFixed(1)}" y2="${nodes[b].y.toFixed(1)}" stroke="#dddddb" stroke-width="0.8"/>`;
+  nodes.forEach((n, i) => {
+    const acc = accentIdx.includes(i);
+    html += `<circle class="${acc ? 'gnode-acc' : ''}" data-i="${i}" cx="${n.x.toFixed(1)}" cy="${n.y.toFixed(1)}" r="${n.r.toFixed(1)}" fill="${acc ? '#22b573' : '#3a3a36'}" opacity="${acc ? 1 : 0.55 + 0.4 * rnd()}"/>`;
+  });
+  svg.innerHTML = html;
+})();
+
+// ---------- wires + traveling dots ----------
+const wiresSvg = document.getElementById('wires');
+let routes = []; // each: {pts:[{x,y}...], len, cum:[]}
+
+function buildWires() {
+  const pr = el => { const r = el.getBoundingClientRect(); return r; };
+  const tc = [pr(document.getElementById('tc1')), pr(document.getElementById('tc2')), pr(document.getElementById('tc3'))];
+  const cc = [pr(document.getElementById('col1')), pr(document.getElementById('col2')), pr(document.getElementById('col3'))];
+  const badges = pr(document.getElementById('badges'));
+  const stats = pr(document.getElementById('stats'));
+  const busY = tc[0].bottom + 20;
+  const bus2Y = cc[0].bottom + 8;
+  let g = '';
+  const seg = (x1, y1, x2, y2) => { g += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#d2d2ce" stroke-width="1.2"/>`; };
+  // vertical drops from top cards to bus
+  const topX = tc.map(r => r.left + r.width / 2);
+  const colX = cc.map(r => r.left + r.width / 2);
+  topX.forEach((x, i) => seg(x, tc[i].bottom, x, busY));
+  // bus
+  seg(Math.min(...topX, ...colX), busY, Math.max(...topX, ...colX), busY);
+  // drops from bus into columns
+  colX.forEach((x, i) => seg(x, busY, x, cc[i].top));
+  // right-side wire: col3 bottom -> down to stats level
+  const rx = cc[2].right - 26;
+  seg(rx, cc[2].bottom, rx, stats.top + 20);
+  seg(rx, stats.top + 20, stats.right - 4, stats.top + 20);
+  // junction dots (static)
+  [...topX, ...colX].forEach(x => g += `<circle cx="${x}" cy="${busY}" r="2.4" fill="#6a6a66"/>`);
+  g += `<g id="movers"></g>`;
+  wiresSvg.setAttribute('width', 864); wiresSvg.setAttribute('height', 1080);
+  wiresSvg.innerHTML = g;
+
+  // routes for traveling dots: topcard -> bus -> column
+  routes = [];
+  const mk = pts => {
+    let len = 0; const cum = [0];
+    for (let i = 1; i < pts.length; i++) { len += Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y); cum.push(len); }
+    routes.push({ pts, len, cum });
+  };
+  mk([{x: topX[0], y: tc[0].bottom}, {x: topX[0], y: busY}, {x: colX[0], y: busY}, {x: colX[0], y: cc[0].top}]);
+  mk([{x: topX[1], y: tc[1].bottom}, {x: topX[1], y: busY}, {x: colX[1], y: busY}, {x: colX[1], y: cc[1].top}]);
+  mk([{x: topX[2], y: tc[2].bottom}, {x: topX[2], y: busY}, {x: colX[2], y: busY}, {x: colX[2], y: cc[2].top}]);
+  mk([{x: rx, y: cc[2].bottom}, {x: rx, y: stats.top + 20}, {x: stats.right - 4, y: stats.top + 20}]);
+}
+
+function pointAt(route, t) {
+  const d = t * route.len;
+  for (let i = 1; i < route.cum.length; i++) {
+    if (d <= route.cum[i]) {
+      const f = (d - route.cum[i-1]) / (route.cum[i] - route.cum[i-1] || 1);
+      const a = route.pts[i-1], b = route.pts[i];
+      return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
+    }
+  }
+  return route.pts[route.pts.length - 1];
+}
+
+// dots per route with phase offsets (seamless: pos = (offset+p) mod 1)
+const dotSpec = [
+  { r: 0, offs: [0.0, 0.5] },
+  { r: 1, offs: [0.25, 0.75] },
+  { r: 2, offs: [0.12, 0.62] },
+  { r: 3, offs: [0.4] },
+];
+
+function setPhase(p) {
+  // travelling dots
+  const movers = document.getElementById('movers');
+  let m = '';
+  for (const spec of dotSpec) {
+    const route = routes[spec.r];
+    for (const off of spec.offs) {
+      const t = (off + p) % 1;
+      const pt = pointAt(route, t);
+      // fade in/out at ends so appearance/disappearance is soft
+      const fade = Math.min(1, t / 0.08, (1 - t) / 0.08);
+      m += `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="2.6" fill="#4a4a46" opacity="${(0.9 * Math.max(0, fade)).toFixed(2)}"/>`;
+    }
+  }
+  movers.innerHTML = m;
+  // pulsing accent nodes (integer cycles -> seamless)
+  document.querySelectorAll('.gnode-acc').forEach((el, k) => {
+    const base = parseFloat(el.dataset.r || (el.dataset.r = el.getAttribute('r')));
+    const w = Math.sin(2 * Math.PI * (p + k * 0.25));
+    el.setAttribute('r', (base + 0.9 * (0.5 + 0.5 * w)).toFixed(2));
+    el.setAttribute('opacity', (0.75 + 0.25 * (0.5 + 0.5 * w)).toFixed(2));
+  });
+}
+
+buildWires();
+setPhase(0);
+window.setPhase = setPhase;
+</script>
+</body>
+</html>

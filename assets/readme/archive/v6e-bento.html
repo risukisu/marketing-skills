@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root{--bg:#0e100d;--panel:#151813;--line:#262b23;--line2:#20241d;--ink:#e9ebe3;--mut:#899084;--mut2:#b4bab0;--dim:#5b6156;
+    --acc:#3fd68c;--amb:#e8a13d;--blu:#7c8cf0;--mono:Consolas,"Courier New",monospace}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:1200px;height:930px;background:var(--bg);color:var(--ink);font-family:var(--mono);position:relative;overflow:hidden}
+  body::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#1d211b 1.4px, transparent 1.4px);background-size:36px 36px;opacity:.55}
+  #stage{position:absolute;inset:0;padding:40px 56px}
+
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;position:relative;z-index:1}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden}
+  .s8{grid-column:span 8} .s4{grid-column:span 4} .s6{grid-column:span 6}
+
+  /* hero tile */
+  .hero .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut);letter-spacing:.4px}
+  .hero .top .id{display:flex;align-items:center;gap:10px;color:var(--ink)} .hero .top .id b{font-size:17px}
+  .hero .top .live{display:flex;align-items:center;gap:9px} #livedot{width:8px;height:8px;border-radius:50%;background:var(--acc)}
+  .hero h1{font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;font-size:60px;font-weight:800;letter-spacing:-2.4px;line-height:1.02;margin-top:30px;white-space:nowrap}
+  .hero h1 .dot{color:var(--acc)}
+  #cursor{display:inline-block;width:24px;height:48px;background:var(--acc);vertical-align:-5px;margin-left:12px;border-radius:2px}
+  .hero .tagline{font-size:18px;color:var(--mut);margin-top:16px;white-space:nowrap}
+  .hero .tagline em{color:var(--amb);font-style:normal} .hero .tagline .sep{color:var(--dim);margin:0 9px}
+
+  /* behaves tile with constellation behind */
+  .beh{display:flex;flex-direction:column;justify-content:flex-end}
+  #constellation{position:absolute;right:-6px;top:-26px;width:300px;height:150px;opacity:.6}
+  .lbl{font-size:13px;letter-spacing:1.6px;color:var(--dim);text-transform:uppercase;margin:0 0 8px}
+  .rows div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line2);padding:5px 0;font-size:17px;color:var(--mut)}
+  .rows div:last-child{border-bottom:none} .rows b{color:var(--ink);font-weight:700} .rows .ok{color:var(--acc)}
+  .beh .rows{position:relative;z-index:1}
+
+  /* category tiles */
+  .head{display:flex;align-items:center;gap:12px}
+  .head i{width:12px;height:12px;background:var(--acc);display:inline-block;flex:none}
+  .cat.c2 .head i{background:var(--amb)} .cat.c3 .head i{background:var(--blu)}
+  .head h2{font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;letter-spacing:.6px}
+  .head .n{color:var(--dim);font-size:14px;margin-left:auto}
+  .cat .lbl{margin-top:12px}
+  .ask{display:flex;flex-direction:column;gap:1px;padding:4px 0 5px;border-bottom:1px solid var(--line2)}
+  .ask:last-of-type{border-bottom:none}
+  .ask .q{font-size:17px;color:var(--mut2);white-space:nowrap}
+  .ask b{font-size:18px;font-weight:700;color:var(--acc);white-space:nowrap}
+  .ask b::before{content:"› ";color:var(--dim);font-weight:400}
+  .cat.c2 .ask b{color:var(--amb)} .cat.c3 .ask b{color:var(--blu)}
+  .also{font-size:14px;color:var(--dim);margin-top:10px;white-space:nowrap}
+
+  /* wired tile */
+  .wired .items{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:16px;color:var(--mut2);margin-top:4px}
+  .wired .items span i{width:9px;height:9px;display:inline-block;margin-right:10px;vertical-align:-1px}
+  .wired .note{font-size:14px;color:var(--dim);margin-top:14px}
+
+  /* get it tile */
+  .term{background:#0e100d;border:1px solid var(--line2);border-radius:8px;padding:10px 12px;font-size:15px;color:var(--mut2);line-height:1.55;white-space:nowrap;margin-top:4px}
+  .term .pr{color:var(--blu)} .term .ok{color:var(--acc)}
+  .who{display:flex;align-items:center;justify-content:flex-end;gap:10px;font-size:14px;color:var(--dim);margin-top:14px;white-space:nowrap}
+  .who b{color:var(--mut2);font-weight:400} .who img{width:26px;height:26px;image-rendering:pixelated;display:block}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="grid">
+    <div class="tile hero s8">
+      <div class="top">
+        <div class="id"><svg width="24" height="24" viewBox="0 0 22 22"><rect x="1" y="1" width="20" height="20" rx="6" fill="none" stroke="#3fd68c" stroke-width="1.4"/><circle cx="8" cy="8" r="1.8" fill="#3fd68c"/><circle cx="14.5" cy="9.5" r="1.4" fill="#e9ebe3"/><circle cx="9.5" cy="14.5" r="1.4" fill="#e9ebe3"/><path d="M8 8 L14.5 9.5 L9.5 14.5 Z" stroke="#3fd68c" stroke-width=".7" fill="none" opacity=".7"/></svg><b>marketing-skills</b></div>
+        <div class="live"><span id="livedot"></span> CLAUDE CODE SKILLS &middot; FOR MARKETERS</div>
+      </div>
+      <h1>One marketer&rsquo;s OS<span class="dot">.</span><span id="cursor"></span></h1>
+      <div class="tagline">ask in plain words<span class="sep">&middot;</span>a couple of questions<span class="sep">&middot;</span><em>get the work done</em></div>
+    </div>
+
+    <div class="tile beh s4">
+      <svg id="constellation" viewBox="0 0 300 190"></svg>
+      <div class="lbl">how every skill behaves</div>
+      <div class="rows"><div><span>first move</span><b>asks, never assumes</b></div><div><span>your files</span><b>read only with a yes</b></div><div><span>no data</span><b class="ok">labeled, not invented</b></div></div>
+    </div>
+
+    <div class="tile cat c1 s4">
+      <div class="head"><i></i><h2>RANK</h2><span class="n">01</span></div>
+      <div class="lbl">seo &middot; you say &rarr; it runs</div>
+      <div class="ask"><span class="q">&ldquo;audit the whole site&rdquo;</span><b>/seo-audit</b></div>
+      <div class="ask"><span class="q">&ldquo;why isn&rsquo;t this ranking?&rdquo;</span><b>/seo-sxo</b></div>
+      <div class="ask"><span class="q">&ldquo;does ChatGPT cite us?&rdquo;</span><b>/seo-geo</b></div>
+      <div class="ask"><span class="q">&ldquo;how&rsquo;s search this month?&rdquo;</span><b>/seo-report</b></div>
+      <div class="ask"><span class="q">&ldquo;did the deploy break SEO?&rdquo;</span><b>/seo-drift</b></div>
+      <div class="also">also: schema, sitemaps, local, images&hellip;</div>
+    </div>
+    <div class="tile cat c2 s4">
+      <div class="head"><i></i><h2>PLAN &amp; CONVERT</h2><span class="n">02</span></div>
+      <div class="lbl">strategy &middot; research &middot; cro &middot; paid</div>
+      <div class="ask"><span class="q">&ldquo;the blog brings no leads&rdquo;</span><b>/content-strategy</b></div>
+      <div class="ask"><span class="q">&ldquo;what do buyers really say?&rdquo;</span><b>/customer-research</b></div>
+      <div class="ask"><span class="q">&ldquo;this page isn&rsquo;t converting&rdquo;</span><b>/cro</b></div>
+      <div class="ask"><span class="q">&ldquo;how much for LinkedIn?&rdquo;</span><b>/linkedin-ads</b></div>
+      <div class="ask"><span class="q">&ldquo;what would Ogilvy say?&rdquo;</span><b>/marketing-council</b></div>
+      <div class="also">also: lead magnets, product launches</div>
+    </div>
+    <div class="tile cat c3 s4">
+      <div class="head"><i></i><h2>WRITE &amp; SHIP</h2><span class="n">03</span></div>
+      <div class="lbl">writing &middot; design &middot; presence</div>
+      <div class="ask"><span class="q">&ldquo;help me draft this post&rdquo;</span><b>/writing-assistant</b></div>
+      <div class="ask"><span class="q">&ldquo;sounds like AI wrote it&rdquo;</span><b>/copy-deslop</b></div>
+      <div class="ask"><span class="q">&ldquo;copyedit the whole ebook&rdquo;</span><b>/copy-longform</b></div>
+      <div class="ask"><span class="q">&ldquo;a landing page, not slop&rdquo;</span><b>/frontend-design-anti-slop</b></div>
+      <div class="ask"><span class="q">&ldquo;make the README look good&rdquo;</span><b>/beautify-github-readme</b></div>
+      <div class="also">AI tells scrubbed from every draft</div>
+    </div>
+
+    <div class="tile s4">
+      <div class="lbl">real numbers, not guesses</div>
+      <div class="rows"><div><span>traffic, conversions</span><b>GA4</b></div><div><span>queries, rankings</span><b>Search Console</b></div><div><span>SERPs, keywords, links</span><b>DataForSEO</b></div></div>
+      <div class="also">not connected? the skills ask you</div>
+    </div>
+    <div class="tile wired s4">
+      <div class="lbl">wired to</div>
+      <div class="items">
+        <span><i style="background:#d97757"></i>claude code</span><span><i style="background:#f9ab00"></i>ga4</span>
+        <span><i style="background:#1a73e8"></i>search console</span><span><i style="background:#22b8a0"></i>dataforseo</span>
+        <span><i style="background:#ff6b35"></i>firecrawl</span><span><i style="background:#e9ebe3"></i>github</span>
+      </div>
+      <div class="note">no API keys needed to start</div>
+    </div>
+    <div class="tile s4">
+      <div class="lbl">get it</div>
+      <div class="term">
+        <div><span class="pr">$</span> git clone github.com/</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;risukisu/marketing-skills</div>
+        <div><span class="pr">$</span> ./install.ps1</div>
+        <div class="ok">&#10003; linked into ~/.claude/skills</div>
+      </div>
+      <div class="who">MIT &middot; <b>github.com/risukisu</b> &middot; risu <img src="risu-favicon.png" alt=""></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){let s=7;const rnd=()=>(s=(s*1103515245+12345)%2147483648)/2147483648;const W=300,H=190,n=[];
+for(let i=0;i<26;i++)n.push({x:16+rnd()*(W-40),y:12+rnd()*(H-30),r:1.8+rnd()*1.9});const edges=[];
+for(let i=0;i<n.length;i++){const d=n.map((o,j)=>({j,d:Math.hypot(o.x-n[i].x,o.y-n[i].y)})).filter(o=>o.j!==i).sort((a,b)=>a.d-b.d);
+for(let k=0;k<2;k++){const j=d[k].j;if(!edges.some(e=>(e[0]===i&&e[1]===j)||(e[0]===j&&e[1]===i)))edges.push([i,j]);}}
+const acc=[2,8,15,21];let h='';for(const[a,b]of edges)h+=`<line x1="${n[a].x.toFixed(1)}" y1="${n[a].y.toFixed(1)}" x2="${n[b].x.toFixed(1)}" y2="${n[b].y.toFixed(1)}" stroke="#2a2f27" stroke-width="0.9"/>`;
+n.forEach((o,i)=>{const a=acc.includes(i);if(a)h+=`<circle class="halo" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="6" fill="#3fd68c" opacity="0.12"/>`;
+h+=`<circle class="${a?'cnode-acc':''}" cx="${o.x.toFixed(1)}" cy="${o.y.toFixed(1)}" r="${o.r.toFixed(1)}" fill="${a?'#3fd68c':'#6f766a'}" opacity="${a?1:(0.4+0.5*rnd()).toFixed(2)}"/>`;});
+document.getElementById('constellation').innerHTML=h;})();
+function setPhase(p){
+  document.querySelectorAll('.cnode-acc').forEach((el,k)=>{const base=parseFloat(el.dataset.r||(el.dataset.r=el.getAttribute('r')));const w=0.5+0.5*Math.sin(2*Math.PI*(p+k*0.25));el.setAttribute('r',(base+0.8*w).toFixed(2));});
+  document.querySelectorAll('.halo').forEach((el,k)=>{const w=0.5+0.5*Math.sin(2*Math.PI*(p+k*0.25));el.setAttribute('r',(5+5*w).toFixed(2));el.setAttribute('opacity',(0.05+0.14*(1-w)).toFixed(3));});
+  document.getElementById('cursor').style.opacity=(Math.sin(2*Math.PI*2*p)>-0.2)?1:0;
+  const lw=0.5+0.5*Math.sin(2*Math.PI*p);const ld=document.getElementById('livedot');ld.style.opacity=0.45+0.55*lw;ld.style.boxShadow=`0 0 ${(3+8*lw).toFixed(1)}px rgba(63,214,140,${(0.3+0.5*lw).toFixed(2)})`;
+}
+setPhase(0); window.setPhase=setPhase;
+</script>
+</body>
+</html>
