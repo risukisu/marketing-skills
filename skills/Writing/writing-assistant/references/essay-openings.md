@@ -25,5 +25,5 @@ Source: College Essay Guy, "How to Start a College Essay" (https://www.collegees
 
 - Writer stuck on an opener → propose 2–3 techniques BY NAME from the list, sketched against their material. Don't dump all nine.
 - Critiquing a draft opening → check it against the four to avoid first; name the offense if there is one.
-- Fit to the voice profile: Andrzej's natural register is Mini Hemingway / Confession / Twist territory — drop into a specific moment, self-deprecating admission, expectation flipped. The Quote and the Grand Statement are the opposite of his voice.
+- Fit to the writer's voice profile: check which register they favor and propose from that group.
 - Newsletter issues can also open with direct reader address ("You know the feeling…") — that's a house pattern, not from this source.
