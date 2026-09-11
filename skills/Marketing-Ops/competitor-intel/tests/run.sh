@@ -109,4 +109,39 @@ test_fetch_truncation_is_codepoint_safe() {
   fi
 }
 
+test_discover_classifies_by_url_segment() {
+  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+https://example.com/services/validation
+https://example.com/about-us
+https://example.com/case-studies/acme
+https://example.com/privacy-policy
+https://example.com/cart
+https://example.com/feed.xml
+URLS
+)"
+  assert_contains "services classified" "services	https://example.com/services/validation" "$out"
+  assert_contains "about classified"    "about	https://example.com/about-us"             "$out"
+  assert_contains "case study"          "case-study	https://example.com/case-studies/acme" "$out"
+  assert_not_contains "drops privacy"   "privacy-policy" "$out"
+  assert_not_contains "drops cart"      "/cart"          "$out"
+  assert_not_contains "drops xml"       "feed.xml"       "$out"
+}
+
+test_discover_detects_sitemap_index() {
+  out="$(bash "$SCRIPTS/discover.sh" --parse-index "file://$FIXTURES/sitemap_index.xml")"
+  assert_contains "finds child sitemap 1" "https://example.com/page-sitemap.xml" "$out"
+  assert_contains "finds child sitemap 2" "https://example.com/post-sitemap.xml" "$out"
+}
+
+test_discover_reads_sitemap_from_robots() {
+  out="$(bash "$SCRIPTS/discover.sh" --parse-robots "file://$FIXTURES/robots.txt")"
+  assert_eq "extracts sitemap url" "https://example.com/sitemap_index.xml" "$out"
+}
+
+test_discover_live_nav_fallback() {
+  [ "$LIVE" -eq 1 ] || { printf '  skip live nav fallback (pass --live)\n'; return 0; }
+  out="$(bash "$SCRIPTS/discover.sh" "https://example.com/" 5)"
+  assert_contains "emits a SOURCE line" "SOURCE:" "$out"
+}
+
 run_suite
