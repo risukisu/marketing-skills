@@ -31,7 +31,7 @@ Nothing here needs an API key to start. Connect Google Analytics and Search Cons
   <img src="./assets/readme/section-shelf.svg" width="100%" alt="Section 01 — The Shelf: one folder per skill, the folder name is the command.">
 </p>
 
-**44 skills, 3 categories.** Each skill is one folder with a `SKILL.md`; the folder name is the slash command.
+**47 skills, 3 categories.** Each skill is one folder with a `SKILL.md`; the folder name is the slash command.
 
 ### Writing — `skills/Writing/`
 
@@ -76,6 +76,14 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 | `/cro` | Audits a page or form for conversion: value proposition, headline, CTA hierarchy, trust, objections, friction; returns quick wins, big changes, and test ideas |
 | `/lead-magnets` | Picks the problem, format, and distribution for a gated offer that leads naturally to the product |
 
+**Reporting** (HubSpot + GA4; company and CRM ids come from a per-client context pack, never from the skill)
+
+| Skill | One line |
+|---|---|
+| `/marketing-monthly` | The marketing page of a board pack: pipeline value, MQL, leads, traffic vs last month, quarter progress with sparklines, traffic by campaign, per-lead journeys; locked format across editions |
+| `/campaign-report` | One campaign's pipeline + content + funnel for leadership: a manual lead sweep reconciled three ways against the CRM, two funnels never blended, destination-dated conversions, edition deltas, a board takeaway |
+| `/pipeline-analysis` | RevOps diagnostic over any period: a stdlib Python engine computes flow and diagnosis planes, cohort vs throughput conversion, failure modes A–F with owner and value, and a reverse-funnel to the revenue target |
+
 **Paid**
 
 | Skill | One line |
@@ -112,7 +120,8 @@ marketing-skills/
 │       ├── beautify-github-readme/     content-strategy/     cro/
 │       ├── customer-research/          frontend-design-anti-slop/
 │       ├── lead-magnets/               linkedin-ads/         marketing-council/
-│       └── product-launch/
+│       ├── marketing-monthly/          campaign-report/      product-launch/
+│       └── pipeline-analysis/          SKILL.md + definitions.md + compute_funnel.py + tests + references/
 ├── assets/readme/                  hero, section headers, social preview
 │   └── archive/                    superseded heroes with their sources
 ├── brand/                          the visual system
@@ -126,7 +135,7 @@ marketing-skills/
 └── NOTICE                          which license covers which folder
 ```
 
-**Company context, every skill the same way.** Skills that need to know about your company (`/content-strategy`, `/linkedin-ads`, `/seo-report`, `/cro`, `/customer-research`, `/lead-magnets`, `/marketing-council`) never assume a folder layout. They scan the folder you launched from, list what they found, and ask: use these, point me elsewhere, paste the context, or start with none. Nothing is read until you say so. Machine-local `*.local.md` files are an optional extra and never ship.
+**Company context, every skill the same way.** Skills that need to know about your company (`/content-strategy`, `/linkedin-ads`, `/seo-report`, `/cro`, `/customer-research`, `/lead-magnets`, `/marketing-council`, and the three reporting skills) never assume a folder layout. They scan the folder you launched from, list what they found, and ask: use these, point me elsewhere, paste the context, or start with none. Nothing is read until you say so. Machine-local `*.local.md` files are an optional extra and never ship.
 
 <p align="center">
   <img src="./assets/readme/section-home.svg" width="100%" alt="Section 02 — Take It Home: clone, run the installer, start asking.">

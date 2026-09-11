@@ -10,7 +10,7 @@ pass 2026-07-23, kept current since.
 **Layout:** `skills/<Category>/<skill>`, three categories (Writing, SEO, Marketing Ops). Skills reach
 `~/.claude/skills` through links made by `install.ps1` / `install.sh`.
 
-## The skills — 44
+## The skills — 47
 
 | Skill | Domain | Source | License evidence | Verdict | Notes |
 |---|---|---|---|---|---|
@@ -58,8 +58,11 @@ pass 2026-07-23, kept current since.
 | customer-research | Marketing Ops | coreyhaines31/marketingskills v2.0.2 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Three research modes: analyze assets, mine public signal, run interviews/surveys |
 | lead-magnets | Marketing Ops | coreyhaines31/marketingskills v2.0.0 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Plan, format, and distribute gated offers |
 | marketing-council | Marketing Ops | coreyhaines31/marketingskills v1.0.0 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Simulated advisor board, 12 dossiers in references/advisors; grounding rules keep it labeled as simulation |
+| marketing-monthly | Marketing Ops | Own | root MIT | MIT-clear | Genericized 2026-09-11 from a day-job skill: company, CRM ids, GA4 property, templates, and output paths moved to an untracked `references/<client>-context.local.md` pack (template: `pipeline-analysis/references/context-pack.TEMPLATE.md`); metric definitions point at `pipeline-analysis/definitions.md` |
+| campaign-report | Marketing Ops | Own | root MIT | MIT-clear | Genericized 2026-09-11 from a day-job skill; same pack convention. The publishing step runs only when the pack defines a target |
+| pipeline-analysis | Marketing Ops | Own | root MIT | MIT-clear | Genericized 2026-09-11 from a day-job skill. `compute_funnel.py` (stdlib) takes `--config` / `--targets` / `--reason-map`; funnel pipelines, stage ids, ticket stages, and AM sources come from the client pack (`*.local.json`, untracked). Shipped `targets.json` is empty, `reason_map.json` is a starter; fixture ids are opaque test values; 21 tests |
 
-**44 skills across 3 categories.**
+**47 skills across 3 categories.**
 
 ## Not vendored: data connections
 

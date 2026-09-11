@@ -1,0 +1,18 @@
+{
+  "_doc": "STARTER map: HubSpot closed-lost reason VALUE (the stored value, not the label) -> failure mode A-F + owner. Edit the keys to match your portal's closed_lost_reason picklist, or point the engine at a client file with --reason-map <file> (keep client files as *.local.json so they never ship). Unknown / blank / 'Other reason' -> Unattributed. Add `reclassifiable_to` where a reason is ambiguous and should be flagged every run.",
+  "map": {
+    "Project type mismatch or no project": {"mode": "D", "owner": "Product/Strategy"},
+    "Not our stack":                       {"mode": "D", "owner": "Product/Strategy"},
+    "In-house":                            {"mode": "D", "owner": "Product/Strategy"},
+    "Other vendor":                        {"mode": "D", "owner": "Product/Strategy"},
+    "Rates too high":                      {"mode": "E", "owner": "Sales/Leadership"},
+    "Budget too small":                    {"mode": "F", "owner": "external", "reclassifiable_to": "E"},
+    "On-hold":                             {"mode": "F", "owner": "external"},
+    "Deadline or timeline mismatch":       {"mode": "F", "owner": "external"},
+    "Blocked by IT":                       {"mode": "F", "owner": "external"},
+    "Not responsive":                      {"mode": "C", "owner": "Sales"},
+    "SPAM":                                {"mode": "B", "owner": "Marketing"},
+    "Not a sales request":                 {"mode": "B", "owner": "Marketing"}
+  },
+  "owners": {"A": "Marketing", "B": "Marketing", "C": "Sales", "D": "Product/Strategy", "E": "Sales/Leadership", "F": "external"}
+}

@@ -1,0 +1,10 @@
+{
+  "revisions": [
+    {"label": "orig", "effective_from": "2026-01-01", "set_by": "t",
+     "mql": [1,1,1,1,1,1,1,1,1,1,1,1], "sql": [0,0,0,0,0,0,0,0,0,0,0,0],
+     "leads": null, "won_eur_nb": 1000000, "won_eur_am": null},
+    {"label": "reset", "effective_from": "2026-07-01", "set_by": "t",
+     "mql": [9,9,9,9,9,9,9,9,9,9,9,9], "sql": [0,0,0,0,0,0,0,0,0,0,0,0],
+     "leads": null, "won_eur_nb": 2000000, "won_eur_am": null}
+  ]
+}

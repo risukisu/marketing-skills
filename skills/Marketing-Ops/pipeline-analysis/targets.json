@@ -1,0 +1,4 @@
+{
+  "_doc": "Append-only, effective-dated New-Business targets. A mid-year revision = APPEND a new block, never edit old ones (keeps historical reports valid). The engine picks the latest revision with effective_from <= period end and stamps its label into the report; with no applicable revision, target lines are omitted rather than erroring. mql/sql are 12-cell Jan..Dec vectors. leads is DERIVED by the reverse-funnel, keep it null. won_eur_nb = NB-only annual revenue target in the CRM home currency; won_eur_am null until the client provides one. This shipped file is EMPTY on purpose: keep each client's targets in a *.local.json next to it and pass --targets <file>.",
+  "revisions": []
+}

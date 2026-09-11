@@ -2,6 +2,8 @@
 # Convention: anything named *.local.md is local-only and never ships.
 *.local.md
 **/*.local.md
+*.local.json
+**/*.local.json
 
 # claude-seo managed Python runtime (created by `claude-seo setup`), never ships
 skills/SEO/claude-seo/seo/.venv*/
@@ -47,9 +49,6 @@ defuddle/
 grilling/
 grill-with-docs/
 domain-modeling/
-pipeline-analysis/
-campaign-report/
-marketing-monthly/
 skills/SEO/claude-seo/seo/ms-playwright/
 skills/SEO/claude-seo/seo/runtime-state.json
 

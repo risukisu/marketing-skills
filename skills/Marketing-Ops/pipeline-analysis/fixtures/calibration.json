@@ -1,0 +1,280 @@
+{
+  "_doc": "Synthetic fixture for the dual-funnel engine. Exercises: NB+AM split, won/lost across pipelines (default closedwon/042e..., Prospects 910000042, AM 920000088), SQL first-entry incl. a lost deal caught via sql_entry, renewal + sub-deal + prior-period exclusions, and a cross-period lead. Not real data.",
+  "period": {
+    "start": "2026-01-01",
+    "end": "2026-06-30"
+  },
+  "generated": "2026-06-30",
+  "crm": {
+    "ticket_stage_mql": "940000021",
+    "ticket_stage_prospect": "940000022",
+    "ticket_stage_closed": "4",
+    "ticket_stages_open": [
+      "1",
+      "2",
+      "3"
+    ],
+    "am_sources": [
+      "Cross-sell",
+      "client_referral"
+    ]
+  },
+  "funnels": [
+    {
+      "key": "nb",
+      "name": "New Business",
+      "pipelines": [
+        "default",
+        "900000001"
+      ],
+      "sql_plus": [
+        "qualifiedtobuy",
+        "contractsent",
+        "00000000-0000-4000-8000-00000000a001",
+        "closedwon"
+      ],
+      "won": [
+        "closedwon",
+        "910000041"
+      ],
+      "lost": [
+        "00000000-0000-4000-8000-00000000a002",
+        "910000042"
+      ],
+      "exclude_renewals": true,
+      "gates": [
+        {
+          "name": "Opportunity",
+          "entry": "createdate"
+        },
+        {
+          "name": "SQL",
+          "entry": "sql_entry"
+        },
+        {
+          "name": "Proposal",
+          "entry": "proposal_entry"
+        },
+        {
+          "name": "Negotiation",
+          "entry": "nego_entry"
+        },
+        {
+          "name": "Close",
+          "entry": "won_entry"
+        }
+      ]
+    },
+    {
+      "key": "am",
+      "name": "Account Management",
+      "pipelines": [
+        "900000002",
+        "900000003"
+      ],
+      "sql_plus": [
+        "920000084",
+        "920000085",
+        "920000090",
+        "920000088",
+        "930000081"
+      ],
+      "won": [
+        "920000088",
+        "930000081"
+      ],
+      "lost": [
+        "920000089",
+        "930000082"
+      ],
+      "exclude_renewals": false
+    }
+  ],
+  "manual_excludes": [
+    "d_sub"
+  ],
+  "deals": [
+    {
+      "id": "d_nb_won",
+      "name": "NB won",
+      "pipeline": "default",
+      "createdate": "2026-02-19",
+      "stage": "closedwon",
+      "amount_home": 50000,
+      "mql_entry": "2026-02-19",
+      "sql_entry": "2026-03-01",
+      "proposal_entry": null,
+      "nego_entry": null,
+      "won_entry": "2026-04-01",
+      "ticket_createdate": "2026-02-05"
+    },
+    {
+      "id": "d_nb_flight",
+      "name": "NB in flight",
+      "pipeline": "default",
+      "createdate": "2026-04-10",
+      "stage": "appointmentscheduled",
+      "amount_home": 150000,
+      "mql_entry": "2026-04-10",
+      "sql_entry": null,
+      "proposal_entry": null,
+      "nego_entry": null,
+      "won_entry": null,
+      "ticket_createdate": "2026-04-08"
+    },
+    {
+      "id": "d_nb_lost",
+      "name": "NB Prospects-pipeline lost",
+      "pipeline": "900000001",
+      "createdate": "2026-01-09",
+      "stage": "910000042",
+      "amount_home": 200000,
+      "mql_entry": "2026-01-09",
+      "sql_entry": "2026-01-09",
+      "proposal_entry": null,
+      "nego_entry": null,
+      "won_entry": null,
+      "ticket_createdate": null,
+      "loss_reason": "In-house"
+    },
+    {
+      "id": "d_cross",
+      "name": "NB cross-period lead",
+      "pipeline": "default",
+      "createdate": "2026-02-24",
+      "stage": "qualifiedtobuy",
+      "amount_home": 100000,
+      "mql_entry": "2026-02-24",
+      "sql_entry": "2026-04-09",
+      "proposal_entry": null,
+      "nego_entry": null,
+      "won_entry": null,
+      "ticket_createdate": "2025-12-19"
+    },
+    {
+      "id": "d_renewal",
+      "name": "Renewal (existing business)",
+      "pipeline": "default",
+      "createdate": "2026-05-18",
+      "stage": "appointmentscheduled",
+      "amount_home": 300000,
+      "mql_entry": "2026-05-18",
+      "sql_entry": null,
+      "proposal_entry": null,
+      "nego_entry": null,
+      "won_entry": null,
+      "ticket_createdate": null
+    },
+    {
+      "id": "d_prior",
+      "name": "NB prior-period re-entry",
+      "pipeline": "default",
+      "createdate": "2025-11-01",
+      "stage": "appointmentscheduled",
+      "amount_home": 80000,
+      "mql_entry": "2026-02-01",
+      "sql_entry": null,
+      "proposal_entry": null,
+      "nego_entry": null,
+      "won_entry": null,
+      "ticket_createdate": null
+    },
+    {
+      "id": "d_sub",
+      "name": "NB sub-deal",
+      "pipeline": "900000001",
+      "createdate": "2026-03-01",
+      "stage": "910000036",
+      "amount_home": 12000,
+      "mql_entry": "2026-03-01",
+      "sql_entry": null,
+      "proposal_entry": null,
+      "nego_entry": null,
+      "won_entry": null,
+      "ticket_createdate": null
+    },
+    {
+      "id": "d_am_won",
+      "name": "AM won",
+      "pipeline": "900000002",
+      "createdate": "2026-03-03",
+      "stage": "920000088",
+      "amount_home": 195540,
+      "mql_entry": "2026-03-03",
+      "sql_entry": "2026-04-16",
+      "won_entry": "2026-05-05"
+    },
+    {
+      "id": "d_am_flight",
+      "name": "AM in flight (MQL)",
+      "pipeline": "900000002",
+      "createdate": "2026-04-21",
+      "stage": "920000083",
+      "amount_home": 92000,
+      "mql_entry": "2026-04-21",
+      "sql_entry": null,
+      "won_entry": null
+    },
+    {
+      "id": "d_am_prospect",
+      "name": "AM-Prospects reached SQL",
+      "pipeline": "900000003",
+      "createdate": "2026-02-27",
+      "stage": "930000077",
+      "amount_home": 170000,
+      "mql_entry": "2026-02-27",
+      "sql_entry": "2026-02-27",
+      "won_entry": null
+    }
+  ],
+  "tickets": [
+    {
+      "id": "t_nb1",
+      "createdate": "2026-02-05",
+      "closed_date": "2026-02-19",
+      "source_type": "Inbound",
+      "stage": "940000021",
+      "subject": "NB MQL ticket"
+    },
+    {
+      "id": "t_nb2",
+      "createdate": "2026-04-08",
+      "closed_date": "2026-04-10",
+      "source_type": "Inbound",
+      "stage": "940000022",
+      "subject": "NB Prospect ticket"
+    },
+    {
+      "id": "t_nb3",
+      "createdate": "2026-03-10",
+      "closed_date": "2026-03-15",
+      "source_type": "Outbound",
+      "stage": "4",
+      "subject": "NB disqualified ticket"
+    },
+    {
+      "id": "t_nb4",
+      "createdate": "2026-06-01",
+      "closed_date": null,
+      "source_type": "Network",
+      "stage": "1",
+      "subject": "NB open ticket"
+    },
+    {
+      "id": "t_am1",
+      "createdate": "2026-02-10",
+      "closed_date": "2026-02-12",
+      "source_type": "Cross-sell",
+      "stage": "940000021",
+      "subject": "AM MQL ticket"
+    },
+    {
+      "id": "t_am2",
+      "createdate": "2026-04-15",
+      "closed_date": null,
+      "source_type": "Cross-sell",
+      "stage": "2",
+      "subject": "AM open ticket"
+    }
+  ]
+}
