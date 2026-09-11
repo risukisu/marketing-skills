@@ -1,5 +1,5 @@
 {
-  "_doc": "Synthetic fixture for the dual-funnel engine. Exercises: NB+AM split, won/lost across pipelines (default closedwon/042e..., Prospects 910000042, AM 920000088), SQL first-entry incl. a lost deal caught via sql_entry, renewal + sub-deal + prior-period exclusions, and a cross-period lead. Not real data.",
+  "_doc": "Synthetic fixture for the dual-funnel engine. Every pipeline, stage and ticket-stage id here is invented (9xxxxxxxx numbers, nil-pattern UUIDs) and belongs to no live portal. Exercises: NB+AM split, won/lost across pipelines (default closedwon/<lost-uuid>, secondary NB pipeline lost stage 910000042, AM won stage 920000088), SQL first-entry incl. a lost deal caught via sql_entry, renewal + sub-deal + prior-period exclusions, and a cross-period lead. Not real data.",
   "period": {
     "start": "2026-01-01",
     "end": "2026-06-30"
