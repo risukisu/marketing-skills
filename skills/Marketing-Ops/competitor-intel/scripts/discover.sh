@@ -9,9 +9,19 @@ UA="${FETCH_UA:-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KH
 TIMEOUT="${FETCH_TIMEOUT:-25}"
 
 get() {
-  case "$1" in
-    file://*) cat "${1#file://}" 2>/dev/null ;;
-    *) curl -sS -L --compressed --max-time "$TIMEOUT" -A "$UA" "$1" 2>/dev/null ;;
+  url="$1"
+  # Test-only rewrite: when CI_LOCAL_FIXTURE_BASE is set, redirect
+  # https://example.com/* reads to a local fixture file by basename, so the
+  # sitemap-index recursion can be exercised offline against committed
+  # fixtures instead of the real network. No effect unless the var is set.
+  if [ -n "${CI_LOCAL_FIXTURE_BASE:-}" ]; then
+    case "$url" in
+      https://example.com/*) url="file://$CI_LOCAL_FIXTURE_BASE/$(basename "$url")" ;;
+    esac
+  fi
+  case "$url" in
+    file://*) cat "${url#file://}" 2>/dev/null ;;
+    *) curl -sS -L --compressed --max-time "$TIMEOUT" -A "$UA" "$url" 2>/dev/null ;;
   esac
 }
 
@@ -32,20 +42,45 @@ fi
 
 classify() {
   # stdin: one URL per line. stdout: "<kind>\t<url>", excluded lines dropped.
+  # Segment-anchored matching: a keyword must start right at a path-segment
+  # boundary — the string start or immediately after "/" — via "(^|\/)".
+  # This stops it matching inside an unrelated word (e.g. "search" must not
+  # fire on "research"; "career" must not fire on "career-mobility", which
+  # is a distinct, legitimate case-study page, not a jobs page).
+  # Exclusion terms use a permissive close (/, end-of-string, ".", or "-")
+  # so hyphenated compounds like "privacy-policy" still drop — except
+  # "career(s)", which must NOT swallow a hyphenated continuation, so it
+  # gets a strict close (/, end-of-string, or ".") in its own clause.
   awk '
     {
       u = $0; lu = tolower(u)
-      if (lu ~ /(privacy|terms|cookie|legal|cart|checkout|search|login|signin|career|jobs|contact|\.xml$|\.pdf$)/) next
-      if (lu ~ /(\/services|\/solutions|\/what-we-do|\/offerings|\/products?\/)/) { print "services\t" u; next }
-      if (lu ~ /(\/about|\/team|\/company|\/who-we-are)/)                         { print "about\t" u;    next }
-      if (lu ~ /(\/case-stud|\/customers|\/clients|\/work\/|\/portfolio)/)        { print "case-study\t" u; next }
+      if (lu ~ /(^|\/)(privacy|terms|cookie|legal|carts?|checkouts?|search|logins?|signins?|jobs?|contact|wp-admin)(\/|$|\.|-)/) next
+      if (lu ~ /(^|\/)careers?(\/|$|\.)/) next
+      if (lu ~ /\.(xml|pdf)$/) next
+      if (lu ~ /(^|\/)(services?|solutions?|what-we-do|offerings?|products?)(\/|$|-)/)               { print "services\t" u;    next }
+      if (lu ~ /(^|\/)(about|team|company|who-we-are)(\/|$|-)/)                                       { print "about\t" u;       next }
+      if (lu ~ /(^|\/)(case-stud[a-z]*|customers?|clients?|portfolio)(\/|$|-)/ || lu ~ /(^|\/)work\//) { print "case-study\t" u;  next }
       print "other\t" u
     }'
 }
 
-# CI_CLASSIFY_ONLY=1 → read URLs on stdin, classify, exit (test hook)
+apply_caps() {
+  # $1 = classified "<kind>\t<url>" records (newline-separated).
+  # $2 = max_other. services uncapped; about/case-study capped at 5.
+  classified="$1"
+  mo="$2"
+  printf '%s\n' "$classified" | grep $'^services\t' || true
+  printf '%s\n' "$classified" | grep $'^about\t'      | head -5 || true
+  printf '%s\n' "$classified" | grep $'^case-study\t' | head -5 || true
+  printf '%s\n' "$classified" | grep $'^other\t'      | head -"$mo" || true
+}
+
+# CI_CLASSIFY_ONLY=1 → read URLs on stdin, classify (+ apply caps using an
+# optional $2 max_other, default 10, same as the main flow), exit. Test hook.
 if [ "${CI_CLASSIFY_ONLY:-0}" = "1" ]; then
-  classify
+  mo="${2:-10}"
+  classified="$(classify)"
+  apply_caps "$classified" "$mo"
   exit 0
 fi
 
@@ -56,10 +91,19 @@ host="$(printf '%s' "$base" | sed -e 's|^[a-zA-Z]*://||' -e 's|/.*$||' -e 's|^ww
 root="$(printf '%s' "$base" | sed -e 's|\(^[a-zA-Z]*://[^/]*\).*|\1|')"
 
 # 1. Nav links come from fetch.sh so extraction rules stay in one place.
-nav="$(bash "$HERE/fetch.sh" "$base" 1 | grep '^LINKS:' | sed 's/^LINKS: //' | tr '|' '\n' | grep -v '^$')"
+# CI_SKIP_NAV=1 skips this (test hook) so a sitemap-only offline test isn't
+# forced to make a real fetch of $base just to get an empty/irrelevant nav.
+if [ "${CI_SKIP_NAV:-0}" = "1" ]; then
+  nav=""
+else
+  nav="$(bash "$HERE/fetch.sh" "$base" 1 | grep '^LINKS:' | sed 's/^LINKS: //' | tr '|' '\n' | grep -v '^$')"
+fi
 
 # 2. Sitemap: robots.txt first, then the conventional path. Recurse one level into an index.
-sm="$(bash "$HERE/discover.sh" --parse-robots "$root/robots.txt")"
+# CI_ROBOTS_OVERRIDE lets a test point at a fixture robots.txt directly
+# (test hook) instead of deriving the location from $base.
+robots_url="${CI_ROBOTS_OVERRIDE:-$root/robots.txt}"
+sm="$(bash "$HERE/discover.sh" --parse-robots "$robots_url")"
 [ -n "$sm" ] || sm="$root/sitemap.xml"
 sm_urls=""
 if [ -n "$sm" ]; then
@@ -81,8 +125,4 @@ echo "SOURCE: $source_label"
 all="$(printf '%s\n%s\n' "$nav" "$sm_urls" | grep -v '^$' | sed 's|/$||' | sort -u)"
 classified="$(printf '%s' "$all" | classify)"
 
-# services uncapped; about/case-study capped at 5; other capped at max_other
-printf '%s\n' "$classified" | grep $'^services\t' || true
-printf '%s\n' "$classified" | grep $'^about\t'      | head -5 || true
-printf '%s\n' "$classified" | grep $'^case-study\t' | head -5 || true
-printf '%s\n' "$classified" | grep $'^other\t'      | head -"$max_other" || true
+apply_caps "$classified" "$max_other"

@@ -144,4 +144,80 @@ test_discover_live_nav_fallback() {
   assert_contains "emits a SOURCE line" "SOURCE:" "$out"
 }
 
+test_discover_classify_segment_boundaries() {
+  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+https://example.com/research/
+https://example.com/our-research
+https://example.com/search
+https://example.com/search/
+https://example.com/wp-admin/about.php
+https://example.com/about
+https://example.com/about/
+https://example.com/about-us
+https://example.com/services/validation
+https://example.com/careers
+https://example.com/case-studies/career-mobility
+URLS
+)"
+  assert_contains     "research/ kept, not dropped"       $'\thttps://example.com/research/' "$out"
+  assert_contains     "our-research kept, not dropped"    $'\thttps://example.com/our-research' "$out"
+  assert_not_contains "drops /search"                     "https://example.com/search"         "$out"
+  assert_not_contains "drops wp-admin about, not about"   "https://example.com/wp-admin/about.php" "$out"
+  assert_contains     "about (bare)"                      $'about\thttps://example.com/about' "$out"
+  assert_contains     "about (slash)"                     $'about\thttps://example.com/about/' "$out"
+  assert_contains     "about (hyphen)"                    $'about\thttps://example.com/about-us' "$out"
+  assert_contains     "services segment"                  $'services\thttps://example.com/services/validation' "$out"
+  assert_not_contains "drops /careers"                    "https://example.com/careers"        "$out"
+  assert_contains     "career-mobility is case-study"     $'case-study\thttps://example.com/case-studies/career-mobility' "$out"
+}
+
+test_discover_main_flow_sitemap_index_recursion() {
+  out="$(CI_SKIP_NAV=1 CI_ROBOTS_OVERRIDE="file://$FIXTURES/robots.txt" CI_LOCAL_FIXTURE_BASE="$FIXTURES" \
+        bash "$SCRIPTS/discover.sh" "https://example.com/" 10)"
+  assert_contains "source is sitemap"        "SOURCE: sitemap" "$out"
+  assert_contains "child 1 service page"     $'services\thttps://example.com/services/consulting' "$out"
+  assert_contains "child 1 about page"       $'about\thttps://example.com/about-us' "$out"
+  assert_contains "child 2 case study"       $'case-study\thttps://example.com/case-studies/acme' "$out"
+  assert_contains "child 2 other page"       $'other\thttps://example.com/blog/post-1' "$out"
+}
+
+test_discover_applies_caps() {
+  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" 3 <<'URLS'
+https://example.com/services/one
+https://example.com/services/two
+https://example.com/services/three
+https://example.com/services/four
+https://example.com/services/five
+https://example.com/services/six
+https://example.com/services/seven
+https://example.com/about-1
+https://example.com/about-2
+https://example.com/about-3
+https://example.com/about-4
+https://example.com/about-5
+https://example.com/about-6
+https://example.com/about-7
+https://example.com/case-studies/1
+https://example.com/case-studies/2
+https://example.com/case-studies/3
+https://example.com/case-studies/4
+https://example.com/case-studies/5
+https://example.com/case-studies/6
+https://example.com/blog/1
+https://example.com/blog/2
+https://example.com/blog/3
+https://example.com/blog/4
+https://example.com/blog/5
+URLS
+)"
+  services_count="$(printf '%s\n' "$out" | grep -c $'^services\t')"
+  about_count="$(printf '%s\n' "$out" | grep -c $'^about\t')"
+  case_count="$(printf '%s\n' "$out" | grep -c $'^case-study\t')"
+  other_count="$(printf '%s\n' "$out" | grep -c $'^other\t')"
+  assert_eq "services uncapped (7)"          "7" "$services_count"
+  assert_eq "about capped at 5"              "5" "$about_count"
+  assert_eq "case-study capped at 5"         "5" "$case_count"
+  assert_eq "other capped at max_other (3)"  "3" "$other_count"
+}
+
 run_suite
