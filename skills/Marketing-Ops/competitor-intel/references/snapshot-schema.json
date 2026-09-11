@@ -32,5 +32,11 @@
     ]
   },
   "screenshots": { "home": "", "pages": {} },
-  "errors": []
+  "errors": [
+    {
+      "url": "",
+      "status": 0,
+      "note": ""
+    }
+  ]
 }

@@ -117,10 +117,14 @@ Procedure:
    - `home`: `title`, `metaDescription`, `h1`, `headings` (array), `text` (≤3000 chars).
    - Each `pages[]` entry: `url`, `kind`, `source`, `title`, `h1`, `text` (≤1500 chars) — no
      `metaDescription` key on page entries, only `home` has one.
-   - `linkedinAds`: `tier`, `count`, `ads[]` — each ad: `headline`, `body`, `firstSeen`.
+   - `linkedinAds`: `tier`, `count`, `ads[]` — each ad: `headline`, `body`, `firstSeen`. On the
+     default tier this stays at the schema's own defaults — `tier: "default"`, `count: 0`,
+     `ads: []` — the default tier has no ad-fetch path at all, so there is nothing to populate,
+     symmetric with `screenshots` staying empty below.
    - `screenshots`: `home`, `pages` (object keyed by page URL) — leave paths empty on the
      default tier.
-   - `errors`: one entry per failed fetch (see Error handling).
+   - `errors`: one entry per failed fetch, each `{ "url", "status", "note" }` (see Error
+     handling for what goes in each field).
    Write this to `competitor-intel/runs/<stamp>/snapshot.json`, where `<stamp>` is
    `YYYY-MM-DD_HH-mm`.
 6. If a previous run directory exists under `competitor-intel/runs/`, apply
@@ -147,8 +151,15 @@ not a plan to write one.
 ## Error handling and size guard
 
 - Every per-URL failure — a non-200 `STATUS:`, a transport error, a timeout — becomes one entry
-  in that competitor's `errors[]`. The scan continues past it; a failed fetch never stops the
-  run.
+  in that competitor's `errors[]`, shaped `{ "url", "status", "note" }`:
+  - `url` — the URL that failed, exactly as fetched.
+  - `status` — the HTTP status as an integer (e.g. `403`, `404`, `500`). For a transport
+    failure with no HTTP response at all, use `0` — this is `fetch.sh`'s own convention: it
+    prints `STATUS: 000` in that case (curl couldn't complete the request), and `000` becomes
+    the integer `0` here, matching the schema's `"status": 0` default.
+  - `note` — a short human-readable reason (e.g. `"blocked with 403"`, `"timed out"`,
+    `"transport failure"`).
+  The scan continues past it; a failed fetch never stops the run.
 - A `403` or `429` on the homepage or a subpage means: skip the rest of that competitor's
   subpages for this run, record it in `errors[]`, and note in the briefing's Data notes that
   the site blocked default-tier fetches — suggest the deep tier (a real browser fetch is less
@@ -166,3 +177,7 @@ not a plan to write one.
 `changes.json` (or the most recent run directory if `run-id` is omitted), and regenerate
 `briefing.md` from them per `references/briefing-format.md`. Use this to re-render a briefing
 after a formatting fix, or to review an older run without burning a new scan.
+
+If `competitor-intel/runs/` doesn't exist yet, or is empty, or the named `run-id` doesn't exist:
+don't scan and don't fabricate a briefing. Say plainly that there's no run to report on yet, and
+point to `scan` as the next step (naming the missing/requested `run-id` if one was given).
