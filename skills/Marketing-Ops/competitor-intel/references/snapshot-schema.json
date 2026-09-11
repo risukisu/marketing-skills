@@ -20,7 +20,17 @@
       "text": ""
     }
   ],
-  "linkedinAds": { "tier": "default", "count": 0, "ads": [] },
+  "linkedinAds": {
+    "tier": "default",
+    "count": 0,
+    "ads": [
+      {
+        "headline": "",
+        "body": "",
+        "firstSeen": ""
+      }
+    ]
+  },
   "screenshots": { "home": "", "pages": {} },
   "errors": []
 }

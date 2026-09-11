@@ -31,8 +31,15 @@ transform.
 
 ## 2. Match pages in this precedence
 
-For each competitor, match pages between the previous snapshot's `pages[]` and the current
-snapshot's `pages[]`, trying each rule in order until one produces a match:
+**De-duplicate first.** Before matching, de-duplicate each snapshot's `pages[]` by normalized
+URL, keeping the first occurrence and dropping the rest (e.g. a page reached via both `nav` and
+`sitemap` that was emitted twice). `pages[]` is model-assembled, not script-deduplicated, so
+this cannot be assumed away. If any duplicates were dropped, note it in Data notes (which URL,
+how many copies).
+
+For each competitor, match the de-duplicated previous snapshot's `pages[]` against the
+de-duplicated current snapshot's `pages[]`, trying each rule in order until one produces a
+match:
 
 1. **Normalized URL match.** Same normalized URL in both snapshots → same page. Skip to §3 for
    this pair; do not evaluate title or h1 for it.
@@ -54,9 +61,11 @@ failure mode this rule exists to prevent.
 URL match, AND rule 2 found no match (zero or ambiguous title ties), AND rule 3 found no match
 (zero or ambiguous h1 ties). Only then is it **removed**. The same terminal condition, run from
 the current snapshot's side, makes a current-snapshot page **new**. An ambiguous tie at rule 2
-is never the final verdict by itself — it only means "try rule 3 next." If rule 3 also ties or
-misses, the page is unmatched (removed/new), and note the rule-2 ambiguity in Data notes so a
-human can resolve it by hand if useful.
+is never the final verdict by itself — it only means "try rule 3 next." If the page is still
+unmatched when rule 3 finishes — whether rule 3 found zero ties or its own ambiguous tie — it
+becomes removed/new, and **any** ambiguous tie that contributed to that terminal verdict (at
+rule 2, at rule 3, or both) gets logged in Data notes, so a human can resolve it by hand if
+useful.
 
 ## 3. Emit exactly these change kinds
 
@@ -117,11 +126,11 @@ diff against a snapshot that doesn't match the current schema shape at every lev
 
 ## `changes.json` shape
 
-`comparedTo` names the previous run's directory/timestamp, in the run-stamp form
+`comparedTo` is the previous run's **directory name**, verbatim, in the run-stamp form
 `YYYY-MM-DD_HH-mm` (e.g. `2026-09-01_09-00`) — not the ISO `fetchedAt` form the snapshot itself
-uses. Derive it from the previous snapshot's `fetchedAt` (`2026-09-01T09:00:00Z` →
-`2026-09-01_09-00`) or from the run directory name it was read from, whichever this skill's
-run layout provides.
+uses, and not derived from `fetchedAt` at all. The run directory is the single source of truth
+for which run is being compared against; `fetchedAt` can diverge from it (crawl delay, a retry,
+clock skew) and is never used to compute `comparedTo`.
 
 ```json
 {
