@@ -13,10 +13,12 @@ these seven, named exactly as written here.
 
 **Baseline is per-competitor, not just per-run.** `changes.json` has a top-level `baseline`
 flag for a first-ever run, but `diff-rules.md` §5 also allows an individual competitor's entry
-to be `{"baseline": true}` on an otherwise-diffed run — e.g. a competitor added to the tracking
-list this cycle, while the rest have history. Treat every baseline check below as
-per-competitor: read the top-level flag for framing the Executive summary, but check each
-competitor's own entry before writing that competitor's per-competitor subsection.
+to be `{"name": …, "baseline": true}` on an otherwise-diffed run — e.g. a competitor added to
+the tracking list this cycle, while the rest have history. A baseline entry still carries its
+`name`, so it can be attributed like any other; it just carries none of the seven fields.
+Treat every baseline check below as per-competitor: read the top-level flag for framing the
+Executive summary, but check each competitor's own entry before writing that competitor's
+per-competitor subsection.
 
 ## Sections
 
@@ -46,15 +48,15 @@ however many) items show on every run given the same underlying pages regardless
   landscape instead of any change — who's covered, how many competitors, what the market looks
   like at a glance — and say "baseline run" explicitly, in those words.
 - **Otherwise**, lead with what changed since the last scan. Cover only competitors that have
-  at least one non-empty changed field (or are themselves `{"baseline": true}`); a competitor
-  with all seven fields empty is not mentioned here — it gets a one-line "no changes since last
-  scan" note in its own per-competitor subsection instead, not space in the summary.
+  at least one non-empty changed field (or are themselves `{"name": …, "baseline": true}`); a
+  competitor with all seven fields empty is not mentioned here — it gets a one-line "no changes
+  since last scan" note in its own per-competitor subsection instead, not space in the summary.
 - When covering changes, order by this materiality ranking and lead with the highest-ranked
   item that actually occurred, across all competitors: (1) `home_changes` — positioning
   language changed; (2) `new_pages` / `removed_pages`; (3) `moved_pages`; (4)
   `services_changes`; (5) `ad_count_delta` / `new_ad_headlines`. If a competitor's entry is
-  `{"baseline": true}` on an otherwise non-baseline run, mention it as "first scan of
-  [competitor] — no comparison yet," ranked alongside `new_pages` since there is no prior state
+  `{"name": …, "baseline": true}` on an otherwise non-baseline run, mention it as "first scan
+  of [competitor] — no comparison yet," ranked alongside `new_pages` since there is no prior state
   to compare either way. When two or more competitors tie at the same materiality rank, break
   the tie by `changes.json`'s `competitors[]` order — the same order Section 3 uses — and name
   the earlier one first.
@@ -85,17 +87,23 @@ One subsection per competitor, headed with the competitor's name, in the order i
 2. **Primary services** — same source and Ordering rule as the comparison table's row, no
    5-item cap here; list all, in sorted order.
 3. **Secondary pages flagged as not-in-nav** — current snapshot `pages[]` entries where
-   `source` is `"sitemap"` or `"none"` (i.e. not `"nav"`), regardless of `kind`, sorted per the
-   Ordering rule above. List URL + title. If there are none, omit this bullet entirely (don't
-   write "none found").
+   `source` is `"sitemap"`, regardless of `kind`, sorted per the Ordering rule above.
+   (`"sitemap"` and `"nav"` are the only two values a page's `source` can carry:
+   `discover.sh` emits `SOURCE: none` only when there were zero URLs to begin with, so no page
+   can exist carrying it.) List URL + title. If there are none, omit this bullet entirely
+   (don't write "none found").
 4. **Products** — the same closed scan and dedupe as the comparison table's Products/platforms
    row, with one line of detail each if available (what it does, who it's for).
 5. **Ad activity** — `linkedinAds.count`, and for each entry in `new_ad_headlines`, quote the
    headline (a headline is not marketing prose to paraphrase — quote it directly) plus a short
-   note on theme.
+   note on theme. One caveat on what you are quoting: a deep-tier `headline` is the leading
+   excerpt of an ad card's text, not a distinct headline field — the Ad Library markup has
+   never been observed, so there is no verified selector for one (see
+   `references/troubleshooting.md`). Quote it as the excerpt it is; never pad it out into a
+   sentence, and never present a truncated excerpt as a complete headline.
 6. **What changed and what it might signal** — this is where the seven changed fields land.
-   - If this competitor's entry is `{"baseline": true}`: write "Baseline run — no prior scan to
-     compare" and stop; there are no changed fields to report.
+   - If this competitor's entry is `{"name": …, "baseline": true}`: write "Baseline run — no
+     prior scan to compare" and stop; there are no changed fields to report.
    - Otherwise, walk the seven fields in this fixed order — `new_pages`, `removed_pages`,
      `moved_pages`, `home_changes`, `services_changes`, `ad_count_delta`,
      `new_ad_headlines` — and for each **non-empty** field, render its entries and add one
@@ -160,10 +168,15 @@ report:
 
 1. **Fetch errors** — entries from each competitor's current-snapshot `errors[]`.
 2. **Tier used** — each competitor's `tier` (page fetch) and `linkedinAds.tier` (ad fetch), only
-   when it isn't the default, or when it differs from a prior run.
-3. **Pages capped** — where `discover.sh`'s per-kind caps were hit (about/case-study pages
-   capped at 5, other pages capped at the configured max), name the competitor and which
-   category was capped.
+   when it isn't the default, or when it differs from a prior run. Also name any competitor the
+   deep pass was supposed to cover but produced no line for (per `SKILL.md` step 5), since its
+   `"default"` tier values there mean "not read," not "nothing found."
+3. **Pages capped** — read this off `discover.sh`'s `CAPPED: about=N case-study=N other=N`
+   line, where `N` is the number of rows the cap **dropped**. The line is only emitted when a
+   cap actually dropped something, so its presence is the fact. Name the competitor and which
+   categories were capped, and by how many. Never infer a cap from "exactly 5 about pages are
+   present" — the dropped rows leave no other trace, and a guess presented as a run fact is
+   exactly what this section exists to prevent.
 4. **Duplicate pages dropped** — per `diff-rules.md` §2's de-duplication step: the normalized
    URL that had duplicates, how many entries shared it, and the raw `url` of the entry that won.
 5. **Ambiguous-tie notices** — per `diff-rules.md` §2 rules 2–3: any title or h1 tie (zero or

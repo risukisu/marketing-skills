@@ -1,6 +1,6 @@
 ---
 name: copy-longform
-description: Structured copyediting workflow for long-form text (ebooks, reports, whitepapers, long blog posts, decks, internal docs). Produces a tracked edit-list file as the source of truth, scrubs AI-writing tells per Wikipedia: Signs of AI writing, then walks the user page-by-page or chapter-by-chapter through every edit. Claude maintains a progress marker inside the edit-list file so a compacted or new session can resume from exactly where the previous one stopped. Use when the user wants to copyedit existing text rather than draft from scratch, asks for an "edit pass" / "copyedit" / "polish pass" / "anti-AI scrub" on a doc, or invokes /copy-longform.
+description: "Structured copyediting workflow for long-form text (ebooks, reports, whitepapers, long blog posts, decks, internal docs). Produces a tracked edit-list file as the source of truth, scrubs AI-writing tells per Wikipedia: Signs of AI writing, then walks the user page-by-page or chapter-by-chapter through every edit. Claude maintains a progress marker inside the edit-list file so a compacted or new session can resume from exactly where the previous one stopped. Use when the user wants to copyedit existing text rather than draft from scratch, asks for an \"edit pass\" / \"copyedit\" / \"polish pass\" / \"anti-AI scrub\" on a doc, or invokes /copy-longform."
 ---
 
 # Copy Longform

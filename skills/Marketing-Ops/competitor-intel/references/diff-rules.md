@@ -44,7 +44,9 @@ remains:
 3. Prefer the entry with the longer `text` (by character count). If still tied, continue.
 4. Break the remaining tie on the **raw** (non-normalized) `url` string, lexicographically
    smallest wins — raw, not normalized, since by this point the normalized forms are equal by
-   definition and can't break the tie.
+   definition and can't break the tie. If the raw `url` is also identical, the two entries
+   agree on every field this diff reads (`url`, `title`, `h1`, `text` — and `kind` and
+   `source` are never diffed, per §4), so they are equivalent: keep either.
 
 Step 4 always terminates with a single winner and never depends on arrival order, so the same
 duplicate group produces the same winner no matter how `pages[]` was assembled. Drop every
@@ -98,7 +100,11 @@ The diff produces exactly seven fields per competitor, no more:
   consulted — `kind` itself is never diffed, per §4 — so a page recategorized into or out of
   `services` across the window is judged by where it landed), changes to that page's `title`
   or `h1` only, one entry per changed field per page: `{ "url", "field", "before", "after" }`
-  (`url` = the current-snapshot normalized URL).
+  (`url` = the current-snapshot **original**, non-normalized URL — consistent with §1, which
+  says normalization is a comparison step and not a display transform. It has to be the
+  original for a second reason too: `services_changes[].url` is string-joined against
+  `new_pages` and `moved_pages` entries, which briefing-format.md Section 3 renders side by
+  side, and a normalized URL would not match them.)
 - `ad_count_delta` — `current.linkedinAds.count - previous.linkedinAds.count` (integer, may be
   negative).
 - `new_ad_headlines` — `headline` values present in `current.linkedinAds.ads[]` whose
@@ -112,11 +118,30 @@ site. `headings`, `source`, `kind`, and screenshot paths are never diffed (subpa
 `pages[]` have no `metaDescription` key at all — only `home` does). If it is not one of the
 seven fields in §3, it does not go in `changes.json` and it does not go in the briefing.
 
+**Array ordering.** Sort `new_pages`, `removed_pages`, `moved_pages` and `services_changes`
+by normalized URL ascending — `moved_pages` on its `to` URL, and where one page contributes
+two `services_changes` entries, keep them adjacent in schema field order (`title` before
+`h1`). Order `home_changes` by schema field order: `title`, `metaDescription`, `h1`.
+Presentation only, but it keeps two runs over the same snapshots comparable line for line.
+
 ## 5. Baseline runs
 
 If there is no previous snapshot for a competitor (first run, or no prior run found), do not
-diff. Write `changes.json` for that competitor as `{"baseline": true}` in place of the normal
-per-competitor object, and say "baseline run" in the briefing instead of listing changes.
+diff. Write that competitor's entry as `{"name": "…", "baseline": true}` — the name is
+required, and it is the competitor's `name` from the snapshot, verbatim. Everything
+downstream indexes on it: briefing-format.md heads each per-competitor subsection with the
+name in `competitors[]` order, and the Executive summary has to write "first scan of
+[competitor]". An entry with no `name` cannot be attributed to anyone. Then say "baseline run"
+in the briefing instead of listing changes. The other seven fields are omitted from a baseline
+entry — `name` and `baseline` are the whole object.
+
+**The top-level `baseline` flag is narrower than the per-competitor one.** It is `true` only
+when there is **no previous run directory at all** under `competitor-intel/runs/` — a
+first-ever run. It stays `false` for the mixed case: a previous run exists, so some
+competitors diff normally while a competitor added to the tracking list this cycle (or one
+that failed §6's drift guard) carries its own `{"name": …, "baseline": true}` entry. The
+top-level flag describes the run; the per-competitor flag describes the competitor. Never
+raise the top-level flag because one competitor is new.
 
 ## 6. Schema drift guard
 
@@ -139,6 +164,10 @@ competitor (per §5) instead of diffing, and record the reason in Data notes (e.
 snapshot's `linkedinAds.ads[0]` missing `firstSeen` — treated as baseline"). An empty array
 (`pages: []` or `linkedinAds.ads: []`) has no entries to check and is not itself drift. Never
 diff against a snapshot that doesn't match the current schema shape at every level.
+
+`errors[]` entries are deliberately **outside** this check. `errors[]` is never diffed, so
+drift there cannot fabricate a change — and adding it to the guard would force spurious
+baselines over a field whose shape has no effect on the diff at all. Do not add it.
 
 ## `changes.json` shape
 
@@ -175,6 +204,8 @@ Given tests/fixtures/snapshot-prev.json and snapshot-curr.json, the correct chan
   new_pages:     /case-studies/pharma
   removed_pages: (none)
   home_changes:  title "Acme Analytics" → "Acme Analytics — Regulated Data"
+  (all other fields empty: services_changes [], ad_count_delta 0, new_ad_headlines [].
+   All seven fields are still written out — §0's rigidity contract has no optional keys.)
 
 Wrong answers that indicate a rules violation:
   - /services/tech listed as removed AND /services/technology as new  (missed title match)

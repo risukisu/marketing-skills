@@ -72,19 +72,29 @@ they gave.
 - Name | https://url/ | linkedin-account-name
 ```
 
+**Validate every URL before you write this file**, whichever intake path produced it: it must
+match `^https?://[A-Za-z0-9.:-]+` — an `http`/`https` scheme and a host of letters, digits,
+dots, hyphens and an optional `:port`, nothing else. If a URL doesn't, say which one and ask
+for a corrected value rather than writing it. `competitors.md` is hand-edited afterwards and
+meant to be committed and shared across a team, so it is not self-trusted input: it is the one
+place a URL enters the scripts. Both scripts refuse a URL that fails this check (and refuse
+`file://` outright), so an unvalidated entry silently costs you that competitor's whole scan.
+
 **`competitor-intel/config.json`** — this exact default, before any user override:
 
 ```json
 { "tier": "auto", "maxSubpages": 10, "locale": "en-US", "lastRun": "" }
 ```
 
-Then, regardless of which path was taken, check for the deep tier: is `node` on PATH? If yes,
+Then, regardless of which path was taken, check for the deep tier: is `node` on PATH, and is
+it **Node 20 or newer**? Check the version, not just the presence — `node -v` — because
+Playwright 1.63.0 declares `engines.node >= 20` and will not install cleanly below it. If yes,
 offer it — explain that the deep tier adds screenshots and real LinkedIn ad extraction via
 Playwright, and that turning it on means running `npm install` and `npx playwright install
 chromium` in the skill's `scripts/deep/` folder, which downloads about 310 MB. Only do this
-after the user says yes. If `node` is not on PATH, or the user declines, stay on the default
-tier — `tier: "auto"` will still resolve to default at scan time (see Scan, and Error handling
-below).
+after the user says yes. If `node` is missing or older than 20, or the user declines, stay on
+the default tier — `tier: "auto"` will still resolve to default at scan time (see Scan, and
+Error handling below).
 
 ## Scan
 
@@ -100,29 +110,50 @@ Quoting rule actually matter.
 Procedure:
 
 1. Read `competitor-intel/config.json` and `competitor-intel/competitors.md`.
-2. Resolve the tier: `tier: "auto"` means deep if `node` is on PATH **and**
-   `scripts/deep/node_modules` exists; otherwise default. If the config says `"deep"` but that
-   check fails, fall back to default and say so once (see Error handling).
-3. Per competitor, run `scripts/discover.sh <url> <maxSubpages>` (config's `maxSubpages`,
-   default 10 — this caps `other` pages only; `services` is uncapped, `about` and `case-study`
-   are capped at 5 by the script itself) to get the candidate list: a `SOURCE: nav|sitemap|none`
-   line, then tab-separated `<kind>\t<url>` rows where `kind` is `services`, `about`,
-   `case-study`, or `other`.
+2. Resolve the tier: `tier: "auto"` means deep if `node` is on PATH **and** `node -v` reports
+   major version 20 or newer **and** `scripts/deep/node_modules` exists; otherwise default. If
+   the config says `"deep"` but any part of that check fails, fall back to default and say so
+   once (see Error handling).
+3. Per competitor, run
+
+   ```bash
+   FETCH_LOCALE='<config.locale>' bash "<skill>/scripts/discover.sh" '<url>' <maxSubpages>
+   ```
+
+   **Single-quote the URL.** You are composing a Bash line from `competitor-intel/competitors.md`,
+   a file a human edits and a team shares; an unquoted URL containing `;`, `&` or a backtick
+   would execute. Same rule everywhere below: step 4's URLs and step 5's paths.
+
+   `<maxSubpages>` is config's `maxSubpages`, default 10 — it caps `other` pages only;
+   `services` is uncapped, `about` and `case-study` are capped at 5 by the script itself.
+   `FETCH_LOCALE` is config's `locale`; it becomes the `Accept-Language` header on every
+   default-tier fetch, and `discover.sh` passes it down to `fetch.sh`.
+
+   The output, in order:
+   - `SOURCE: nav|sitemap|none` — which path produced the primary candidate list. This is
+     run provenance, **not** a page's `source`; never stamp it onto pages.
+   - `CAPPED: about=N case-study=N other=N` — present only when a cap actually dropped rows.
+     `N` is the number of rows **dropped**, not kept. Carry it into Data notes item 3.
+   - Then one row per candidate: `<kind>\t<source>\t<url>`, tab-separated. `kind` is
+     `services`, `about`, `case-study` or `other`. `source` is that page's own provenance —
+     `nav` or `sitemap`, and only those two values (a page can only exist if one of the two
+     lists produced it; `nav` wins when both did).
 4. **Batch the fetches.** List what you need, then request every fetch that doesn't depend on
-   another's result in one response. Run `scripts/fetch.sh <url> 3000` for the homepage and
-   `scripts/fetch.sh <url> 1500` for each subpage. Each call emits `URL:`, `STATUS:`, `TITLE:`,
-   `META:`, `H1:`, `HEADINGS:` (pipe-separated), `LINKS:` (pipe-separated), and `TEXT:` (last,
-   the only multi-word field) — or `STATUS:` + `ERROR:` on a non-200 response, and the script
-   still exits 0.
+   another's result in one response. Run `FETCH_LOCALE='<config.locale>' bash
+   "<skill>/scripts/fetch.sh" '<url>' 3000` for the homepage and the same with `1500` for each
+   subpage. Each call emits `URL:`, `STATUS:`, `TITLE:`, `META:`, `H1:`, `HEADINGS:`
+   (pipe-separated), `LINKS:` (pipe-separated), and `TEXT:` (last, the only multi-word field)
+   — or `STATUS:` + `ERROR:` on a non-200 response, a transport failure, or a URL the script
+   refuses, and the script still exits 0 in every one of those cases.
 5. **Deep tier only — run the browser pass.** Skip this step entirely on the default tier.
    Decide the run stamp now (`YYYY-MM-DD_HH-mm`); step 6 writes to the same one. Run this
    once for the whole run, not once per competitor:
 
    ```bash
    node "<skill>/scripts/deep/scan.mjs" \
-     --competitors competitor-intel/competitors.md \
-     --out competitor-intel/runs/<stamp> \
-     --locale <config.locale>
+     --competitors 'competitor-intel/competitors.md' \
+     --out 'competitor-intel/runs/<stamp>' \
+     --locale '<config.locale>'
    ```
 
    It prints **one JSON object per line on stdout**, one line per competitor, shaped
@@ -160,7 +191,13 @@ Procedure:
      `screenshots`, `errors`.
    - `home`: `title`, `metaDescription`, `h1`, `headings` (array), `text` (≤3000 chars).
    - Each `pages[]` entry: `url`, `kind`, `source`, `title`, `h1`, `text` (≤1500 chars) — no
-     `metaDescription` key on page entries, only `home` has one.
+     `metaDescription` key on page entries, only `home` has one. `url` and `kind` come from
+     columns 3 and 1 of that page's `discover.sh` row; **`source` comes from column 2 of the
+     same row** — that page's own provenance, `nav` or `sitemap`. Never derive it from the
+     global `SOURCE:` line: stamping that label on every page makes every page read `nav`
+     whenever nav returned anything, which silently empties the briefing's "not in nav"
+     bullet and quietly folds sitemap-only pages into its "from nav" row. The briefing
+     asserts this provenance per page twice; it has to be observed, not assumed.
    - `linkedinAds`: `tier`, `count`, `ads[]` — each ad: `headline`, `body`, `firstSeen`. On the
      default tier this stays at the schema's own defaults — `tier: "default"`, `count: 0`,
      `ads: []` — the default tier has no ad-fetch path at all, so there is nothing to populate,
@@ -209,11 +246,14 @@ not a plan to write one.
   The scan continues past it; a failed fetch never stops the run.
 - A `403` or `429` on the homepage or a subpage means: skip the rest of that competitor's
   subpages for this run, record it in `errors[]`, and note in the briefing's Data notes that
-  the site blocked default-tier fetches — suggest the deep tier (a real browser fetch is less
-  likely to be blocked) or a manual check.
+  the site blocked default-tier fetches. **Be precise about the remedy: the deep tier does not
+  recover the missing content.** `scan.mjs` takes a homepage screenshot and reads the LinkedIn
+  Ad Library — it extracts no title, h1, meta, text or links, so it cannot supply a single
+  field the 403 cost you. What the deep tier buys here is a screenshot a person can read by
+  eye. Say that, and recommend a manual check for the content itself.
 - `node` is on PATH but `scripts/deep/node_modules` is missing (Playwright never installed, or
-  removed): fall back to the default tier for this run and say so once, in one line, before the
-  fetch loop starts — not once per competitor.
+  removed), or `node -v` is older than 20: fall back to the default tier for this run and say
+  so once, in one line, before the fetch loop starts — not once per competitor.
 - If a competitor's assembled snapshot exceeds 60 KB (the hard guard; target is 40 KB), truncate
   that snapshot's `text` fields — home first, then subpages, longest first — until it's under
   the guard, and note in Data notes which competitor was truncated and by roughly how much.
