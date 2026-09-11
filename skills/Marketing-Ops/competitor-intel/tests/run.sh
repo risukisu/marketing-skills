@@ -109,6 +109,20 @@ test_fetch_truncation_is_codepoint_safe() {
   fi
 }
 
+test_fetch_takes_the_first_title_and_h1_not_the_last() {
+  # A greedy `sed -n "s/.*<title...>"` against a one-line document takes the LAST
+  # match, so an inline SVG accessibility <title> became the page title and a footer
+  # <h1> became the H1 — and `title` is the identity field diff-rules.md §2 matches
+  # moved pages on. Both must be the first occurrence in document order.
+  out="$(bash "$SCRIPTS/fetch.sh" "file://$FIXTURES/tricky-headings.html")"
+  title_line="$(printf '%s\n' "$out" | grep '^TITLE:')"
+  h1_line="$(printf '%s\n' "$out" | grep '^H1:')"
+  assert_eq           "head title wins over svg title"  "TITLE: Beacon Analytics — Validated Pipelines" "$title_line"
+  assert_not_contains "svg title is not the page title" "Beacon logo icon" "$title_line"
+  assert_eq           "first h1 wins over footer h1"    "H1: Pipelines for regulated data" "$h1_line"
+  assert_not_contains "footer h1 is not the h1"         "footer nav" "$h1_line"
+}
+
 test_discover_classifies_by_url_segment() {
   out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
 https://example.com/services/validation

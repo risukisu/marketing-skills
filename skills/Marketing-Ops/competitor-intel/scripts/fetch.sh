@@ -53,14 +53,32 @@ stripped="$(printf '%s' "$flat" | awk '
 
 sq="'"
 
-title="$(printf '%s' "$stripped" | sed -n "s/.*<title[^>]*>\([^<]*\)<\/title>.*/\1/Ip" | head -1 \
-        | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+# TITLE and H1 must be the FIRST match in document order, not the last. The document is
+# flattened to a single line, so a `sed -n "s/.*<title...>\(...\)<\/title>.*/\1/p"` takes
+# the LAST match (the leading `.*` is greedy) and the trailing `head -1` is a no-op. That
+# handed an inline SVG accessibility <title> the identity of the page, and a footer <h1>
+# the identity of the H1 — and `title` is the field diff-rules.md §2 matches moved pages
+# on. `grep -o` emits matches in document order, so `head -1` is the first one.
+title="$(printf '%s' "$stripped" | grep -oiE '<title[^>]*>[^<]*</title>' | head -1 \
+        | sed -e 's/<[^>]*>//g' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
 meta="$(printf '%s' "$stripped" | grep -io "<meta[^>]*name=[\"$sq]description[\"$sq][^>]*>" | head -1 \
         | sed -n "s/.*content=[\"$sq]\([^\"$sq]*\)[\"$sq].*/\1/Ip")"
 
-h1="$(printf '%s' "$stripped" | sed -n "s/.*<h1[^>]*>\(.*\)<\/h1>.*/\1/Ip" | head -1 \
-      | sed -e 's/<[^>]*>//g' -e 's/[[:space:]]\{2,\}/ /g' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+# h1 content routinely contains nested markup (<span>, <br>, <em>), so a `[^<]*` class
+# will not do: take everything between the first <h1...> and the first following </h1>,
+# then strip tags.
+h1="$(printf '%s' "$stripped" | awk '
+  {
+    if (match(tolower($0), /<h1[^>]*>/) == 0) { exit }
+    rest = substr($0, RSTART + RLENGTH)
+    if (match(tolower(rest), /<\/h1[^>]*>/) == 0) {
+      # Unclosed <h1>: take the text up to the next tag, never the rest of the document.
+      sub(/<.*$/, "", rest); print rest; exit
+    }
+    print substr(rest, 1, RSTART - 1)
+  }' \
+  | sed -e 's/<[^>]*>//g' -e 's/[[:space:]]\{2,\}/ /g' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
 headings="$(printf '%s' "$stripped" \
   | grep -oiE '<h[23][^>]*>[^<]{1,120}</h[23]>' \
