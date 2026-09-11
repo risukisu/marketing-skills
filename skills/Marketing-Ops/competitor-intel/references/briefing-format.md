@@ -21,7 +21,22 @@ competitor's own entry before writing that competitor's per-competitor subsectio
 ## Sections
 
 `briefing.md` has exactly five sections, in this order. No other section is added, and none of
-these five is dropped, merged, or reordered — even on a baseline run.
+these five is dropped, merged, or reordered — even on a baseline run. (`## Style`, below, is
+guidance for producing every section — it is never itself rendered as a heading in
+`briefing.md`, and does not count toward the five.)
+
+### Ordering rule for page-drawn lists
+
+This is contract guidance, not a sixth section — it is never rendered as its own heading in
+`briefing.md`; it governs how content inside Sections 1–3 below is assembled. `pages[]` carries
+no guaranteed order (`diff-rules.md` §2) — the same content can arrive in a
+different sequence on two runs. Every list below that is drawn from `pages[]` — the comparison
+table's "Primary services (from nav)" row, the per-competitor "Primary services" list, "Secondary
+pages flagged as not-in-nav," and the page scan behind "Products/platforms" — must be sorted
+before it is capped or rendered, using this rule: sort the qualifying pages by `title`
+(case-insensitive), falling back to the raw (non-normalized) `url` string lexicographically when
+titles tie or are both empty. Apply a cap, if any, **after** sorting, so the same five (or
+however many) items show on every run given the same underlying pages regardless of scan order.
 
 ### 1. Executive summary
 
@@ -40,7 +55,9 @@ these five is dropped, merged, or reordered — even on a baseline run.
   `services_changes`; (5) `ad_count_delta` / `new_ad_headlines`. If a competitor's entry is
   `{"baseline": true}` on an otherwise non-baseline run, mention it as "first scan of
   [competitor] — no comparison yet," ranked alongside `new_pages` since there is no prior state
-  to compare either way.
+  to compare either way. When two or more competitors tie at the same materiality rank, break
+  the tie by `changes.json`'s `competitors[]` order — the same order Section 3 uses — and name
+  the earlier one first.
 - Never introduce a fact that isn't traceable to a changed field or a snapshot value.
 
 ### 2. Comparison table
@@ -50,8 +67,8 @@ Competitors as columns. Exactly these rows, top to bottom:
 | Row | Source | Cell rule |
 |---|---|---|
 | Positioning | current snapshot `home.title` / `home.h1` | One short phrase in your own words (see Quoting rule) — never blank. |
-| Primary services (from nav) | current snapshot `pages[]` where `kind == "services"` and `source == "nav"` | Comma-separated `title`/`h1` list, up to 5 items; beyond 5, append "+N more". If none, write "none listed in nav." |
-| Products/platforms | named products or platforms mentioned on the homepage or a matching page | Name each one. If the competitor names no distinct product, write "unnamed — not distinguished from services." |
+| Primary services (from nav) | current snapshot `pages[]` where `kind == "services"` and `source == "nav"`, sorted per the Ordering rule above | Comma-separated `title`/`h1` list, first 5 items after sorting; beyond 5, append "+N more". If none, write "none listed in nav." |
+| Products/platforms | named products/platforms found by scanning exactly this closed set: current snapshot `home` (`title`, `h1`, `headings`, `text`) plus every `pages[]` entry with `kind == "services"` (same fields), sorted per the Ordering rule above with `home` scanned first | Name each distinct product found (dedupe identical names case-insensitively; keep the first-seen casing; list in the order the set above was scanned). If the scan finds none, write "unnamed — not distinguished from services." |
 | Target audience | homepage copy | One phrase. If not stated outright, infer from the copy and mark it "(inferred)". |
 | LinkedIn ads (count + theme) | current snapshot `linkedinAds.count` and `linkedinAds.ads[]` | `"<count> — <theme>"`, e.g. `"3 — migration urgency"`. If count is 0, write `"0 — none observed"`. |
 
@@ -65,13 +82,14 @@ One subsection per competitor, headed with the competitor's name, in the order i
 
 1. **Positioning/tagline** — same source as the comparison table's Positioning row, one to two
    sentences.
-2. **Primary services** — same source as the comparison table's row, no 5-item cap here; list
-   all.
+2. **Primary services** — same source and Ordering rule as the comparison table's row, no
+   5-item cap here; list all, in sorted order.
 3. **Secondary pages flagged as not-in-nav** — current snapshot `pages[]` entries where
-   `source` is `"sitemap"` or `"none"` (i.e. not `"nav"`), regardless of `kind`. List URL +
-   title. If there are none, omit this bullet entirely (don't write "none found").
-4. **Products** — as identified for the comparison table, with one line of detail each if
-   available (what it does, who it's for).
+   `source` is `"sitemap"` or `"none"` (i.e. not `"nav"`), regardless of `kind`, sorted per the
+   Ordering rule above. List URL + title. If there are none, omit this bullet entirely (don't
+   write "none found").
+4. **Products** — the same closed scan and dedupe as the comparison table's Products/platforms
+   row, with one line of detail each if available (what it does, who it's for).
 5. **Ad activity** — `linkedinAds.count`, and for each entry in `new_ad_headlines`, quote the
    headline (a headline is not marketing prose to paraphrase — quote it directly) plus a short
    note on theme.
