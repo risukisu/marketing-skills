@@ -10,6 +10,12 @@ against the last scan, and writes a briefing a person actually reads. Everything
 learns about a company lives in a `competitor-intel/` folder inside the current project — never
 in this skill folder, never in any repo this skill ships from.
 
+**Paths in this file.** `scripts/…` and `references/…` are relative to **this skill's
+folder**. `competitor-intel/…` is relative to the **current working directory** — the user's
+project. This skill deliberately works in two roots at once, so every script invocation below
+needs the skill folder's own path in front of it (written `<skill>/scripts/…`), while
+`competitor-intel/…` arguments stay relative to the project.
+
 ## Routing
 
 Check for `competitor-intel/company.md` in the current working directory.
@@ -108,7 +114,45 @@ Procedure:
    `META:`, `H1:`, `HEADINGS:` (pipe-separated), `LINKS:` (pipe-separated), and `TEXT:` (last,
    the only multi-word field) — or `STATUS:` + `ERROR:` on a non-200 response, and the script
    still exits 0.
-5. **Fill `references/snapshot-schema.json` literally.** Every key present, no extras, and an
+5. **Deep tier only — run the browser pass.** Skip this step entirely on the default tier.
+   Decide the run stamp now (`YYYY-MM-DD_HH-mm`); step 6 writes to the same one. Run this
+   once for the whole run, not once per competitor:
+
+   ```bash
+   node "<skill>/scripts/deep/scan.mjs" \
+     --competitors competitor-intel/competitors.md \
+     --out competitor-intel/runs/<stamp> \
+     --locale <config.locale>
+   ```
+
+   It prints **one JSON object per line on stdout**, one line per competitor, shaped
+   `{ "name", "screenshots": { "home" }, "linkedinAds": { "tier", "count", "ads" }, "errors": [] }`.
+   Screenshots are written under `competitor-intel/runs/<stamp>/screenshots/`. For each
+   line, find the matching competitor **by `name`** (the value echoed from
+   `competitors.md`) and merge into that competitor's snapshot as you assemble it in
+   step 6:
+   - `screenshots.home` ← the line's `screenshots.home` — a path relative to the run
+     directory, e.g. `screenshots/acme-analytics-home.png`. Keep it relative; never
+     rewrite it to an absolute path.
+   - `linkedinAds` ← the line's `linkedinAds` object entire (`tier`, `count`, `ads[]`).
+   - `errors[]` ← **append** the line's `errors[]` to whatever the fetch loop already
+     recorded for that competitor. Never replace.
+   - top-level `tier` ← `"deep"`.
+
+   A competitor with **no matching line** (scan.mjs crashed partway, or the name didn't
+   match) keeps its default-tier values — `tier: "default"`, `linkedinAds.tier:
+   "default"`, `count: 0`, `ads: []`, `screenshots.home: ""` — and gets a Data notes
+   line saying the deep pass produced nothing for it. `linkedinAds.tier` becomes
+   `"deep"` **only when the merge actually happened**: it is the field that tells a
+   reader whether the ad numbers came from a browser or from nothing at all, so never
+   write `"deep"` onto a competitor whose merge didn't happen. Same for the top-level
+   `tier`.
+
+   If the command itself fails — non-zero exit, or no output at all — fall back to the
+   default tier for the whole run, say so once, and note it in Data notes. A failed deep
+   pass never stops the scan.
+
+6. **Fill `references/snapshot-schema.json` literally.** Every key present, no extras, and an
    empty value written as `""`, `0`, or `[]` — never omitted, never `null`. This is the same
    rigidity contract `diff-rules.md` §0 states for the diff step, restated here because a
    schema you don't re-read at fill time is a schema you drift from:
@@ -120,22 +164,25 @@ Procedure:
    - `linkedinAds`: `tier`, `count`, `ads[]` — each ad: `headline`, `body`, `firstSeen`. On the
      default tier this stays at the schema's own defaults — `tier: "default"`, `count: 0`,
      `ads: []` — the default tier has no ad-fetch path at all, so there is nothing to populate,
-     symmetric with `screenshots` staying empty below.
+     symmetric with `screenshots` staying empty below. On the deep tier it is whatever step 5
+     merged in for that competitor, and nothing at all if step 5 produced no line for it.
    - `screenshots`: `home`, `pages` (object keyed by page URL) — leave paths empty on the
-     default tier.
+     default tier. On the deep tier, `home` is step 5's run-relative path
+     (`screenshots/<name>-home.png`) and `pages` stays `{}`: `scan.mjs` screenshots the
+     homepage only.
    - `errors`: one entry per failed fetch, each `{ "url", "status", "note" }` (see Error
      handling for what goes in each field).
    Write this to `competitor-intel/runs/<stamp>/snapshot.json`, where `<stamp>` is
    `YYYY-MM-DD_HH-mm`.
-6. If a previous run directory exists under `competitor-intel/runs/`, apply
+7. If a previous run directory exists under `competitor-intel/runs/`, apply
    `references/diff-rules.md` in full — including its §6 schema-drift guard — to produce
    `competitor-intel/runs/<stamp>/changes.json`. If there is no previous run, or a competitor's
    own comparison fails the drift guard, write the baseline form per diff-rules.md §5/§6 instead
    of skipping the file.
-7. Read only `snapshot.json` and `changes.json` for this — never go back to raw HTML or the
+8. Read only `snapshot.json` and `changes.json` for this — never go back to raw HTML or the
    fetch output — and write `competitor-intel/runs/<stamp>/briefing.md` per
    `references/briefing-format.md`, all five sections, in order.
-8. Update `competitor-intel/config.json`'s `lastRun` to the run stamp.
+9. Update `competitor-intel/config.json`'s `lastRun` to the run stamp.
 
 Scope: scan, diff, brief. If you find a bug in the scripts, or notice a page you could also be
 scraping, note it as a follow-up at the end of the briefing's Data notes — don't fix or extend
