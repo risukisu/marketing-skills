@@ -75,7 +75,7 @@ they gave.
 Then, regardless of which path was taken, check for the deep tier: is `node` on PATH? If yes,
 offer it — explain that the deep tier adds screenshots and real LinkedIn ad extraction via
 Playwright, and that turning it on means running `npm install` and `npx playwright install
-chromium` in the skill's `scripts/deep/` folder, which downloads about 150 MB. Only do this
+chromium` in the skill's `scripts/deep/` folder, which downloads about 310 MB. Only do this
 after the user says yes. If `node` is not on PATH, or the user declines, stay on the default
 tier — `tier: "auto"` will still resolve to default at scan time (see Scan, and Error handling
 below).
@@ -84,7 +84,7 @@ below).
 
 You are operating autonomously during a scan. The user is not watching in real time. For
 reversible steps that follow from the scan request, proceed without asking. Stop only for the
-deep-tier install (downloads ~150 MB) and for anything destructive.
+deep-tier install (downloads ~310 MB) and for anything destructive.
 
 The fetch loop below is mechanical and cheap — a script does the extraction, you just batch the
 calls and file the output. Don't spend judgment there. Save your attention for the briefing:

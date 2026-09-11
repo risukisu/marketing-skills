@@ -67,36 +67,82 @@ try {
     }
 
     // --- LinkedIn Ad Library ---
+    // RULE: absence of evidence is never reported as evidence of absence. A `count` may only be
+    // written when the page affirmatively shows either ad cards or a recognizable "no ads"
+    // empty state. Anything else — no response, a login wall, an HTTP error, or a page that
+    // rendered but shows neither cards nor a recognizable empty state (e.g. a same-URL,
+    // HTTP-200 client-side "sign in to see this" gate) — goes to errors[], never to count: 0.
+    // Do not relax this to "assume zero when unsure" without re-reading the note below on why.
     const adPage = await ctx.newPage();
     try {
       const url = `https://www.linkedin.com/ad-library/search?companyName=${encodeURIComponent(c.linkedin)}`;
       const resp = await adPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
-      const status = resp ? resp.status() : 0;
-      const finalUrl = adPage.url();
 
-      if (isLoginWall(finalUrl)) {
+      if (!resp) {
+        // No response object at all — Playwright couldn't confirm a load. Never treat this as
+        // a confirmed empty read.
         result.errors.push({
           url: 'linkedin-ad-library',
-          status,
-          note: 'redirected to a LinkedIn login/checkpoint wall — could not read the ad library',
+          status: 0,
+          note: 'no response received from navigation — could not confirm the page loaded',
         });
-      } else if (status && status >= 400) {
-        result.errors.push({ url: 'linkedin-ad-library', status, note: `blocked with ${status}` });
       } else {
-        await adPage.waitForTimeout(3000);
-        const ads = await adPage.evaluate(() =>
-          Array.from(document.querySelectorAll('[class*="ad-library-card"], article'))
-            .slice(0, 25)
-            .map((el) => {
-              const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
-              return { headline: t.slice(0, 120), body: t.slice(0, 300), firstSeen: '' };
-            })
-            .filter((a) => a.headline.length > 10)
-        );
-        result.linkedinAds.ads = ads;
-        result.linkedinAds.count = ads.length;
-        // A count of 0 here is a legitimate pass: the page loaded (no login wall, no error
-        // status) and the selector simply found nothing — a company with no active ads.
+        const status = resp.status();
+        const finalUrl = adPage.url();
+
+        if (isLoginWall(finalUrl)) {
+          result.errors.push({
+            url: 'linkedin-ad-library',
+            status,
+            note: 'redirected to a LinkedIn login/checkpoint wall — could not read the ad library',
+          });
+        } else if (status >= 400) {
+          result.errors.push({ url: 'linkedin-ad-library', status, note: `blocked with ${status}` });
+        } else {
+          await adPage.waitForTimeout(3000);
+          // NOTE: I was never able to reach a real, unblocked Ad Library results page during
+          // development — every attempt was blocked upstream (403) before rendering. The
+          // selectors below (for both cards and the "no ads" empty state) are therefore my
+          // best guess, unverified against the real DOM. That's acceptable ONLY because the
+          // fallback (the final `else`) is safe: if neither selector matches, we report an
+          // error, not a zero. If you get a confirmed look at the real markup, tighten these
+          // selectors — but never remove the fallback-to-error branch.
+          const evidence = await adPage.evaluate(() => {
+            const cards = Array.from(document.querySelectorAll('[class*="ad-library-card"], article'))
+              .map((el) => {
+                const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+                return { headline: t.slice(0, 120), body: t.slice(0, 300), firstSeen: '' };
+              })
+              .filter((a) => a.headline.length > 10);
+
+            const emptyStateEl = document.querySelector(
+              '[class*="no-results"], [class*="empty-state"], [data-test-id*="empty"], [data-testid*="empty"]'
+            );
+            const bodyText = (document.body && document.body.textContent) || '';
+            const emptyStateText = /no ads (were )?found|no results found|hasn.?t run any ads|doesn.?t have any active ads/i.test(
+              bodyText
+            );
+
+            return { cards, hasEmptyState: !!emptyStateEl || emptyStateText };
+          });
+
+          if (evidence.cards.length > 0) {
+            result.linkedinAds.ads = evidence.cards.slice(0, 25);
+            result.linkedinAds.count = evidence.cards.length;
+          } else if (evidence.hasEmptyState) {
+            // Affirmative "no ads" empty state found — a genuine, confirmed zero.
+            result.linkedinAds.count = 0;
+            result.linkedinAds.ads = [];
+          } else {
+            // Neither ad cards nor a recognizable empty state — we don't know what we're
+            // looking at (could be an inline sign-in gate rendered at HTTP 200). Do not guess.
+            result.errors.push({
+              url: 'linkedin-ad-library',
+              status,
+              note: 'results region could not be identified — neither ad cards nor a recognizable empty-state marker were found; not reporting a count',
+            });
+          }
+        }
       }
     } catch (e) {
       result.errors.push({ url: 'linkedin-ad-library', status: 0, note: `ads failed: ${e.message}` });
