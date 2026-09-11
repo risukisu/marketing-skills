@@ -9,6 +9,12 @@ FIXTURES="$HERE/fixtures"
 SCRIPTS="$SKILL_DIR/scripts"
 LIVE=0
 [ "${1:-}" = "--live" ] && LIVE=1
+TAB="$(printf '\t')"
+
+# The offline fixtures are read through `file://`, which both scripts refuse in
+# production so a hand-edited competitors.md can never turn a scan into a local-file
+# read. The tests opt back in explicitly.
+export CI_ALLOW_FILE=1
 
 PASS=0; FAIL=0
 
@@ -35,6 +41,13 @@ assert_not_contains() {
     *"$needle"*) FAIL=$((FAIL+1)); printf '  FAIL %s\n       should not contain: [%s]\n' "$label" "$needle" ;;
     *) PASS=$((PASS+1)); printf '  ok   %s\n' "$label" ;;
   esac
+}
+
+# classify() consumes "<source>\t<url>" records, because per-page provenance has to
+# survive all the way to the briefing. The URL lists below are bare, so tag them.
+# $1 = source label, $2 = max_other (optional). URLs on stdin.
+classify_urls() {
+  sed "s|^|$1$TAB|" | CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" "${2:-10}"
 }
 
 run_suite() {
@@ -123,8 +136,46 @@ test_fetch_takes_the_first_title_and_h1_not_the_last() {
   assert_not_contains "footer h1 is not the h1"         "footer nav" "$h1_line"
 }
 
+test_fetch_resolves_relative_hrefs() {
+  # "services/consulting", "./about-us" and "../parent-page" used to fall through the
+  # link awk with no action, so a page reachable only by a relative link was invisible
+  # to the scan — no error, no Data-notes trace.
+  out="$(CI_BASE_URL="https://example.com/docs/page.html" bash "$SCRIPTS/fetch.sh" "file://$FIXTURES/links.html")"
+  links="$(printf '%s\n' "$out" | grep '^LINKS:')"
+  assert_contains "bare relative absolutized"      "https://example.com/docs/services/consulting" "$links"
+  assert_contains "./ relative absolutized"        "https://example.com/docs/about-us"            "$links"
+  assert_contains "../ relative absolutized"       "https://example.com/parent-page"              "$links"
+  assert_contains "root-relative still absolutized" "https://example.com/root-page"               "$links"
+  assert_not_contains "mailto dropped"             "mailto:"                                      "$links"
+}
+
+test_fetch_same_host_is_host_equality_not_substring() {
+  # `index(tolower(url), host) > 0` kept "https://notexample.com/evil" and
+  # "https://cdn.other.net/?u=example.com" as same-host; both then landed in the
+  # snapshot as this competitor's pages.
+  out="$(CI_BASE_URL="https://example.com/docs/page.html" bash "$SCRIPTS/fetch.sh" "file://$FIXTURES/links.html")"
+  links="$(printf '%s\n' "$out" | grep '^LINKS:')"
+  assert_not_contains "drops lookalike host"       "notexample.com"        "$links"
+  assert_not_contains "drops host-in-query url"    "cdn.other.net"         "$links"
+  assert_not_contains "drops plainly offsite host" "external.example.org"  "$links"
+  assert_contains     "keeps same host"            "https://example.com/absolute-page"       "$links"
+  assert_contains     "keeps subdomain"            "https://uk.example.com/subdomain-page"   "$links"
+}
+
+test_fetch_refuses_non_http_and_ungated_file_urls() {
+  # competitors.md is hand-edited and shared, so it is not self-trusted input.
+  out="$(CI_ALLOW_FILE=0 bash "$SCRIPTS/fetch.sh" "file://$FIXTURES/simple.html")"; rc=$?
+  assert_contains "ungated file:// refused" "ERROR: refused" "$out"
+  assert_not_contains "no content leaked"   "Acme Analytics" "$out"
+  assert_eq       "still exits zero"        "0"              "$rc"
+  out="$(bash "$SCRIPTS/fetch.sh" 'ftp://example.com/x')"
+  assert_contains "non-http scheme refused" "only http:// and https://" "$out"
+  out="$(bash "$SCRIPTS/fetch.sh" 'https://ex`whoami`.com/')"
+  assert_contains "shell metachars in host refused" "host must match" "$out"
+}
+
 test_discover_classifies_by_url_segment() {
-  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+  out="$(classify_urls nav <<'URLS'
 https://example.com/services/validation
 https://example.com/about-us
 https://example.com/case-studies/acme
@@ -133,12 +184,26 @@ https://example.com/cart
 https://example.com/feed.xml
 URLS
 )"
-  assert_contains "services classified" "services	https://example.com/services/validation" "$out"
-  assert_contains "about classified"    "about	https://example.com/about-us"             "$out"
-  assert_contains "case study"          "case-study	https://example.com/case-studies/acme" "$out"
+  assert_contains "services classified" "services${TAB}nav${TAB}https://example.com/services/validation" "$out"
+  assert_contains "about classified"    "about${TAB}nav${TAB}https://example.com/about-us"               "$out"
+  assert_contains "case study"          "case-study${TAB}nav${TAB}https://example.com/case-studies/acme" "$out"
   assert_not_contains "drops privacy"   "privacy-policy" "$out"
   assert_not_contains "drops cart"      "/cart"          "$out"
   assert_not_contains "drops xml"       "feed.xml"       "$out"
+}
+
+test_discover_carries_per_page_source_through() {
+  # briefing-format.md filters pages on `source` twice — the "Primary services (from
+  # nav)" row and the "not in nav" bullet — so provenance is per page, not one global
+  # SOURCE label stamped on everything.
+  out="$(classify_urls sitemap <<'URLS'
+https://example.com/services/validation
+https://example.com/blog/post-1
+URLS
+)"
+  assert_contains "services carries sitemap source" "services${TAB}sitemap${TAB}https://example.com/services/validation" "$out"
+  assert_contains "other carries sitemap source"    "other${TAB}sitemap${TAB}https://example.com/blog/post-1"            "$out"
+  assert_not_contains "no nav label invented"       "${TAB}nav${TAB}" "$out"
 }
 
 test_discover_detects_sitemap_index() {
@@ -159,7 +224,7 @@ test_discover_live_nav_fallback() {
 }
 
 test_discover_classify_segment_boundaries() {
-  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+  out="$(classify_urls nav <<'URLS'
 https://example.com/research/
 https://example.com/our-research
 https://example.com/search
@@ -173,30 +238,31 @@ https://example.com/careers
 https://example.com/case-studies/career-mobility
 URLS
 )"
-  assert_contains     "research/ kept, not dropped"       $'\thttps://example.com/research/' "$out"
-  assert_contains     "our-research kept, not dropped"    $'\thttps://example.com/our-research' "$out"
+  assert_contains     "research/ kept, not dropped"       "${TAB}https://example.com/research/" "$out"
+  assert_contains     "our-research kept, not dropped"    "${TAB}https://example.com/our-research" "$out"
   assert_not_contains "drops /search"                     "https://example.com/search"         "$out"
   assert_not_contains "drops wp-admin about, not about"   "https://example.com/wp-admin/about.php" "$out"
-  assert_contains     "about (bare)"                      $'about\thttps://example.com/about' "$out"
-  assert_contains     "about (slash)"                     $'about\thttps://example.com/about/' "$out"
-  assert_contains     "about (hyphen)"                    $'about\thttps://example.com/about-us' "$out"
-  assert_contains     "services segment"                  $'services\thttps://example.com/services/validation' "$out"
+  assert_contains     "about (bare)"                      "about${TAB}nav${TAB}https://example.com/about" "$out"
+  assert_contains     "about (slash)"                     "about${TAB}nav${TAB}https://example.com/about/" "$out"
+  assert_contains     "about (hyphen)"                    "about${TAB}nav${TAB}https://example.com/about-us" "$out"
+  assert_contains     "services segment"                  "services${TAB}nav${TAB}https://example.com/services/validation" "$out"
   assert_not_contains "drops /careers"                    "https://example.com/careers"        "$out"
-  assert_contains     "career-mobility is case-study"     $'case-study\thttps://example.com/case-studies/career-mobility' "$out"
+  assert_contains     "career-mobility is case-study"     "case-study${TAB}nav${TAB}https://example.com/case-studies/career-mobility" "$out"
 }
 
 test_discover_main_flow_sitemap_index_recursion() {
   out="$(CI_SKIP_NAV=1 CI_ROBOTS_OVERRIDE="file://$FIXTURES/robots.txt" CI_LOCAL_FIXTURE_BASE="$FIXTURES" \
         bash "$SCRIPTS/discover.sh" "https://example.com/" 10)"
   assert_contains "source is sitemap"        "SOURCE: sitemap" "$out"
-  assert_contains "child 1 service page"     $'services\thttps://example.com/services/consulting' "$out"
-  assert_contains "child 1 about page"       $'about\thttps://example.com/about-us' "$out"
-  assert_contains "child 2 case study"       $'case-study\thttps://example.com/case-studies/acme' "$out"
-  assert_contains "child 2 other page"       $'other\thttps://example.com/blog/post-1' "$out"
+  assert_contains "child 1 service page"     "services${TAB}sitemap${TAB}https://example.com/services/consulting" "$out"
+  assert_contains "child 1 about page"       "about${TAB}sitemap${TAB}https://example.com/about-us" "$out"
+  assert_contains "child 2 case study"       "case-study${TAB}sitemap${TAB}https://example.com/case-studies/acme" "$out"
+  assert_contains "child 2 other page"       "other${TAB}sitemap${TAB}https://example.com/blog/post-1" "$out"
+  assert_not_contains "no CAPPED line when no cap hit" "CAPPED:" "$out"
 }
 
 test_discover_applies_caps() {
-  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" 3 <<'URLS'
+  out="$(classify_urls nav 3 <<'URLS'
 https://example.com/services/one
 https://example.com/services/two
 https://example.com/services/three
@@ -232,12 +298,26 @@ URLS
   assert_eq "about capped at 5"              "5" "$about_count"
   assert_eq "case-study capped at 5"         "5" "$case_count"
   assert_eq "other capped at max_other (3)"  "3" "$other_count"
+  # The dropped rows are gone, so the cap has to be reported as a run fact or the
+  # briefing's "Pages capped" Data note can only be guessed at. N = rows dropped.
+  assert_contains "reports what the caps dropped" "CAPPED: about=2 case-study=1 other=2" "$out"
+}
+
+test_discover_caps_tolerate_non_numeric_max() {
+  # A hand-edited config.json can carry maxSubpages: "ten"; `head -"$mo"` errors on it.
+  out="$(classify_urls nav "ten" <<'URLS'
+https://example.com/blog/1
+https://example.com/blog/2
+URLS
+)"
+  assert_contains     "falls back to the default cap" "other${TAB}nav${TAB}https://example.com/blog/1" "$out"
+  assert_not_contains "no head error leaked"          "invalid number"                                "$out"
 }
 
 test_discover_exclusion_keeps_prefix_matches() {
   # A segment that merely STARTS with an exclusion keyword, followed by a
   # hyphen, must be kept — these are real service pages, not utility pages.
-  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+  out="$(classify_urls nav <<'URLS'
 https://example.com/contact-center-solutions
 https://example.com/legal-tech-consulting
 https://example.com/search-engine-optimization-services
@@ -253,13 +333,13 @@ URLS
   assert_contains "kept: cookie-cutter-analysis"         "https://example.com/cookie-cutter-analysis" "$out"
   assert_contains "kept: research/"                      "https://example.com/research/" "$out"
   assert_contains "kept: our-research"                   "https://example.com/our-research" "$out"
-  assert_contains "kept: career-mobility, as case-study" $'case-study\thttps://example.com/case-studies/career-mobility' "$out"
+  assert_contains "kept: career-mobility, as case-study" "case-study${TAB}nav${TAB}https://example.com/case-studies/career-mobility" "$out"
 }
 
 test_discover_exclusion_drops_whole_segment_and_known_compounds() {
   # Every URL below is a whole-segment exclusion match or a named compound
   # in the allow-list (or a .xml/.pdf suffix) — nothing should survive.
-  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+  out="$(classify_urls nav <<'URLS'
 https://example.com/contact
 https://example.com/contact/
 https://example.com/contact-us
