@@ -25,6 +25,23 @@ if (!competitorsPath || !outDir) {
 
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
+// slug() degenerates on non-ASCII competitor names — "Ströme" and "Str_me" collapse to
+// the same thing, a fully non-Latin name collapses to "" — and two names that collapse
+// together would silently overwrite each other's screenshot. Disambiguate by position in
+// competitors.md, which is stable from run to run.
+const usedShotNames = new Map();
+const shotFileFor = (name, i) => {
+  const base = slug(name) || `competitor-${i + 1}`;
+  const n = (usedShotNames.get(base) || 0) + 1;
+  usedShotNames.set(base, n);
+  return n === 1 ? `${base}-home.png` : `${base}-${n}-home.png`;
+};
+
+// The ToS notice at the top of this file asks the user to keep request volume low.
+// Honor it in code, not just in a comment: pause between Ad Library navigations.
+const AD_DELAY_MS = 2500;
+let adNavCount = 0;
+
 const parseCompetitors = (raw) =>
   raw.split('\n')
     .map((l) => l.trim())
@@ -45,7 +62,7 @@ const browser = await chromium.launch();
 const ctx = await browser.newContext({ locale, viewport: { width: 1440, height: 900 } });
 
 try {
-  for (const c of competitors) {
+  for (const [i, c] of competitors.entries()) {
     const result = {
       name: c.name,
       screenshots: { home: '' },
@@ -57,9 +74,12 @@ try {
     const shotPage = await ctx.newPage();
     try {
       await shotPage.goto(c.url, { waitUntil: 'networkidle', timeout: 45000 });
-      const shot = path.join(shotsDir, `${slug(c.name)}-home.png`);
-      await shotPage.screenshot({ path: shot, fullPage: true });
-      result.screenshots.home = shot;
+      const shotFile = shotFileFor(c.name, i);
+      await shotPage.screenshot({ path: path.join(shotsDir, shotFile), fullPage: true });
+      // Record the path RELATIVE to the run directory, forward slashes. snapshot.json
+      // gets committed: an absolute path leaks the local directory layout into the repo
+      // and is dead on any other machine.
+      result.screenshots.home = `screenshots/${shotFile}`;
     } catch (e) {
       result.errors.push({ url: c.url, status: 0, note: `screenshot failed: ${e.message}` });
     } finally {
@@ -76,6 +96,8 @@ try {
     const adPage = await ctx.newPage();
     try {
       const url = `https://www.linkedin.com/ad-library/search?companyName=${encodeURIComponent(c.linkedin)}`;
+      if (adNavCount > 0) await adPage.waitForTimeout(AD_DELAY_MS);
+      adNavCount++;
       const resp = await adPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
 
       if (!resp) {
@@ -108,7 +130,23 @@ try {
           // error, not a zero. If you get a confirmed look at the real markup, tighten these
           // selectors — but never remove the fallback-to-error branch.
           const evidence = await adPage.evaluate(() => {
-            const cards = Array.from(document.querySelectorAll('[class*="ad-library-card"], article'))
+            // The `ad-library` class hint is REQUIRED. An earlier version also matched a
+            // bare `article`, which fails OPEN: any HTTP-200 page rendering <article>
+            // elements with more than 10 characters of text — an interstitial, a help
+            // page, a marketing shell served in place of results — produced fake cards, a
+            // fake non-zero count, and fake headlines that flow into new_ad_headlines and
+            // get quoted directly in the briefing. A fabricated quotation attributed to a
+            // competitor is worse than a false zero, and the fallback-to-error branch
+            // below already turns an unrecognized DOM into an error rather than a guess,
+            // so the `article` fallback bought coverage at the price of fabrication risk.
+            //
+            // `headline` and `body` are both slices of the same textContent, so the
+            // headline is a LEADING EXCERPT of the body, not a distinct field: the real
+            // markup has never been observed (see references/troubleshooting.md), so there
+            // is no verified selector for a card's headline element. Consequence:
+            // new_ad_headlines diffs 120-character text blobs, and what the briefing
+            // quotes is an excerpt of an ad, not its headline.
+            const cards = Array.from(document.querySelectorAll('[class*="ad-library-card"]'))
               .map((el) => {
                 const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
                 return { headline: t.slice(0, 120), body: t.slice(0, 300), firstSeen: '' };
@@ -127,6 +165,11 @@ try {
           });
 
           if (evidence.cards.length > 0) {
+            // `count` is every card on the page; `ads` is capped at 25. So for a
+            // competitor running more than 25 ads, ad_count_delta can move with no
+            // matching new_ad_headlines. Left as is on purpose — 25 ad excerpts is
+            // already more than a briefing can usefully render — but it is a real
+            // asymmetry between the two fields the diff reads.
             result.linkedinAds.ads = evidence.cards.slice(0, 25);
             result.linkedinAds.count = evidence.cards.length;
           } else if (evidence.hasEmptyState) {
