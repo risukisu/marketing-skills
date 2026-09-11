@@ -42,20 +42,34 @@ fi
 
 classify() {
   # stdin: one URL per line. stdout: "<kind>\t<url>", excluded lines dropped.
-  # Segment-anchored matching: a keyword must start right at a path-segment
-  # boundary — the string start or immediately after "/" — via "(^|\/)".
-  # This stops it matching inside an unrelated word (e.g. "search" must not
-  # fire on "research"; "career" must not fire on "career-mobility", which
-  # is a distinct, legitimate case-study page, not a jobs page).
-  # Exclusion terms use a permissive close (/, end-of-string, ".", or "-")
-  # so hyphenated compounds like "privacy-policy" still drop — except
-  # "career(s)", which must NOT swallow a hyphenated continuation, so it
-  # gets a strict close (/, end-of-string, or ".") in its own clause.
+  #
+  # Two different matching disciplines, kept deliberately separate — do not
+  # merge them:
+  #
+  # EXCLUSION is strict whole-segment matching only: "(^|\/)word(\/|$)" —
+  # no hyphen continuation, ever. A hyphen-permissive exclusion rule
+  # silently drops real service pages that merely start with a keyword
+  # ("/contact-center-solutions", "/search-engine-optimization-services",
+  # "/legal-tech-consulting", "/cookie-cutter-analysis"), and dropping a
+  # real page is the worst failure mode this tool has: it never shows up in
+  # the briefing and nobody can tell it went missing. Letting a genuine
+  # utility page slip through just costs one visible "other" row under an
+  # existing cap — a cheap, recoverable mistake. So when a segment only
+  # *starts* with an exclusion keyword, it is kept, not dropped. The
+  # explicit allow-list below covers the common compound utility URLs
+  # (contact-us, privacy-policy, ...) that are worth excluding by name
+  # rather than guessing at with a pattern.
+  #
+  # CLASSIFICATION (services/about/case-study) is the opposite: it
+  # legitimately needs to match hyphenated compounds — "/about-us" must
+  # still classify as "about", "/case-studies/acme" as "case-study" — so
+  # its boundary stays permissive on the right ("/", end-of-string, or
+  # "-"). Never borrow this permissive close for the exclusion clause.
   awk '
     {
       u = $0; lu = tolower(u)
-      if (lu ~ /(^|\/)(privacy|terms|cookie|legal|carts?|checkouts?|search|logins?|signins?|jobs?|contact|wp-admin)(\/|$|\.|-)/) next
-      if (lu ~ /(^|\/)careers?(\/|$|\.)/) next
+      if (lu ~ /(^|\/)(privacy|terms|cookie|legal|cart|checkout|search|login|signin|jobs?|careers?|contact|wp-admin)(\/|$)/) next
+      if (lu ~ /(^|\/)(contact-us|privacy-policy|terms-of-service|terms-and-conditions|cookie-policy|terms-of-use)(\/|$)/) next
       if (lu ~ /\.(xml|pdf)$/) next
       if (lu ~ /(^|\/)(services?|solutions?|what-we-do|offerings?|products?)(\/|$|-)/)               { print "services\t" u;    next }
       if (lu ~ /(^|\/)(about|team|company|who-we-are)(\/|$|-)/)                                       { print "about\t" u;       next }

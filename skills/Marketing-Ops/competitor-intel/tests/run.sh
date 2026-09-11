@@ -220,4 +220,47 @@ URLS
   assert_eq "other capped at max_other (3)"  "3" "$other_count"
 }
 
+test_discover_exclusion_keeps_prefix_matches() {
+  # A segment that merely STARTS with an exclusion keyword, followed by a
+  # hyphen, must be kept — these are real service pages, not utility pages.
+  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+https://example.com/contact-center-solutions
+https://example.com/legal-tech-consulting
+https://example.com/search-engine-optimization-services
+https://example.com/cookie-cutter-analysis
+https://example.com/research/
+https://example.com/our-research
+https://example.com/case-studies/career-mobility
+URLS
+)"
+  assert_contains "kept: contact-center-solutions"      "https://example.com/contact-center-solutions" "$out"
+  assert_contains "kept: legal-tech-consulting"          "https://example.com/legal-tech-consulting" "$out"
+  assert_contains "kept: search-engine-optimization-services" "https://example.com/search-engine-optimization-services" "$out"
+  assert_contains "kept: cookie-cutter-analysis"         "https://example.com/cookie-cutter-analysis" "$out"
+  assert_contains "kept: research/"                      "https://example.com/research/" "$out"
+  assert_contains "kept: our-research"                   "https://example.com/our-research" "$out"
+  assert_contains "kept: career-mobility, as case-study" $'case-study\thttps://example.com/case-studies/career-mobility' "$out"
+}
+
+test_discover_exclusion_drops_whole_segment_and_known_compounds() {
+  # Every URL below is a whole-segment exclusion match or a named compound
+  # in the allow-list (or a .xml/.pdf suffix) — nothing should survive.
+  out="$(CI_CLASSIFY_ONLY=1 bash "$SCRIPTS/discover.sh" "https://example.com/" <<'URLS'
+https://example.com/contact
+https://example.com/contact/
+https://example.com/contact-us
+https://example.com/legal
+https://example.com/search
+https://example.com/search/
+https://example.com/privacy-policy
+https://example.com/terms-of-service
+https://example.com/careers
+https://example.com/wp-admin/about.php
+https://example.com/brochure.pdf
+https://example.com/feed.xml
+URLS
+)"
+  assert_eq "nothing survives (all 12 excluded)" "" "$out"
+}
+
 run_suite
