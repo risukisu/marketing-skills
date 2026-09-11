@@ -10,7 +10,7 @@ pass 2026-07-23, kept current since.
 **Layout:** `skills/<Category>/<skill>`, three categories (Writing, SEO, Marketing Ops). Skills reach
 `~/.claude/skills` through links made by `install.ps1` / `install.sh`.
 
-## The skills — 47
+## The skills — 48
 
 | Skill | Domain | Source | License evidence | Verdict | Notes |
 |---|---|---|---|---|---|
@@ -61,8 +61,9 @@ pass 2026-07-23, kept current since.
 | marketing-monthly | Marketing Ops | Own | root MIT | MIT-clear | Genericized 2026-09-11 from a day-job skill: company, CRM ids, GA4 property, templates, and output paths moved to an untracked `references/<client>-context.local.md` pack (template: `pipeline-analysis/references/context-pack.TEMPLATE.md`); metric definitions point at `pipeline-analysis/definitions.md` |
 | campaign-report | Marketing Ops | Own | root MIT | MIT-clear | Genericized 2026-09-11 from a day-job skill; same pack convention. The publishing step runs only when the pack defines a target |
 | pipeline-analysis | Marketing Ops | Own | root MIT | MIT-clear | Genericized 2026-09-11 from a day-job skill. `compute_funnel.py` (stdlib) takes `--config` / `--targets` / `--reason-map`; funnel pipelines, stage ids, ticket stages, and AM sources come from the client pack (`*.local.json`, untracked). Shipped `targets.json` is empty, `reason_map.json` is a starter; fixture ids are opaque test values; 21 tests |
+| competitor-intel | Marketing Ops | Own | root MIT | MIT-clear | Added 2026-09-11. Supersedes the `risukisu/ci-agent` prototype. Deep tier reads the public LinkedIn Ad Library — ToS notice in `scripts/deep/scan.mjs` |
 
-**47 skills across 3 categories.**
+**48 skills across 3 categories.**
 
 ## Not vendored: data connections
 

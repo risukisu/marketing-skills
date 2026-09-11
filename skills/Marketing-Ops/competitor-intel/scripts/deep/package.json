@@ -1,0 +1,13 @@
+{
+  "name": "competitor-intel-deep",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Optional deep tier for the competitor-intel skill: screenshots and LinkedIn ad extraction.",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}

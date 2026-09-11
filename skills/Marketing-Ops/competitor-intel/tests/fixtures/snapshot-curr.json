@@ -1,0 +1,15 @@
+{
+  "name": "Acme Analytics",
+  "url": "https://example.com",
+  "fetchedAt": "2026-09-11T09:00:00Z",
+  "tier": "default",
+  "home": { "title": "Acme Analytics — Regulated Data", "metaDescription": "Data platforms.", "h1": "Data science", "headings": ["What we do"], "text": "" },
+  "pages": [
+    { "url": "https://example.com/services/technology", "kind": "services", "source": "nav", "title": "Technology", "h1": "Technology", "text": "" },
+    { "url": "https://example.com/about-us/", "kind": "about", "source": "nav", "title": "About", "h1": "About us", "text": "" },
+    { "url": "https://example.com/case-studies/pharma", "kind": "case-study", "source": "sitemap", "title": "Pharma case study", "h1": "Pharma", "text": "" }
+  ],
+  "linkedinAds": { "tier": "default", "count": 0, "ads": [] },
+  "screenshots": { "home": "", "pages": {} },
+  "errors": []
+}

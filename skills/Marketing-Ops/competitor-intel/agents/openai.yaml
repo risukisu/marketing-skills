@@ -1,0 +1,4 @@
+interface:
+  display_name: "Competitor Intel"
+  short_description: "Scan competitor sites and ads, diff against the last run, write a briefing"
+  default_prompt: "Use $competitor-intel to scan my competitors; run the intake first if competitor-intel/company.md does not exist in this project, then scan and write the briefing."
