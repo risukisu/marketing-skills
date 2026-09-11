@@ -84,4 +84,29 @@ test_fetch_handles_dead_host() {
   assert_eq       "exits zero"    "0"      "$rc"
 }
 
+test_fetch_keeps_trailing_content_after_unclosed_tag() {
+  out="$(bash "$SCRIPTS/fetch.sh" "file://$FIXTURES/unclosed.html")"
+  assert_contains "keeps h1 after unclosed script"   "H1: Widgets for every workflow" "$out"
+  assert_contains "keeps trailing body text"         "Real trailing body copy after an unclosed script tag." "$out"
+}
+
+test_fetch_truncation_is_codepoint_safe() {
+  # 16 chars lands the cap exactly on the em-dash in "Acme Analytics — ..."
+  # (verify: printf '%s' "$TEXT" | LC_ALL=C.UTF-8 awk '{print index($0,"\xe2\x80\x94")}' -> 16).
+  # A byte-based cut (e.g. GNU `cut -c` outside a UTF-8-aware locale) truncates
+  # mid-codepoint here and emits invalid UTF-8; a codepoint-aware truncation does not.
+  out="$(bash "$SCRIPTS/fetch.sh" "file://$FIXTURES/simple.html" 16)"
+  body="${out#*TEXT: }"
+  assert_contains "truncation includes whole em-dash char" "—" "$body"
+  if command -v iconv >/dev/null 2>&1; then
+    if printf '%s' "$body" | iconv -f utf-8 -t utf-8 >/dev/null 2>&1; then
+      PASS=$((PASS+1)); printf '  ok   truncated text is valid utf-8\n'
+    else
+      FAIL=$((FAIL+1)); printf '  FAIL truncated text is valid utf-8 (iconv rejected it)\n'
+    fi
+  else
+    printf '  skip truncated text utf-8 validity check (iconv not available)\n'
+  fi
+}
+
 run_suite

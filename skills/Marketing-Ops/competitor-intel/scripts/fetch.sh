@@ -45,7 +45,7 @@ stripped="$(printf '%s' "$flat" | awk '
     tag = substr(lo, RSTART + 1, RLENGTH - 2)
     sub(/[^a-z].*$/, "", tag)
     rest = substr(s, RSTART + RLENGTH)
-    if (match(tolower(rest), "</" tag "[^>]*>") == 0) break
+    if (match(tolower(rest), "</" tag "[^>]*>") == 0) { out = out rest; break }
     s = substr(rest, RSTART + RLENGTH)
   }
   print out
@@ -84,7 +84,8 @@ links="$(printf '%s' "$stripped" \
 
 text="$(printf '%s' "$stripped" | sed -e 's/<[^>]*>/ /g' \
         | sed -e 's/&nbsp;/ /g' -e 's/&amp;/\&/g' -e 's/&quot;/"/g' -e "s/&#39;/$sq/g" \
-        | tr -s ' ' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | cut -c1-"$max_text")"
+        | tr -s ' ' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \
+        | LC_ALL=C.UTF-8 awk -v n="$max_text" '{ print substr($0, 1, n) }')"
 
 echo "TITLE: $title"
 echo "META: $meta"
