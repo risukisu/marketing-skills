@@ -68,6 +68,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 | Skill | One line |
 |---|---|
 | `/customer-research` | Three modes: extract signal from transcripts and tickets, mine public reviews and forums, or run interviews and surveys; outputs JTBD, pains, triggers, and the customer's own words |
+| `/competitor-intel` | Scans competitor sites and ad libraries, diffs against the last run, and writes a briefing. No dependencies by default; optional Playwright tier for screenshots and LinkedIn ads |
 
 **Conversion**
 

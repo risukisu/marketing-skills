@@ -10,7 +10,7 @@ pass 2026-07-23, kept current since.
 **Layout:** `skills/<Category>/<skill>`, three categories (Writing, SEO, Marketing Ops). Skills reach
 `~/.claude/skills` through links made by `install.ps1` / `install.sh`.
 
-## The skills — 44
+## The skills — 45
 
 | Skill | Domain | Source | License evidence | Verdict | Notes |
 |---|---|---|---|---|---|
@@ -58,8 +58,9 @@ pass 2026-07-23, kept current since.
 | customer-research | Marketing Ops | coreyhaines31/marketingskills v2.0.2 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Three research modes: analyze assets, mine public signal, run interviews/surveys |
 | lead-magnets | Marketing Ops | coreyhaines31/marketingskills v2.0.0 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Plan, format, and distribute gated offers |
 | marketing-council | Marketing Ops | coreyhaines31/marketingskills v1.0.0 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Simulated advisor board, 12 dossiers in references/advisors; grounding rules keep it labeled as simulation |
+| competitor-intel | Marketing Ops | Own | root MIT | MIT-clear | Added 2026-09-11. Supersedes the `risukisu/ci-agent` prototype. Deep tier reads the public LinkedIn Ad Library — ToS notice in `scripts/deep/scan.mjs` |
 
-**44 skills across 3 categories.**
+**45 skills across 3 categories.**
 
 ## Not vendored: data connections
 
