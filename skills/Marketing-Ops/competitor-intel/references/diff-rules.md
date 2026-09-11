@@ -32,10 +32,26 @@ transform.
 ## 2. Match pages in this precedence
 
 **De-duplicate first.** Before matching, de-duplicate each snapshot's `pages[]` by normalized
-URL, keeping the first occurrence and dropping the rest (e.g. a page reached via both `nav` and
-`sitemap` that was emitted twice). `pages[]` is model-assembled, not script-deduplicated, so
-this cannot be assumed away. If any duplicates were dropped, note it in Data notes (which URL,
-how many copies).
+URL (e.g. a page reached via both `nav` and `sitemap` that was emitted twice). `pages[]` is
+model-assembled, not script-deduplicated, and nothing guarantees its entries arrive in any
+particular order — so the winner among a group of duplicates must be chosen by a rule that
+gives the same answer regardless of input order, never by "whichever came first." When two or
+more entries share a normalized URL, apply this precedence in order until exactly one entry
+remains:
+
+1. Prefer the entry with a non-empty `title`. If both (or neither) have one, continue.
+2. Prefer the entry with a non-empty `h1`. If still tied, continue.
+3. Prefer the entry with the longer `text` (by character count). If still tied, continue.
+4. Break the remaining tie on the **raw** (non-normalized) `url` string, lexicographically
+   smallest wins — raw, not normalized, since by this point the normalized forms are equal by
+   definition and can't break the tie.
+
+Step 4 always terminates with a single winner and never depends on arrival order, so the same
+duplicate group produces the same winner no matter how `pages[]` was assembled. Drop every
+losing entry. If any duplicates were resolved this way, note it in Data notes — "Data notes" is
+the final section of the briefing, defined in `references/briefing-format.md` — recording the
+normalized URL that had duplicates, how many entries shared it, and the raw `url` of the entry
+that won.
 
 For each competitor, match the de-duplicated previous snapshot's `pages[]` against the
 de-duplicated current snapshot's `pages[]`, trying each rule in order until one produces a
