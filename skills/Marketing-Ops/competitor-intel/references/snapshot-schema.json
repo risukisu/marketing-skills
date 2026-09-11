@@ -1,0 +1,26 @@
+{
+  "name": "",
+  "url": "",
+  "fetchedAt": "",
+  "tier": "default",
+  "home": {
+    "title": "",
+    "metaDescription": "",
+    "h1": "",
+    "headings": [],
+    "text": ""
+  },
+  "pages": [
+    {
+      "url": "",
+      "kind": "other",
+      "source": "nav",
+      "title": "",
+      "h1": "",
+      "text": ""
+    }
+  ],
+  "linkedinAds": { "tier": "default", "count": 0, "ads": [] },
+  "screenshots": { "home": "", "pages": {} },
+  "errors": []
+}
