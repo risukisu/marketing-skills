@@ -1,0 +1,23 @@
+{
+  "skill_name": "cinemagraph",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a static chart PNG for our landing page hero (chart.png in this folder, two curves and a dotted 'no further work' line with a marker at week 16). Can you make it slightly animated, like the hero in my README, without changing how the chart looks? It goes in a Webflow hero next to the H1.",
+      "expected_output": "Asks the one intake question (light vs heavy, output format), then light mode: identifies the dotted line, marker and hatch as motion candidates, leaves curves/text still, delivers an animated WebP + static PNG + source HTML, opaque canvas, verifies seam and fidelity.",
+      "files": ["chart.png"]
+    },
+    {
+      "id": 2,
+      "prompt": "Take this architecture diagram (arch.png) and motionize it for a conference slide: I'm fine with you adding stuff like data flowing along the arrows or a scanning effect, but the diagram itself has to stay 95% the same. Needs to be a GIF because the slide tool doesn't take WebP.",
+      "expected_output": "Confirms heavy mode and GIF output, redraws or overlays, adds flow along connectors and at most one other added motion, keeps boxes/labels untouched, delivers GIF + PNG + source, checks size and loop seam.",
+      "files": ["arch.png"]
+    },
+    {
+      "id": 3,
+      "prompt": "make this product screenshot feel alive for a linkedin post, subtle please, dont redesign anything (shot.png)",
+      "expected_output": "Asks the intake question briefly, recognises a UI screenshot (overlay or region loop, not redraw), proposes 1-2 motions such as a cursor blink or a pulsing status dot, refuses to move text, delivers WebP + PNG + source.",
+      "files": ["shot.png"]
+    }
+  ]
+}

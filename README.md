@@ -96,6 +96,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 | Skill | One line |
 |---|---|
 | `/beautify-github-readme` | Turns a repository README into a cohesive visual story; every marketer has a GitHub in 2026 |
+| `/cinemagraph` | Turns a static hero, chart or diagram into a subtle seamless loop (animated WebP + PNG fallback). Light mode moves only what is already there; heavy mode adds moving elements and keeps ~95% of the image |
 | `/frontend-design-anti-slop` | Builds or reviews web UI with real design taste; a named anti-pattern list for the generic AI look (purple gradients, rounded-xl, "Transform your X") |
 
 ### What's in the repo
@@ -118,7 +119,7 @@ marketing-skills/
 │   │   │   └── agents/             18 sub-agents, copied to ~/.claude/agents by the installer
 │   │   └── seo-report/             SKILL.md + references/
 │   └── Marketing-Ops/
-│       ├── beautify-github-readme/     content-strategy/     cro/
+│       ├── beautify-github-readme/     cinemagraph/     content-strategy/     cro/
 │       ├── customer-research/          frontend-design-anti-slop/
 │       ├── lead-magnets/               linkedin-ads/         marketing-council/
 │       ├── marketing-monthly/          campaign-report/      product-launch/

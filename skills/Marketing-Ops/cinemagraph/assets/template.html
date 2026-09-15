@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- Load the fonts the source uses. Most brand systems are on Google Fonts. -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Fixed canvas. Set --w/--h to about 2x the embed width for retina crispness.
+     Keep the page OPAQUE unless the user needs a floating cut-out; radius and shadow
+     belong on the host <img> or background element, not in the image. */
+  :root { --w: 1300px; --h: 820px; --bg: #ffffff; }
+  * { margin: 0; box-sizing: border-box; }
+  html, body { width: var(--w); height: var(--h); overflow: hidden; background: var(--bg); }
+  .stage { position: relative; width: var(--w); height: var(--h); }
+
+  /* OVERLAY / REGION-LOOP technique: the original raster as the base layer. */
+  .base { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* REDRAW technique: delete .base and draw the whole image in the SVG below. */
+  svg.layer { position: absolute; inset: 0; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <!-- Overlay / region loop: keep the untouched source underneath. -->
+  <img class="base" src="SOURCE_IMAGE.png" alt="">
+
+  <svg class="layer" viewBox="0 0 1300 820" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- A repeating texture that will DRIFT: give the inner group an id. -->
+      <pattern id="hatch" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+        <g id="hatchg"><line x1="0" y1="0" x2="0" y2="22" stroke="#e86b80" stroke-opacity=".38" stroke-width="2"/></g>
+      </pattern>
+    </defs>
+
+    <!-- MARCH: dots travel along their own line by one period per loop. -->
+    <line id="dots" x1="700" y1="525" x2="1230" y2="525" stroke="#1fa8ff" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="0 24"/>
+
+    <!-- PULSE: two rings offset by half a phase make the pulse continuous. -->
+    <circle id="ring1" cx="690" cy="525" r="14" fill="none" stroke="#1fa8ff" stroke-width="3"/>
+    <circle id="ring2" cx="690" cy="525" r="14" fill="none" stroke="#1fa8ff" stroke-width="3"/>
+  </svg>
+</div>
+
+<script>
+  // Every animated property is a pure function of p in [0,1). setPhase(1) must equal setPhase(0).
+  const PERIOD_DOTS = 24;   // must equal the dasharray period
+  const PERIOD_HATCH = 22;  // must equal the pattern width
+  function ring(id, q) {
+    const e = document.getElementById(id);
+    e.setAttribute('r', (14 + q * 34).toFixed(2));
+    e.setAttribute('stroke-opacity', (0.7 * (1 - q)).toFixed(3));
+  }
+  function setPhase(p) {
+    document.getElementById('dots').setAttribute('stroke-dashoffset', (-p * PERIOD_DOTS).toFixed(2));
+    document.getElementById('hatchg').setAttribute('transform', 'translate(' + (p * PERIOD_HATCH).toFixed(2) + ' 0)');
+    ring('ring1', p);
+    ring('ring2', (p + 0.5) % 1);
+  }
+  window.setPhase = setPhase;
+  setPhase(0);
+</script>
+</body>
+</html>
