@@ -2,6 +2,10 @@
 
 Releases are tagged on `master`; notes live here and on the GitHub release.
 
+## v1.1.1 — 2026-09-15
+
+**Visual category completed.** `/beautify-github-readme` and `/frontend-design-anti-slop` move from Marketing Ops into `skills/Visual/`, next to `/cinemagraph`. No skill content changed; the Presence block in the README is dissolved into the Visual section. Existing junctions or symlinks made by an earlier `install.ps1` / `install.sh` run point at the old paths: re-run the installer once after pulling.
+
 ## v1.1.0 — 2026-09-15
 
 **New category: Visual** (`skills/Visual/`). Skills that produce or transform visual assets rather than text or analysis.

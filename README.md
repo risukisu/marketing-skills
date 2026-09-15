@@ -92,17 +92,12 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 |---|---|
 | `/linkedin-ads` | B2B LinkedIn Ads co-pilot: budget math, targeting, campaign setup traps, thought-leader and conversation ad copy |
 
-**Presence**
+### Visual — `skills/Visual/`
 
 | Skill | One line |
 |---|---|
 | `/beautify-github-readme` | Turns a repository README into a cohesive visual story; every marketer has a GitHub in 2026 |
 | `/frontend-design-anti-slop` | Builds or reviews web UI with real design taste; a named anti-pattern list for the generic AI look (purple gradients, rounded-xl, "Transform your X") |
-
-### Visual — `skills/Visual/`
-
-| Skill | One line |
-|---|---|
 | `/cinemagraph` | Turns a static hero, chart or diagram into a subtle seamless loop (animated WebP + PNG fallback, GIF on request). Light mode moves only what is already in the image; heavy mode adds moving elements and keeps ~95% of it. Phase-parametric HTML rendered with Playwright, seam-checked |
 
 ### What's in the repo
@@ -125,13 +120,14 @@ marketing-skills/
 │   │   │   └── agents/             18 sub-agents, copied to ~/.claude/agents by the installer
 │   │   └── seo-report/             SKILL.md + references/
 │   ├── Marketing-Ops/
-│       ├── beautify-github-readme/     content-strategy/     cro/
-│       ├── customer-research/          frontend-design-anti-slop/
+│       ├── content-strategy/           cro/                  customer-research/
 │       ├── lead-magnets/               linkedin-ads/         marketing-council/
 │       ├── marketing-monthly/          campaign-report/      product-launch/
 │       └── pipeline-analysis/          SKILL.md + definitions.md + compute_funnel.py + tests + references/
 │   └── Visual/
-│       └── cinemagraph/                SKILL.md + scripts/ (probe, phase renderer) + references/ + assets/template.html
+│       ├── beautify-github-readme/     SKILL.md + references/ + scripts/ (SVG render, motion GIF)
+│       ├── cinemagraph/                SKILL.md + scripts/ (probe, phase renderer) + references/ + assets/template.html
+│       └── frontend-design-anti-slop/  SKILL.md + references/
 ├── assets/readme/                  hero, section headers, social preview
 │   └── archive/                    superseded heroes with their sources
 ├── brand/                          the visual system
