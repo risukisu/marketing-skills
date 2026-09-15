@@ -7,10 +7,10 @@ or `LICENSE.txt` inside their own folder. [`NOTICE`](./NOTICE) maps folders to l
 Audited by reading every folder: license files, `SKILL.md` contents, references and scripts. First
 pass 2026-07-23, kept current since.
 
-**Layout:** `skills/<Category>/<skill>`, three categories (Writing, SEO, Marketing Ops). Skills reach
+**Layout:** `skills/<Category>/<skill>`, four categories (Writing, SEO, Marketing Ops, Visual). Skills reach
 `~/.claude/skills` through links made by `install.ps1` / `install.sh`.
 
-## The skills — 48
+## The skills — 49
 
 | Skill | Domain | Source | License evidence | Verdict | Notes |
 |---|---|---|---|---|---|
@@ -54,7 +54,7 @@ pass 2026-07-23, kept current since.
 | beautify-github-readme | Marketing Ops | oil-oil/beautify-github-readme | MIT © 2026 oil-oil (LICENSE in folder) | MIT-clear | Ingested 2026-08-20; scripts reviewed (local-only: SVG render + ffmpeg GIF, no network). Kept in scope by owner call 2026-08-31: a marketer's GitHub presence is marketing |
 | content-strategy | Marketing Ops | Own; framework credited to Andy Crestodina (Orbit Media) | root MIT | MIT-clear | Built 2026-09-04. Original distillation, credit inline in SKILL.md + every reference; evals in `evals/`. Context is user-approved per run (scan launch dir → ask); optional untracked `references/*-context.local.md` packs |
 | frontend-design-anti-slop | Marketing Ops | Own (also listed on skillcraft.cloud/marketplace) | root MIT | MIT-clear | Added 2026-09-05 from the SkillCraft staging copy (`projects/skills-trader/docs/skills-staging/`); interactive intake built in |
-| cinemagraph | Marketing Ops | Own | root MIT | MIT-clear | Built 2026-09-15. Turns a static image into a subtle seamless loop (light: move only what exists; heavy: add elements, keep ~95%). Local-only Playwright + Pillow render, no network beyond Google Fonts at render time; evals in `evals/` (drafted, not yet run) |
+| cinemagraph | Visual | Own | root MIT | MIT-clear | Built 2026-09-15. Turns a static image into a subtle seamless loop (light: move only what exists; heavy: add elements, keep ~95%). Local-only Playwright + Pillow render, no network beyond Google Fonts at render time; evals in `evals/` (drafted, not yet run) |
 | cro | Marketing Ops | coreyhaines31/marketingskills v2.0.0 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Conversion audit of pages and forms |
 | customer-research | Marketing Ops | coreyhaines31/marketingskills v2.0.2 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Three research modes: analyze assets, mine public signal, run interviews/surveys |
 | lead-magnets | Marketing Ops | coreyhaines31/marketingskills v2.0.0 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Plan, format, and distribute gated offers |

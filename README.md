@@ -20,6 +20,7 @@ Every skill here runs real marketing work every week. This is not a showcase of 
 | "How much should we spend on LinkedIn?" | `/linkedin-ads` does the budget math and the campaign setup, traps included |
 | "This reads like AI wrote it." | `/copy-deslop` checks the copy against the live list of AI-writing tells and fixes it |
 | "What would Ogilvy say about this?" | `/marketing-council` seats a simulated board of 12 marketing thinkers and maps where they disagree |
+| "Make this hero move, but subtly." | `/cinemagraph` turns the still image into a seamless loop and moves only what is already in it |
 
 Nothing here needs an API key to start. Connect Google Analytics and Search Console and the data-driven skills switch from asking you for numbers to pulling them.
 
@@ -31,7 +32,7 @@ Nothing here needs an API key to start. Connect Google Analytics and Search Cons
   <img src="./assets/readme/section-shelf.svg" width="100%" alt="Section 01 — The Shelf: one folder per skill, the folder name is the command.">
 </p>
 
-**47 skills, 3 categories.** Each skill is one folder with a `SKILL.md`; the folder name is the slash command.
+**49 skills, 4 categories.** Each skill is one folder with a `SKILL.md`; the folder name is the slash command.
 
 ### Writing — `skills/Writing/`
 
@@ -96,8 +97,13 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 | Skill | One line |
 |---|---|
 | `/beautify-github-readme` | Turns a repository README into a cohesive visual story; every marketer has a GitHub in 2026 |
-| `/cinemagraph` | Turns a static hero, chart or diagram into a subtle seamless loop (animated WebP + PNG fallback). Light mode moves only what is already there; heavy mode adds moving elements and keeps ~95% of the image |
 | `/frontend-design-anti-slop` | Builds or reviews web UI with real design taste; a named anti-pattern list for the generic AI look (purple gradients, rounded-xl, "Transform your X") |
+
+### Visual — `skills/Visual/`
+
+| Skill | One line |
+|---|---|
+| `/cinemagraph` | Turns a static hero, chart or diagram into a subtle seamless loop (animated WebP + PNG fallback, GIF on request). Light mode moves only what is already in the image; heavy mode adds moving elements and keeps ~95% of it. Phase-parametric HTML rendered with Playwright, seam-checked |
 
 ### What's in the repo
 
@@ -118,12 +124,14 @@ marketing-skills/
 │   │   │   ├── seo-technical/  seo-geo/  seo-schema/  …27 more specialists
 │   │   │   └── agents/             18 sub-agents, copied to ~/.claude/agents by the installer
 │   │   └── seo-report/             SKILL.md + references/
-│   └── Marketing-Ops/
-│       ├── beautify-github-readme/     cinemagraph/     content-strategy/     cro/
+│   ├── Marketing-Ops/
+│       ├── beautify-github-readme/     content-strategy/     cro/
 │       ├── customer-research/          frontend-design-anti-slop/
 │       ├── lead-magnets/               linkedin-ads/         marketing-council/
 │       ├── marketing-monthly/          campaign-report/      product-launch/
 │       └── pipeline-analysis/          SKILL.md + definitions.md + compute_funnel.py + tests + references/
+│   └── Visual/
+│       └── cinemagraph/                SKILL.md + scripts/ (probe, phase renderer) + references/ + assets/template.html
 ├── assets/readme/                  hero, section headers, social preview
 │   └── archive/                    superseded heroes with their sources
 ├── brand/                          the visual system
