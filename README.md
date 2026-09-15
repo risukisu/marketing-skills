@@ -34,7 +34,7 @@ Nothing here needs an API key to start. Connect Google Analytics and Search Cons
 
 **49 skills, 4 categories.** Each skill is one folder with a `SKILL.md`; the folder name is the slash command.
 
-### Writing — `skills/Writing/`
+### ✍️ Writing — `skills/Writing/`
 
 | Skill | One line |
 |---|---|
@@ -42,7 +42,7 @@ Nothing here needs an API key to start. Connect Google Analytics and Search Cons
 | `/copy-deslop` | Flags and fixes AI-sounding copy against the live Wikipedia "signs of AI writing" list |
 | `/copy-longform` | Page-by-page copyedit workflow for long documents, with a tracked edit list that survives session resets |
 
-### SEO — `skills/SEO/`
+### 🔎 SEO — `skills/SEO/`
 
 Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDaniel/claude-seo) suite by [AgriciDaniel](https://github.com/AgriciDaniel) (v2.2.5, MIT, 31 skills in `skills/SEO/claude-seo/`) and one home-grown report skill.
 
@@ -54,7 +54,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 
 `/seo` and `/seo-audit` delegate to 29 specialist skills and 18 sub-agents: technical, schema, sitemaps, hreflang, images, content quality, GEO for AI search, local and maps, ecommerce, backlinks, and connectors for Google APIs, DataForSEO, Firecrawl, Ahrefs, Bing, and more. Every specialist is also callable on its own (`/seo-technical`, `/seo-schema`, `/seo-geo`, ...) when you want one check without the full fan-out. Full list with one-liners: [`INVENTORY.md`](./INVENTORY.md#tracked-skills) or the [upstream README](https://github.com/AgriciDaniel/claude-seo#readme). The sub-agents live in `skills/SEO/claude-seo/agents/` and `install.ps1` copies them into `~/.claude/agents`; the suite's Python runtime is created once with `claude-seo setup`.
 
-### Marketing Ops — `skills/Marketing-Ops/`
+### ⚙️ Marketing Ops — `skills/Marketing-Ops/`
 
 **Strategy and decisions**
 
@@ -92,7 +92,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 |---|---|
 | `/linkedin-ads` | B2B LinkedIn Ads co-pilot: budget math, targeting, campaign setup traps, thought-leader and conversation ad copy |
 
-### Visual — `skills/Visual/`
+### 🎨 Visual — `skills/Visual/`
 
 | Skill | One line |
 |---|---|
