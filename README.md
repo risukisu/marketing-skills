@@ -2,6 +2,10 @@
   <img src="./assets/readme/hero.gif" width="100%" alt="One marketer's OS. A schematic of the library in three columns. Rank: audit the whole site, why isn't this ranking, does ChatGPT cite us. Plan and convert: the blog brings no leads, this page isn't converting, how much for LinkedIn. Write and ship: help me draft this post, sounds like AI wrote it. Ask in plain words, answer a couple of questions, get the work done. Wired to Claude Code, GA4, Search Console, DataForSEO, Firecrawl and GitHub. MIT, no API keys needed to start, two lines to install.">
 </p>
 
+<p align="center">
+  <a href="https://skills.abialas.pl/"><b>skills.abialas.pl</b></a> — the shelf, the demos and the install, on one page
+</p>
+
 A working marketer's skill library for Claude Code. Type a slash command, or describe the problem in your own words, and the matching skill asks you a couple of questions, reads your files only when you say yes, and does the work: a 500-page SEO audit, a content strategy with a quarterly plan, a conversion review of the page that isn't converting, a launch plan, a LinkedIn Ads budget, a draft in your voice with the AI tells scrubbed out.
 
 Every skill here runs real marketing work every week. This is not a showcase of skill ideas; it's the toolshed, with the sawdust left in.

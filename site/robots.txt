@@ -1,0 +1,8 @@
+# marketing-skills — https://skills.abialas.pl/
+# Everything here is public and meant to be indexed, by search engines and by
+# AI crawlers alike. Nothing is disallowed.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://skills.abialas.pl/sitemap.xml

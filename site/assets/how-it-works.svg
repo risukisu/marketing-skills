@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="t d">
+<title id="t">How a skill runs</title>
+<desc id="d">Five stages: you say what you need, the skill asks a couple of questions, scans your folder and reads files only with your yes, pulls live data when connected, and saves the work as a file. Unknown numbers are labeled, never invented.</desc>
+<rect width="1200" height="400" rx="18" fill="#0e100d"/>
+<defs><pattern id="dots" width="36" height="36" patternUnits="userSpaceOnUse"><circle cx="1.4" cy="1.4" r="1.4" fill="#1d211b"/></pattern></defs><rect width="1200" height="400" rx="18" fill="url(#dots)" opacity=".55"/>
+<rect x="1" y="1" width="1198" height="398" rx="17" fill="none" stroke="#262b23"/>
+<text x="40" y="50" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" letter-spacing="2.4" fill="#5b6156">HOW A SKILL RUNS</text>
+<text x="1160" y="50" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#899084">same shape, every skill</text>
+<rect x="40.0" y="96" width="196.8" height="236" rx="14" fill="#151813" stroke="#262b23"/>
+<rect x="40.0" y="96" width="196.8" height="4" rx="2" fill="#3fd68c" opacity=".9"/>
+<rect x="68.5" y="120.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="63.5" y="125.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="68.5" y="125.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="68.5" y="130.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="68.5" y="135.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="68.5" y="140.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="68.5" y="145.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="63.5" y="150.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="68.5" y="150.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="73.5" y="150.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<text x="100.0" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" font-size="24" font-weight="800" fill="#e9ebe3">you say</text>
+<text x="58.0" y="192" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">"the blog brings</text>
+<text x="58.0" y="220" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">no leads"</text>
+<text x="58.0" y="248" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">plain words or</text>
+<text x="58.0" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">a slash command</text>
+<path d="M 240.8 214.0 L 266.8 214.0" stroke="#5b6156" stroke-width="1.6" stroke-dasharray="4 5"/>
+<path d="M 259.8 209.0 L 266.8 214.0 L 259.8 219.0" fill="none" stroke="#5b6156" stroke-width="1.6"/>
+<rect x="270.8" y="96" width="196.8" height="236" rx="14" fill="#151813" stroke="#262b23"/>
+<rect x="270.8" y="96" width="196.8" height="4" rx="2" fill="#e8a13d" opacity=".9"/>
+<rect x="294.3" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="299.3" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="304.3" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="289.3" y="125.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="309.3" y="125.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="309.3" y="130.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="304.3" y="135.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="299.3" y="140.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="294.3" y="145.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="289.3" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="294.3" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="299.3" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="304.3" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="309.3" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<text x="330.8" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" font-size="24" font-weight="800" fill="#e9ebe3">it asks</text>
+<text x="288.8" y="192" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">a couple of</text>
+<text x="288.8" y="220" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">questions, one</text>
+<text x="288.8" y="248" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">at a time</text>
+<text x="288.8" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">never assumes</text>
+<path d="M 471.6 214.0 L 497.6 214.0" stroke="#5b6156" stroke-width="1.6" stroke-dasharray="4 5"/>
+<path d="M 490.6 209.0 L 497.6 214.0 L 490.6 219.0" fill="none" stroke="#5b6156" stroke-width="1.6"/>
+<rect x="501.6" y="96" width="196.8" height="236" rx="14" fill="#151813" stroke="#262b23"/>
+<rect x="501.6" y="96" width="196.8" height="4" rx="2" fill="#7c8cf0" opacity=".9"/>
+<rect x="520.1" y="120.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="525.1" y="120.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="530.1" y="120.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="535.1" y="120.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="540.1" y="125.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="540.1" y="130.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="525.1" y="135.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="530.1" y="135.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="535.1" y="135.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="540.1" y="140.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="540.1" y="145.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="520.1" y="150.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="525.1" y="150.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="530.1" y="150.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<rect x="535.1" y="150.5" width="4" height="4" rx="1" fill="#7c8cf0"/>
+<text x="561.6" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" font-size="24" font-weight="800" fill="#e9ebe3">your files</text>
+<text x="519.6" y="192" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">scans the folder,</text>
+<text x="519.6" y="220" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">lists what it</text>
+<text x="519.6" y="248" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">found, reads only</text>
+<text x="519.6" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">with your yes</text>
+<path d="M 702.4 214.0 L 728.4 214.0" stroke="#5b6156" stroke-width="1.6" stroke-dasharray="4 5"/>
+<path d="M 721.4 209.0 L 728.4 214.0 L 721.4 219.0" fill="none" stroke="#5b6156" stroke-width="1.6"/>
+<rect x="732.4" y="96" width="196.8" height="236" rx="14" fill="#151813" stroke="#262b23"/>
+<rect x="732.4" y="96" width="196.8" height="4" rx="2" fill="#3fd68c" opacity=".9"/>
+<rect x="765.9" y="120.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="760.9" y="125.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="765.9" y="125.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="755.9" y="130.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="765.9" y="130.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="750.9" y="135.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="765.9" y="135.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="750.9" y="140.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="755.9" y="140.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="760.9" y="140.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="765.9" y="140.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="770.9" y="140.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="765.9" y="145.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<rect x="765.9" y="150.5" width="4" height="4" rx="1" fill="#3fd68c"/>
+<text x="792.4" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" font-size="24" font-weight="800" fill="#e9ebe3">your data</text>
+<text x="750.4" y="192" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">GA4 and Search</text>
+<text x="750.4" y="220" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">Console when</text>
+<text x="750.4" y="248" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">connected, else</text>
+<text x="750.4" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">it asks you</text>
+<path d="M 933.2 214.0 L 959.2 214.0" stroke="#5b6156" stroke-width="1.6" stroke-dasharray="4 5"/>
+<path d="M 952.2 209.0 L 959.2 214.0 L 952.2 219.0" fill="none" stroke="#5b6156" stroke-width="1.6"/>
+<rect x="963.2" y="96" width="196.8" height="236" rx="14" fill="#151813" stroke="#262b23"/>
+<rect x="963.2" y="96" width="196.8" height="4" rx="2" fill="#e8a13d" opacity=".9"/>
+<rect x="981.7" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="986.7" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="991.7" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="996.7" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="1001.7" y="120.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="981.7" y="125.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="981.7" y="130.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="981.7" y="135.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="986.7" y="135.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="991.7" y="135.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="996.7" y="135.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="1001.7" y="140.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="1001.7" y="145.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="981.7" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="986.7" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="991.7" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<rect x="996.7" y="150.5" width="4" height="4" rx="1" fill="#e8a13d"/>
+<text x="1023.2" y="150" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif" font-size="24" font-weight="800" fill="#e9ebe3">the work</text>
+<text x="981.2" y="192" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">a strategy, audit,</text>
+<text x="981.2" y="220" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">brief or draft,</text>
+<text x="981.2" y="248" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">saved as a file</text>
+<text x="981.2" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#b4bab0">you can edit</text>
+<text x="600.0" y="368" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Courier New', monospace" font-size="18" fill="#899084">a number the skill cannot get is written as <tspan fill="#3fd68c" font-weight="700">unknown</tspan>, never invented</text>
+</svg>

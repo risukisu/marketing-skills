@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>marketing-skills — a working marketer's skill library for Claude Code</title>
+<meta name="description" content="Type the problem in your own words. The matching skill asks a couple of questions, reads your files only when you say yes, and does the work. MIT, no API keys.">
+<link rel="canonical" href="https://skills.abialas.pl/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="Andrzej Białaś">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="marketing-skills">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="marketing-skills — a working marketer's skill library for Claude Code">
+<meta property="og:description" content="Type the problem in your own words. The matching skill asks a couple of questions, reads your files only when you say yes, and does the work. MIT, no API keys.">
+<meta property="og:url" content="https://skills.abialas.pl/">
+<meta property="og:image" content="https://skills.abialas.pl/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="The marketing-skills schematic: three columns of what a marketer types and the command that answers it.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="marketing-skills — a working marketer's skill library for Claude Code">
+<meta name="twitter:description" content="Type the problem in your own words. The matching skill asks a couple of questions, reads your files only when you say yes, and does the work. MIT, no API keys.">
+<meta name="twitter:image" content="https://skills.abialas.pl/assets/og-image.png">
+<meta name="twitter:image:alt" content="The marketing-skills schematic: three columns of what a marketer types and the command that answers it.">
+
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+<meta name="theme-color" content="#0e100d">
+
+<style>
+/* ── tokens ──────────────────────────────────────────────────────────── */
+:root{
+  --ground:#0e100d;
+  --panel:#151813;
+  --line:#262b23;
+  --line-2:#20241d;
+  --ink:#e9ebe3;
+  --muted:#b4bab0;
+  --muted-2:#899084;
+  --dim:#5b6156;          /* decoration only — too low contrast for text */
+  --dim-text:#7d8478;     /* the readable dim */
+  --green:#3fd68c;
+  --amber:#e8a13d;
+  --blue:#7c8cf0;
+
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --gut: clamp(20px, 5vw, 64px);
+  --max: 1160px;
+  --nav-h: 53px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:calc(var(--nav-h) + 24px)}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--muted);
+  font:400 15px/1.65 var(--mono);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* the square dot grid — same 1.4px square as the brand motif */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='1.4' height='1.4' fill='%235b6156'/%3E%3C/svg%3E");
+}
+main,header,footer{position:relative; z-index:1}
+
+a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line)}
+a:hover{border-bottom-color:var(--green)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--green); outline-offset:3px}
+
+.wrap{max-width:var(--max); margin:0 auto; padding:0 var(--gut)}
+
+h1,h2,h3{font-family:var(--sans); font-weight:800; letter-spacing:-.025em; color:var(--ink); margin:0}
+
+/* ── nav ─────────────────────────────────────────────────────────────── */
+.nav{
+  position:sticky; top:0; z-index:50; height:var(--nav-h);
+  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter:blur(10px);
+}
+.nav .wrap{display:flex; align-items:center; gap:28px; height:100%}
+.nav-mark{display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--ink); border:0; letter-spacing:.01em}
+.nav-mark i{width:8px; height:8px; background:var(--green); display:block; flex:none}
+.nav-links{display:flex; gap:22px; margin-left:auto; font-size:13px}
+.nav-links a{color:var(--muted-2); border:0}
+.nav-links a:hover{color:var(--ink)}
+.nav-gh{color:var(--ink)!important; border-bottom:1px solid var(--line)!important; padding-bottom:1px}
+@media (max-width:760px){ .nav-links a:not(.nav-gh){display:none} }
+
+/* ── generic section furniture ───────────────────────────────────────── */
+section{padding:clamp(56px,7vw,92px) 0; border-top:1px solid var(--line)}
+.shead{display:flex; align-items:baseline; gap:16px; margin-bottom:10px}
+.shead .num{font-size:12px; color:var(--dim-text); letter-spacing:.14em}
+.shead h2{font-size:clamp(1.5rem,3.1vw,2.1rem)}
+.sdek{color:var(--muted-2); max-width:62ch; margin:0 0 38px; font-size:14.5px}
+
+.rule{height:1px; background:var(--line); position:relative}
+.rule::after{content:""; position:absolute; right:0; top:-2px; width:5px; height:5px; background:var(--line)}
+
+/* ── hero ────────────────────────────────────────────────────────────── */
+.hero{padding:clamp(60px,9vw,120px) 0 clamp(48px,6vw,76px); border-top:0}
+.hero h1{font-size:clamp(2.1rem,5.6vw,3.9rem); line-height:1.03; letter-spacing:-.035em; max-width:17ch}
+.hero h1 em{font-style:normal; color:var(--amber)}
+.hero-dek{margin:26px 0 0; max-width:60ch; color:var(--muted); font-size:15.5px}
+.hero-meta{display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:22px; font-size:12.5px; color:var(--dim-text); letter-spacing:.04em}
+.hero-meta span{display:flex; align-items:center; gap:8px}
+.hero-meta i{width:5px;height:5px;background:var(--dim);display:block;flex:none}
+
+/* terminal */
+.term{
+  margin-top:40px; background:var(--panel); border:1px solid var(--line);
+  padding:22px clamp(16px,2.4vw,26px); font-size:clamp(13px,1.6vw,15px);
+}
+.term-bar{display:flex; gap:14px; align-items:center; font-size:11.5px; color:var(--dim-text);
+  letter-spacing:.14em; border-bottom:1px solid var(--line-2); padding-bottom:12px; margin-bottom:18px}
+.term-bar b{font-weight:400; color:var(--dim-text)}
+.term-bar .dots{display:flex; gap:5px; margin-left:auto}
+.term-bar .dots i{width:5px;height:5px;background:var(--line);display:block}
+.term-line{display:flex; gap:12px; align-items:flex-start; min-height:1.65em}
+.term-line .p{color:var(--blue); flex:none}
+.term-ask{color:var(--ink)}
+.cursor{display:inline-block; width:8px; height:1.05em; background:var(--green); vertical-align:-2px; margin-left:2px}
+.cursor.blink{animation:bl 1.05s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.term-ans{display:grid; grid-template-columns:auto 1fr; gap:4px 14px; margin-top:16px; min-height:3.3em;
+  opacity:0; transform:translateY(3px); transition:opacity .28s ease, transform .28s ease}
+.term-ans.on{opacity:1; transform:none}
+.term-ans .arrow{color:var(--dim-text)}
+.term-ans .cmd{color:var(--green)}
+.term-ans .what{grid-column:2; color:var(--muted-2); font-size:.92em}
+
+.cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:26px}
+.btn{
+  display:inline-flex; align-items:center; gap:10px; padding:11px 18px; font:inherit; font-size:13.5px;
+  border:1px solid var(--line); background:transparent; color:var(--ink); cursor:pointer; border-radius:0;
+}
+.btn:hover{border-color:var(--muted-2); background:var(--panel)}
+.btn.primary{border-color:var(--green); color:var(--green)}
+.btn.primary:hover{background:color-mix(in srgb, var(--green) 9%, transparent)}
+.btn i{width:6px;height:6px;background:currentColor;display:block;flex:none}
+
+/* ── who it's for ────────────────────────────────────────────────────── */
+.cols{display:grid; grid-template-columns:repeat(3,1fr); gap:0}
+.cols > div{padding:0 clamp(16px,2.2vw,30px); border-left:1px solid var(--line); min-width:0}
+.cols > div:first-child{padding-left:0; border-left:0}
+.cols h3{font-size:1.02rem; margin-bottom:12px; display:flex; gap:11px; align-items:center; letter-spacing:-.01em}
+.cols h3 i{width:9px;height:9px;display:block;flex:none}
+.cols p{margin:0; font-size:14px; color:var(--muted-2)}
+@media (max-width:820px){
+  .cols{grid-template-columns:1fr}
+  .cols > div{padding:22px 0; border-left:0; border-top:1px solid var(--line)}
+  .cols > div:first-child{padding-top:0; border-top:0}
+}
+.notfor{margin-top:40px; padding-top:22px; border-top:1px solid var(--line); font-size:14px; color:var(--dim-text)}
+.notfor b{color:var(--muted); font-weight:400}
+
+/* ── tabs (shared) ───────────────────────────────────────────────────── */
+.tabs{display:flex; flex-wrap:wrap; gap:0; border-bottom:1px solid var(--line); margin-bottom:6px}
+.tab{
+  appearance:none; background:none; border:0; border-bottom:2px solid transparent; color:var(--muted-2);
+  font:inherit; font-size:13.5px; padding:11px 0; margin-right:30px; cursor:pointer; display:flex; gap:10px; align-items:center;
+}
+.tab:last-child{margin-right:0}
+.tab i{width:8px;height:8px;display:block;flex:none;background:var(--line)}
+.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--ink)}
+.tab[aria-selected="true"] i{background:var(--c, var(--ink))}
+.tab:hover{color:var(--ink)}
+@media (max-width:620px){ .tab{margin-right:20px; font-size:12.5px} }
+
+/* ── shelf ───────────────────────────────────────────────────────────── */
+.shelf-top{display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-bottom:26px}
+.filter{
+  margin-left:auto; display:flex; align-items:center; gap:10px; border:1px solid var(--line);
+  background:var(--panel); padding:8px 13px; min-width:230px;
+}
+.filter input{background:none; border:0; color:var(--ink); font:inherit; font-size:13.5px; width:100%; padding:0}
+.filter input::placeholder{color:var(--dim-text)}
+.filter span{color:var(--dim-text); font-size:12px; flex:none}
+@media (max-width:620px){ .filter{margin-left:0; width:100%} }
+
+.grp{margin:30px 0 10px; font-size:11.5px; letter-spacing:.14em; color:var(--dim-text)}
+.grp:first-of-type{margin-top:6px}
+.row{
+  display:grid; grid-template-columns:minmax(180px,230px) 1fr; gap:8px 26px;
+  padding:12px 0; border-top:1px solid var(--line-2); align-items:baseline;
+}
+.row{min-width:0} .row > *{min-width:0; overflow-wrap:anywhere}
+.row .cmd{color:var(--ink); display:flex; gap:11px; align-items:baseline}
+.row .cmd i{width:6px;height:6px;display:block;flex:none; transform:translateY(-1px)}
+.row .one{color:var(--muted-2); font-size:14px}
+.row .tag{font-size:11px; color:var(--dim-text); letter-spacing:.08em; margin-left:8px}
+@media (max-width:700px){ .row{grid-template-columns:1fr; gap:4px} }
+.empty{padding:26px 0; color:var(--dim-text); font-size:14px}
+
+/* ── in action ───────────────────────────────────────────────────────── */
+.demo{padding-top:30px}
+.demo-head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:8px}
+.demo-head .cmd{color:var(--ink); font-size:1.05rem}
+.demo-head .say{color:var(--dim-text); font-size:13.5px}
+.demo-note{color:var(--muted-2); font-size:14px; margin:0 0 24px; max-width:70ch}
+
+/* before / after */
+.ba{position:relative; border:1px solid var(--line); background:var(--panel); overflow:hidden; line-height:0; touch-action:pan-y}
+.ba img{display:block; width:100%; height:auto}
+.ba-after{position:absolute; inset:0; clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+.ba-bar{position:absolute; top:0; bottom:0; left:var(--x,50%); width:1px; background:var(--ink); pointer-events:none}
+.ba-grip{position:absolute; top:50%; left:var(--x,50%); width:22px; height:22px; margin:-11px 0 0 -11px;
+  background:var(--ground); border:1px solid var(--ink); pointer-events:none;
+  display:flex; align-items:center; justify-content:center; gap:3px}
+.ba-grip b{width:2px; height:9px; background:var(--ink); display:block}
+.ba-range{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; appearance:none; background:none}
+.ba-lab{position:absolute; top:12px; font-size:11px; letter-spacing:.14em; color:var(--muted); background:color-mix(in srgb, var(--ground) 82%, transparent); padding:4px 9px; pointer-events:none}
+.ba-lab.l{left:12px} .ba-lab.r{right:12px}
+
+/* copy diff */
+.diff{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line)}
+.diff > div{padding:clamp(16px,2.2vw,26px); border-left:1px solid var(--line); min-width:0}
+.diff > div:first-child{border-left:0; background:var(--panel)}
+.diff h4{margin:0 0 16px; font:inherit; font-size:11.5px; letter-spacing:.14em; color:var(--dim-text); display:flex; gap:10px; align-items:center}
+.diff h4 i{width:7px;height:7px;display:block;flex:none}
+.diff p{margin:0; font-size:14px; line-height:1.72}
+.diff .bad{color:var(--muted-2)}
+.diff .bad mark{background:none; color:var(--amber); border-bottom:1px solid color-mix(in srgb, var(--amber) 45%, transparent)}
+.diff .good{color:var(--muted)}
+@media (max-width:820px){
+  .diff{grid-template-columns:1fr}
+  .diff > div{border-left:0; border-top:1px solid var(--line)}
+  .diff > div:first-child{border-top:0}
+}
+.tells{margin-top:18px; font-size:13px; color:var(--dim-text)}
+.tells b{color:var(--muted-2); font-weight:400}
+
+/* pending panel */
+.pending{border:1px solid var(--line); background:var(--panel); padding:clamp(22px,3vw,34px)}
+.pending .badge{display:inline-flex; align-items:center; gap:9px; font-size:11px; letter-spacing:.14em; color:var(--amber); margin-bottom:16px}
+.pending .badge i{width:7px;height:7px;background:var(--amber);display:block}
+.pending p{margin:0 0 14px; font-size:14px; color:var(--muted-2); max-width:72ch}
+.pending p:last-child{margin-bottom:0}
+.pending code{color:var(--ink)}
+
+/* ── how it runs ─────────────────────────────────────────────────────── */
+.howimg{border:1px solid var(--line); background:var(--panel); padding:clamp(14px,2vw,26px); line-height:0}
+.howimg img{width:100%; height:auto; display:block}
+.howcap{margin:16px 0 0; font-size:13px; color:var(--dim-text)}
+
+/* ── install ─────────────────────────────────────────────────────────── */
+.inst{display:grid; grid-template-columns:1fr 1fr; gap:26px}
+.inst > *{min-width:0}
+@media (max-width:900px){ .inst{grid-template-columns:1fr} }
+.code{border:1px solid var(--line); background:var(--panel); min-width:0}
+.code-top{display:flex; align-items:center; gap:12px; padding:9px 14px; border-bottom:1px solid var(--line-2); font-size:11.5px; letter-spacing:.12em; color:var(--dim-text)}
+.copy{margin-left:auto; appearance:none; background:none; border:1px solid var(--line); color:var(--muted-2);
+  font:inherit; font-size:11px; letter-spacing:.1em; padding:4px 10px; cursor:pointer}
+.copy:hover{color:var(--ink); border-color:var(--muted-2)}
+.copy.done{color:var(--green); border-color:var(--green)}
+.code pre{margin:0; padding:16px 14px; overflow-x:auto; font:inherit; font-size:13px; line-height:1.8; color:var(--muted)}
+.code pre .c{color:var(--dim-text)}
+.code pre .k{color:var(--blue)}
+.inst-notes{margin-top:30px; display:grid; grid-template-columns:repeat(2,1fr); gap:0}
+@media (max-width:820px){ .inst-notes{grid-template-columns:1fr} }
+.inst-notes > div{padding:0 clamp(14px,2vw,26px); border-left:1px solid var(--line)}
+.inst-notes > div:first-child{padding-left:0; border-left:0}
+.inst-notes h3{font-size:.95rem; margin-bottom:10px}
+.inst-notes p{margin:0; font-size:13.5px; color:var(--muted-2)}
+@media (max-width:820px){
+  .inst-notes > div{padding:20px 0; border-left:0; border-top:1px solid var(--line)}
+  .inst-notes > div:first-child{padding-top:0; border-top:0}
+}
+
+/* ── footer ──────────────────────────────────────────────────────────── */
+footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
+.foot-grid{display:grid; grid-template-columns:1.25fr 1fr; gap:clamp(26px,5vw,60px)}
+@media (max-width:820px){ .foot-grid{grid-template-columns:1fr} }
+.foot h3{font-size:11.5px; letter-spacing:.14em; color:var(--dim-text); font-family:var(--mono); font-weight:400; margin-bottom:16px}
+.prov{width:100%; border-collapse:collapse; font-size:13.5px}
+.prov td{padding:9px 0; border-top:1px solid var(--line-2); vertical-align:top; color:var(--muted-2)}
+.prov td:first-child{color:var(--muted); padding-right:20px; white-space:nowrap}
+.prov td:last-child{text-align:right; color:var(--dim-text); font-size:12.5px}
+@media (max-width:620px){ .prov td:last-child{display:none} .prov td:first-child{white-space:normal} }
+.else{list-style:none; margin:0; padding:0; font-size:13.5px}
+.else li{padding:9px 0; border-top:1px solid var(--line-2); display:flex; gap:16px; justify-content:space-between}
+.else span{color:var(--dim-text); text-align:right}
+.foot-end{display:flex; align-items:center; gap:14px; margin-top:44px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--dim-text); flex-wrap:wrap}
+.foot-end img{width:22px; height:22px; image-rendering:pixelated; display:block}
+.foot-end a{color:var(--muted-2)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important; animation-iteration-count:1!important; transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://skills.abialas.pl/#website",
+      "url": "https://skills.abialas.pl/",
+      "name": "marketing-skills",
+      "description": "A working marketer's skill library for Claude Code.",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://abialas.pl/#person" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://abialas.pl/#person",
+      "name": "Andrzej Białaś",
+      "url": "https://abialas.pl",
+      "sameAs": [
+        "https://github.com/risukisu",
+        "https://www.linkedin.com/in/andrzej-bialas/",
+        "https://risu.pl"
+      ]
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": "https://skills.abialas.pl/#software",
+      "name": "marketing-skills",
+      "headline": "A working marketer's skill library for Claude Code",
+      "description": "A library of marketing skills for Claude Code: SEO audits, content strategy, conversion reviews, customer research, LinkedIn Ads planning, launch plans and copy editing. Each skill asks a couple of questions, reads your files only with your permission, and returns the finished work as a file.",
+      "url": "https://skills.abialas.pl/",
+      "codeRepository": "https://github.com/risukisu/marketing-skills",
+      "programmingLanguage": "Markdown",
+      "runtimePlatform": "Claude Code",
+      "license": "https://opensource.org/licenses/MIT",
+      "image": "https://skills.abialas.pl/assets/og-image.png",
+      "author": { "@id": "https://abialas.pl/#person" },
+      "maintainer": { "@id": "https://abialas.pl/#person" },
+      "isPartOf": { "@id": "https://skills.abialas.pl/#website" }
+    }
+  ]
+}
+</script>
+</head>
+
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="nav-mark" href="#top"><i></i>marketing-skills</a>
+    <nav class="nav-links">
+      <a href="#who">Who it's for</a>
+      <a href="#shelf">The shelf</a>
+      <a href="#action">In action</a>
+      <a href="#how">How it runs</a>
+      <a href="#install">Install</a>
+      <a class="nav-gh" href="https://github.com/risukisu/marketing-skills">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ── hero ─────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrap">
+    <h1>A working marketer's skill library for <em>Claude&nbsp;Code</em></h1>
+    <p class="hero-dek">
+      Type a slash command, or describe the problem in your own words. The matching skill asks a
+      couple of questions, reads your files only when you say yes, and does the work.
+    </p>
+    <div class="hero-meta">
+      <span><i></i>MIT</span>
+      <span><i></i>No API key to start</span>
+      <span><i></i>Four categories</span>
+      <span><i></i>Two lines to install</span>
+    </div>
+
+    <div class="term" id="term">
+      <div class="term-bar">
+        <b>~/your-project</b>
+        <span class="dots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="term-line">
+        <span class="p">&gt;</span>
+        <span class="term-ask" id="ask"></span><span class="cursor blink" id="cur"></span>
+      </div>
+      <div class="term-ans" id="ans">
+        <span class="arrow">→</span><span class="cmd" id="cmd"></span>
+        <span class="what" id="what"></span>
+      </div>
+    </div>
+
+    <div class="cta">
+      <a class="btn primary" href="#install"><i></i>Install it</a>
+      <a class="btn" href="#shelf">Browse the shelf</a>
+      <a class="btn" href="#action">See it run</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── 01 who it's for ──────────────────────────────────────────────── -->
+<section id="who">
+  <div class="wrap">
+    <div class="shead"><span class="num">01</span><h2>Who it's for</h2></div>
+    <p class="sdek">
+      Everything here runs real marketing work every week. It is not a showcase of skill ideas;
+      it's the toolshed, with the sawdust left in.
+    </p>
+
+    <div class="cols">
+      <div>
+        <h3><i style="background:var(--green)"></i>The whole department</h3>
+        <p>You own SEO, the blog, the ads, the newsletter and the launch, and there is no specialist
+        to hand any of it to. The library is the specialist bench you don't have.</p>
+      </div>
+      <div>
+        <h3><i style="background:var(--amber)"></i>The lead who owns the number</h3>
+        <p>The board slide, the pipeline diagnosis and the campaign read have to come out the same
+        shape every month. Three reporting skills hold the format so the numbers are the only thing
+        that changes.</p>
+      </div>
+      <div>
+        <h3><i style="background:var(--blue)"></i>The consultant across clients</h3>
+        <p>Every client is a different folder and nothing may leak between them. No skill assumes a
+        layout: it scans the folder you launched from, lists what it found, and reads nothing until
+        you say yes.</p>
+      </div>
+    </div>
+
+    <p class="notfor">
+      <b>Not for you if</b> you want a dashboard product, a hosted tool, or an agency retainer.
+      This is a folder of plain-text skills you read, diff and edit, and it only does anything
+      inside Claude Code.
+    </p>
+  </div>
+</section>
+
+<!-- ── 02 the shelf ─────────────────────────────────────────────────── -->
+<section id="shelf">
+  <div class="wrap">
+    <div class="shead"><span class="num">02</span><h2>The shelf</h2></div>
+    <p class="sdek">
+      One folder per skill, each with its own <code>SKILL.md</code>. The folder name is the slash
+      command. Every skill is self-contained — take the whole library or copy one folder.
+    </p>
+
+    <div class="shelf-top">
+      <div class="tabs" role="tablist" aria-label="Skill categories">
+        <button class="tab" role="tab" data-cat="Writing"        style="--c:var(--green)"><i></i>Writing</button>
+        <button class="tab" role="tab" data-cat="SEO"            style="--c:var(--blue)"><i></i>SEO</button>
+        <button class="tab" role="tab" data-cat="Marketing Ops"  style="--c:var(--amber)"><i></i>Marketing&nbsp;Ops</button>
+        <button class="tab" role="tab" data-cat="Visual"         style="--c:var(--ink)"><i></i>Visual</button>
+      </div>
+      <label class="filter">
+        <span>find</span>
+        <input id="q" type="search" placeholder="schema, launch…" autocomplete="off" aria-label="Filter skills">
+      </label>
+    </div>
+
+    <div id="shelf-out" role="tabpanel"></div>
+  </div>
+</section>
+
+<!-- ── 03 in action ─────────────────────────────────────────────────── -->
+<section id="action">
+  <div class="wrap">
+    <div class="shead"><span class="num">03</span><h2>In action</h2></div>
+    <p class="sdek">
+      Real output only. Everything below came out of a real run — nothing here is a mockup of what
+      the library might do.
+    </p>
+
+    <div class="tabs" role="tablist" aria-label="Demonstrations">
+      <button class="tab" role="tab" data-demo="cine"    style="--c:var(--ink)"><i></i>/cinemagraph</button>
+      <button class="tab" role="tab" data-demo="deslop"  style="--c:var(--green)"><i></i>/copy-deslop</button>
+      <button class="tab" role="tab" data-demo="audit"   style="--c:var(--blue)"><i></i>/seo-audit</button>
+    </div>
+
+    <!-- cinemagraph -->
+    <div class="demo" data-panel="cine">
+      <div class="demo-head">
+        <span class="cmd">/cinemagraph</span>
+        <span class="say">"Make this hero move, but subtly."</span>
+      </div>
+      <p class="demo-note">
+        The hero at the top of this repository's README, before and after. Light mode moves only
+        what is already in the image — the dots march, the cursor blinks, current flows along the
+        connectors. Nothing new was drawn. Drag the divider.
+      </p>
+      <div class="ba" id="ba" style="--x:42%">
+        <img src="assets/hero.png" width="1200" height="1170" loading="lazy" decoding="async" alt="The marketing-skills schematic hero, static: three columns of what a marketer types and the command that answers it.">
+        <div class="ba-after">
+          <img src="assets/hero.gif" width="1200" height="1170" loading="lazy" decoding="async" alt="The same schematic hero as a seamless loop: the dot grid marches, the cursor blinks and current flows along the connector strip.">
+        </div>
+        <div class="ba-bar"></div>
+        <div class="ba-grip"><b></b><b></b></div>
+        <span class="ba-lab l">BEFORE · PNG</span>
+        <span class="ba-lab r">AFTER · LOOP</span>
+        <input class="ba-range" id="ba-range" type="range" min="0" max="100" value="42" aria-label="Reveal the animated version">
+      </div>
+      <p class="tells"><b>Shipped as</b> an animated WebP with a static PNG fallback, or a GIF when it has to live in a README. The renderer checks the loop seam, the moving region and the file weight before it hands anything back.</p>
+    </div>
+
+    <!-- copy-deslop -->
+    <div class="demo" data-panel="deslop" hidden>
+      <div class="demo-head">
+        <span class="cmd">/copy-deslop</span>
+        <span class="say">"This reads like AI wrote it."</span>
+      </div>
+      <p class="demo-note">
+        Left is what a language model writes about this library when nobody stops it. Right is the
+        same paragraph after the skill checked it against the live Wikipedia list of AI-writing
+        tells. Highlighted words are the ones it flagged.
+      </p>
+      <div class="diff">
+        <div>
+          <h4><i style="background:var(--amber)"></i>BEFORE · 89 WORDS</h4>
+          <p class="bad"><mark>In today's fast-paced digital landscape</mark>, marketing-skills
+          <mark>empowers</mark> marketers to <mark>unlock the full potential</mark> of their workflows.
+          This <mark>comprehensive</mark> suite of <mark>powerful</mark> tools <mark>seamlessly</mark>
+          integrates with Claude Code, enabling teams to <mark>effortlessly</mark>
+          <mark>streamline</mark> everything from SEO audits to content strategy.
+          <mark>Whether you're a solo marketer or part of a growing team</mark>, our
+          <mark>robust</mark> library <mark>is designed to</mark> help you
+          <mark>elevate your marketing game</mark> and <mark>drive meaningful results</mark>.
+          <mark>It's not just a collection of skills — it's a game-changer.</mark></p>
+        </div>
+        <div>
+          <h4><i style="background:var(--green)"></i>AFTER · 62 WORDS</h4>
+          <p class="good">You type the problem the way you'd say it out loud: "why isn't this page
+          ranking?" The matching skill asks a couple of questions, reads your files only when you
+          say yes, and does the work. SEO audits, content strategy, board reports, ad budgets, a
+          draft in your voice with the AI tells scrubbed out. Every skill here runs real marketing
+          work every week.</p>
+        </div>
+      </div>
+      <p class="tells"><b>Fourteen flags in four sentences.</b> Dead-giveaway words
+      (<i>in today's X, empowers, comprehensive, seamlessly, streamline, robust, game-changer</i>),
+      difficulty-minimizers (<i>effortlessly</i>), empty amplifiers (<i>powerful, meaningful
+      results</i>), and one structural tell: <i>not just X, it's Y</i>. The skill refetches the
+      Wikipedia list on every run, so what counts as a tell stays current.</p>
+    </div>
+
+    <!-- seo-audit -->
+    <div class="demo" data-panel="audit" hidden>
+      <div class="demo-head">
+        <span class="cmd">/seo-audit</span>
+        <span class="say">"Audit the whole site."</span>
+      </div>
+      <p class="demo-note">
+        The orchestrator: crawls up to 500 pages, detects the business type, fans out to up to 15
+        specialists in parallel, and returns a health score with the findings ranked.
+      </p>
+      <div class="pending">
+        <span class="badge"><i></i>PENDING A REAL RUN</span>
+        <p>This panel stays empty until the crawl has actually happened. The rule for this page is
+        that nothing appears here that did not come out of a real run, so an invented health score
+        is not an option.</p>
+        <p>Next step: run <code>/seo-audit</code> against a live site and paste the genuine excerpt
+        in — the score, the ranked findings, and the specialists that fired.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 04 how it runs ───────────────────────────────────────────────── -->
+<section id="how">
+  <div class="wrap">
+    <div class="shead"><span class="num">04</span><h2>How a skill runs</h2></div>
+    <p class="sdek">
+      Five stages, the same every time. A number the skill cannot get is written as
+      <code>unknown</code>, never invented.
+    </p>
+    <div class="howimg">
+      <img src="assets/how-it-works.svg" width="1200" height="400" loading="lazy" decoding="async" alt="How a skill runs, in five stages: you say what you need in plain words or a slash command; it asks a couple of questions, one at a time; it scans your folder, lists what it found, and reads files only with your yes; it pulls GA4, Search Console or DataForSEO data when connected, else it asks you; it saves the work as a file you can edit.">
+    </div>
+    <p class="howcap">Company context works the same way in every skill that needs it: scan the launch folder, list what was found, ask before reading a single file.</p>
+  </div>
+</section>
+
+<!-- ── 05 take it home ──────────────────────────────────────────────── -->
+<section id="install">
+  <div class="wrap">
+    <div class="shead"><span class="num">05</span><h2>Take it home</h2></div>
+    <p class="sdek">
+      Claude Code discovers skills one folder deep under <code>~/.claude/skills</code>. This repo
+      nests them by category, so the installer links each skill into place. Your edits land back in
+      the repo, versioned — updating is a <code>git pull</code>.
+    </p>
+
+    <div class="inst">
+      <div class="code">
+        <div class="code-top">WINDOWS · POWERSHELL
+          <button class="copy" data-copy="ps">COPY</button>
+        </div>
+<pre id="code-ps">git clone https://github.com/risukisu/marketing-skills D:\marketing-skills
+D:\marketing-skills\install.ps1</pre>
+      </div>
+      <div class="code">
+        <div class="code-top">MACOS · LINUX
+          <button class="copy" data-copy="sh">COPY</button>
+        </div>
+<pre id="code-sh">git clone https://github.com/risukisu/marketing-skills ~/marketing-skills
+~/marketing-skills/install.sh</pre>
+      </div>
+    </div>
+
+    <div class="inst-notes">
+      <div>
+        <h3>Just one skill</h3>
+        <p>Every skill folder is self-contained. Copy it into <code>~/.claude/skills</code> and it
+        works on its own — no shared runtime, no registry.</p>
+      </div>
+      <div>
+        <h3>Live data, optional</h3>
+        <p>Connect Google Analytics 4 and Search Console and the data-driven skills stop asking you
+        for numbers and start pulling them. Without them, every skill still runs; it asks instead.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot">
+        <h3>WHERE IT COMES FROM</h3>
+        <table class="prov">
+          <tr><td>Own (risu)</td><td>built here, MIT</td><td>MIT</td></tr>
+          <tr><td><a href="https://github.com/AgriciDaniel/claude-seo">AgriciDaniel/claude-seo</a></td><td>the SEO suite, v2.2.5, with a prompt-injection hardening layer added here</td><td>MIT</td></tr>
+          <tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td>cro, customer-research, lead-magnets, marketing-council</td><td>MIT</td></tr>
+          <tr><td><a href="https://github.com/oil-oil/beautify-github-readme">oil-oil/beautify-github-readme</a></td><td>beautify-github-readme</td><td>MIT</td></tr>
+        </table>
+        <p class="howcap">Frameworks are credited inline where a skill encodes someone's method: Andy Crestodina / Orbit Media, AdConversion, Luke Harries, Corey Haines. Per-skill provenance lives in <a href="https://github.com/risukisu/marketing-skills/blob/master/INVENTORY.md">INVENTORY.md</a>.</p>
+      </div>
+      <div class="foot">
+        <h3>ELSEWHERE</h3>
+        <ul class="else">
+          <li><a href="https://skillcraft.cloud">skillcraft.cloud</a><span>a marketplace for skills like these</span></li>
+          <li><a href="https://risu.pl">risu.pl</a><span>notes on marketing, AI and building things</span></li>
+          <li><a href="https://abialas.pl">abialas.pl</a><span>who I am and what I do</span></li>
+          <li><a href="https://www.linkedin.com/in/andrzej-bialas/">LinkedIn</a><span>where I post most</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-end">
+      <img src="assets/favicon.png" width="70" height="70" loading="lazy" decoding="async" alt="">
+      <span>MIT for the skills written here. Vendored skills keep their upstream licenses —
+      <a href="https://github.com/risukisu/marketing-skills/blob/master/NOTICE">NOTICE</a> has the per-folder map.</span>
+      <span style="margin-left:auto">☕</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ── hero terminal ─────────────────────────────────────────────────── */
+var PAIRS = [
+  ["Audit the whole site.",              "/seo-audit",       "crawls up to 500 pages, fans out to specialists, returns a health score"],
+  ["Why isn't this page ranking?",       "/seo-sxo",         "reads the SERP backwards and finds the intent mismatch"],
+  ["Our blog doesn't generate leads.",   "/content-strategy","builds or audits a 7-part strategy and a quarterly content hub"],
+  ["This page isn't converting.",        "/cro",             "quick wins, high-impact changes, and test ideas"],
+  ["How much should we spend on LinkedIn?","/linkedin-ads",  "the budget math and the campaign setup, traps included"],
+  ["This reads like AI wrote it.",       "/copy-deslop",     "checks the copy against the live list of AI-writing tells and fixes it"],
+  ["Does ChatGPT cite us?",              "/seo-geo",         "scores citability for AI Overviews, ChatGPT and Perplexity"],
+  ["Make this hero move, but subtly.",   "/cinemagraph",     "turns the still into a seamless loop and moves only what is already in it"]
+];
+var ask=document.getElementById("ask"), cur=document.getElementById("cur"),
+    ansEl=document.getElementById("ans"), cmdEl=document.getElementById("cmd"), whatEl=document.getElementById("what");
+var pi=0;
+
+function setAns(p){ cmdEl.textContent=p[1]; whatEl.textContent=p[2]; }
+
+if(reduce){
+  var p0=PAIRS[0]; ask.textContent=p0[0]; setAns(p0); ansEl.classList.add("on"); cur.classList.remove("blink");
+}else{
+  (function cycle(){
+    var p=PAIRS[pi], i=0;
+    ask.textContent=""; ansEl.classList.remove("on"); cur.classList.remove("blink");
+    (function type(){
+      if(i<=p[0].length){ ask.textContent=p[0].slice(0,i++); setTimeout(type, 26+Math.random()*44); }
+      else{
+        cur.classList.add("blink");
+        setTimeout(function(){ setAns(p); ansEl.classList.add("on"); }, 260);
+        setTimeout(function(){ pi=(pi+1)%PAIRS.length; cycle(); }, 3600);
+      }
+    })();
+  })();
+}
+
+/* ── the shelf ─────────────────────────────────────────────────────── */
+var SKILLS = [
+ /* Writing */
+ ["Writing","",  "/writing-assistant","Sparring partner and draft-writer for posts, essays and newsletters. Four modes, voice profiles, an anti-AI-writing guard built in."],
+ ["Writing","",  "/copy-deslop","Checks copy against the live Wikipedia list of AI-writing tells and fixes what it finds."],
+ ["Writing","",  "/copy-longform","Page-by-page copyedit for long documents, with a tracked edit list that survives a session reset."],
+
+ /* SEO */
+ ["SEO","The two that run everything","/seo","The router. Reads what you asked for and hands it to the right specialists."],
+ ["SEO","The two that run everything","/seo-audit","The orchestrator. Crawls up to 500 pages, detects the business type, fans out to up to 15 specialists, returns a health score."],
+ ["SEO","Built here","/seo-report","SEO health report from live GA4 and Search Console data, read against Google's own guidelines."],
+ ["SEO","Specialists","/seo-technical","Crawlability, indexability, security, URLs, mobile, Core Web Vitals, JavaScript rendering, IndexNow."],
+ ["SEO","Specialists","/seo-page","Deep single-page read: on-page elements, content, meta, schema, images, performance."],
+ ["SEO","Specialists","/seo-content","Content quality and E-E-A-T, with an AI-citation readiness score."],
+ ["SEO","Specialists","/seo-content-brief","Competitive content brief with per-section word counts and competitor scoring."],
+ ["SEO","Specialists","/seo-schema","Detects, validates and writes Schema.org structured data as JSON-LD."],
+ ["SEO","Specialists","/seo-sitemap","Validates an XML sitemap, or generates one from an industry template."],
+ ["SEO","Specialists","/seo-hreflang","International SEO: validates language and region codes, generates correct hreflang."],
+ ["SEO","Specialists","/seo-images","Alt text, file size, format, responsive images, lazy loading, CLS prevention."],
+ ["SEO","Specialists","/seo-geo","Scores citability for AI Overviews, ChatGPT and Perplexity, and tracks brand mentions."],
+ ["SEO","Specialists","/seo-sxo","Reads the SERP backwards to catch page-type and intent mismatch, then scores by persona."],
+ ["SEO","Specialists","/seo-flow","Evidence-led SEO on the Find → Leverage → Optimize → Win loop, with 41 stage prompts."],
+ ["SEO","Specialists","/seo-cluster","Clusters keywords by real SERP overlap, then designs hub-and-spoke architecture and link matrices."],
+ ["SEO","Specialists","/seo-plan","SEO strategy for a new or existing site: industry templates, competitive analysis, roadmap."],
+ ["SEO","Specialists","/seo-programmatic","Pages generated at scale: URL patterns, template engines, thin-content safeguards."],
+ ["SEO","Specialists","/seo-competitor-pages","Builds \"X vs Y\" and \"alternatives to X\" pages, with matrices and schema."],
+ ["SEO","Specialists","/seo-local","Google Business Profile, NAP consistency, citations, review signals, local schema."],
+ ["SEO","Specialists","/seo-maps","Geo-grid rank tracking, GBP audit, review intelligence, competitor radius mapping."],
+ ["SEO","Specialists","/seo-ecommerce","Product schema, Google Shopping visibility, Amazon intelligence, pricing gaps."],
+ ["SEO","Specialists","/seo-backlinks","Referring domains, anchor text, toxic links, competitor gap. Free APIs first."],
+ ["SEO","Specialists","/seo-drift","Git for on-page SEO: capture a baseline, diff it, track the regressions."],
+ ["SEO","Specialists","/seo-google","Search Console, PageSpeed Insights, CrUX field data, the Indexing API, GA4 organic."],
+ ["SEO","Connectors — need an external service","/seo-dataforseo","Live SERPs, keyword metrics, backlinks and AI visibility via DataForSEO."],
+ ["SEO","Connectors — need an external service","/seo-firecrawl","Full-site crawl, scrape and site map via Firecrawl."],
+ ["SEO","Connectors — need an external service","/seo-ahrefs","Referring domains, backlinks, organic keywords and Content Explorer via Ahrefs."],
+ ["SEO","Connectors — need an external service","/seo-bing","Bing Webmaster and IndexNow. The Bing index is what feeds Copilot citations."],
+ ["SEO","Connectors — need an external service","/seo-seranking","AI share-of-voice across ChatGPT, Gemini, Perplexity, AI Overviews and AI Mode."],
+ ["SEO","Connectors — need an external service","/seo-profound","Time-series brand citation rates across ChatGPT, Perplexity and other LLMs."],
+ ["SEO","Connectors — need an external service","/seo-unlighthouse","Multi-page Lighthouse, run locally, with no API quota to burn."],
+ ["SEO","Connectors — need an external service","/seo-image-gen","Generates OG images, blog heroes and infographics through Gemini."],
+
+ /* Marketing Ops */
+ ["Marketing Ops","Strategy and decisions","/content-strategy","Builds or audits a 7-part content strategy on the Orbit Media framework, and ends in a quarterly hub."],
+ ["Marketing Ops","Strategy and decisions","/product-launch","Launch planning: messaging, assets, distribution, tiered launch systems."],
+ ["Marketing Ops","Strategy and decisions","/marketing-council","Twelve marketing thinkers argue your decision from their documented frameworks, and the output maps where they disagree."],
+ ["Marketing Ops","Research","/customer-research","Three modes: mine transcripts and tickets, mine public reviews and forums, or run the interviews and surveys."],
+ ["Marketing Ops","Research","/competitor-intel","Scans competitor sites and ad libraries, diffs against the last run, writes the briefing."],
+ ["Marketing Ops","Conversion","/cro","Audits a page or form for value proposition, CTA hierarchy, trust, objections and friction."],
+ ["Marketing Ops","Conversion","/lead-magnets","Picks the problem, the format and the distribution for a gated offer that leads to the product."],
+ ["Marketing Ops","Reporting","/marketing-monthly","The marketing page of a board pack: pipeline, MQL, leads, traffic, quarter progress, per-lead journeys."],
+ ["Marketing Ops","Reporting","/campaign-report","One campaign's pipeline, content and funnel, reconciled three ways against the CRM."],
+ ["Marketing Ops","Reporting","/pipeline-analysis","RevOps diagnostic: flow and diagnosis planes, cohort against throughput conversion, failure modes A–F, reverse funnel to the target."],
+ ["Marketing Ops","Paid","/linkedin-ads","Budget math, targeting, the campaign-setup traps, thought-leader and conversation ad copy."],
+
+ /* Visual */
+ ["Visual","","/beautify-github-readme","Turns a repository README into a cohesive visual story. Every marketer has a GitHub in 2026."],
+ ["Visual","","/frontend-design-anti-slop","Builds or reviews web UI with a named anti-pattern list for the generic AI look."],
+ ["Visual","","/cinemagraph","Turns a still hero, chart or diagram into a subtle seamless loop. Light mode moves only what is already there."]
+];
+var HUE = {"Writing":"var(--green)","SEO":"var(--blue)","Marketing Ops":"var(--amber)","Visual":"var(--ink)"};
+
+var out=document.getElementById("shelf-out"), q=document.getElementById("q");
+var shelfTabs=[].slice.call(document.querySelectorAll(".tab[data-cat]"));
+var cat="Writing";
+
+function esc(s){ return s.replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
+
+function render(){
+  var term=(q.value||"").trim().toLowerCase();
+  var list=SKILLS.filter(function(s){
+    if(term) return (s[2]+" "+s[3]).toLowerCase().indexOf(term)>-1;
+    return s[0]===cat;
+  });
+  if(!list.length){ out.innerHTML='<p class="empty">Nothing matches that. Try <code>schema</code>, <code>launch</code> or <code>council</code>.</p>'; return; }
+  var html="", grp=null;
+  list.forEach(function(s){
+    var g = term ? s[0] : s[1];
+    if(g!==grp){ grp=g; if(g) html+='<div class="grp">'+esc(g).toUpperCase()+'</div>'; }
+    html+='<div class="row"><span class="cmd"><i style="background:'+HUE[s[0]]+'"></i>'+esc(s[2])+
+          '</span><span class="one">'+esc(s[3])+'</span></div>';
+  });
+  out.innerHTML=html;
+}
+shelfTabs.forEach(function(t){
+  t.addEventListener("click", function(){
+    cat=t.dataset.cat; q.value="";
+    shelfTabs.forEach(function(x){ x.setAttribute("aria-selected", String(x===t)); });
+    render();
+  });
+});
+q.addEventListener("input", function(){
+  if(q.value.trim()) shelfTabs.forEach(function(x){ x.setAttribute("aria-selected","false"); });
+  else shelfTabs.forEach(function(x){ x.setAttribute("aria-selected", String(x.dataset.cat===cat)); });
+  render();
+});
+shelfTabs[0].setAttribute("aria-selected","true");
+shelfTabs.slice(1).forEach(function(x){ x.setAttribute("aria-selected","false"); });
+render();
+
+/* ── demo tabs ─────────────────────────────────────────────────────── */
+var demoTabs=[].slice.call(document.querySelectorAll(".tab[data-demo]"));
+var panels=[].slice.call(document.querySelectorAll("[data-panel]"));
+demoTabs.forEach(function(t){
+  t.addEventListener("click", function(){
+    demoTabs.forEach(function(x){ x.setAttribute("aria-selected", String(x===t)); });
+    panels.forEach(function(p){ p.hidden = (p.dataset.panel !== t.dataset.demo); });
+  });
+});
+demoTabs[0].setAttribute("aria-selected","true");
+demoTabs.slice(1).forEach(function(x){ x.setAttribute("aria-selected","false"); });
+
+/* ── before / after ────────────────────────────────────────────────── */
+var ba=document.getElementById("ba"), range=document.getElementById("ba-range");
+if(reduce){ range.value=0; }
+function setBA(v){ ba.style.setProperty("--x", v+"%"); }
+setBA(range.value);
+range.addEventListener("input", function(){ setBA(range.value); });
+
+/* ── copy buttons ──────────────────────────────────────────────────── */
+[].slice.call(document.querySelectorAll(".copy")).forEach(function(b){
+  b.addEventListener("click", function(){
+    var txt=document.getElementById("code-"+b.dataset.copy).textContent;
+    navigator.clipboard.writeText(txt).then(function(){
+      b.textContent="COPIED"; b.classList.add("done");
+      setTimeout(function(){ b.textContent="COPY"; b.classList.remove("done"); }, 1600);
+    });
+  });
+});
+})();
+</script>
+</body>
+</html>

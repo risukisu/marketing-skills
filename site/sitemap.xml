@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://skills.abialas.pl/</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://skills.abialas.pl/assets/og-image.png</image:loc>
+      <image:title>marketing-skills — a working marketer's skill library for Claude Code</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://skills.abialas.pl/assets/hero.png</image:loc>
+      <image:title>The marketing-skills schematic hero</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://skills.abialas.pl/assets/how-it-works.svg</image:loc>
+      <image:title>How a skill runs, in five stages</image:title>
+    </image:image>
+  </url>
+</urlset>
