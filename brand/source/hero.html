@@ -9,6 +9,9 @@
   body{width:1200px;height:1170px;background:var(--bg);color:var(--ink);font-family:var(--mono);position:relative;overflow:hidden}
   body::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#1d211b 1.4px, transparent 1.4px);background-size:36px 36px;opacity:.55}
   #stage{position:absolute;inset:0;padding:40px 56px}
+  /* header band of the dot grid drifts one cell per loop; the grid below the shelf stays put */
+  #gridband{position:absolute;left:0;top:0;width:1200px;height:320px;z-index:0;
+    background:var(--bg) radial-gradient(#161915 1.4px, transparent 1.4px);background-size:36px 36px;background-position:var(--gx,0px) 0}
 
   .topbar{display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--mut);letter-spacing:.4px}
   .topbar .id{display:flex;align-items:center;gap:12px;color:var(--ink)} .topbar .id b{font-size:18px}
@@ -38,7 +41,7 @@
   .ask:last-child{border-bottom:none}
   .ask .q{font-size:18px;color:var(--mut2);white-space:nowrap}
   .ask b{font-size:19px;font-weight:700;color:var(--acc);white-space:nowrap}
-  .ask b::before{content:"› ";color:var(--dim);font-weight:400}
+  .ask b::before{content:"› ";color:var(--chev,var(--dim));font-weight:400}
   .c2 .ask b{color:var(--amb)} .c3 .ask b{color:var(--blu)}
   .rows div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line2);padding:5px 0;font-size:17px;color:var(--mut)}
   .rows div:last-child{border-bottom:none} .rows b{color:var(--ink);font-weight:700} .rows .ok{color:var(--acc)}
@@ -61,6 +64,7 @@
 </style>
 </head>
 <body>
+<div id="gridband"></div>
 <svg id="wires" width="1200" height="1170"></svg>
 <div id="stage">
   <div class="topbar">
@@ -158,7 +162,12 @@ function setPhase(p){
   document.querySelectorAll('.flow').forEach((el,i)=>el.setAttribute('stroke-dashoffset',((i===3?1:-1)*p*2*PERIOD).toFixed(2)));
   document.querySelectorAll('.cnode-acc').forEach((el,k)=>{const base=parseFloat(el.dataset.r||(el.dataset.r=el.getAttribute('r')));const w=0.5+0.5*Math.sin(2*Math.PI*(p+k*0.25));el.setAttribute('r',(base+0.8*w).toFixed(2));});
   document.querySelectorAll('.halo').forEach((el,k)=>{const w=0.5+0.5*Math.sin(2*Math.PI*(p+k*0.25));el.setAttribute('r',(5+5*w).toFixed(2));el.setAttribute('opacity',(0.05+0.14*(1-w)).toFixed(3));});
-  document.getElementById('cursor').style.opacity=(Math.sin(2*Math.PI*2*p)>-0.2)?1:0;
+  document.getElementById('cursor').style.opacity=(Math.sin(2*Math.PI*2*p+0.5)>-0.2)?1:0;
+  document.getElementById('gridband').style.setProperty('--gx',(p*36).toFixed(2)+'px');
+  const ACC={c1:[63,214,140],c2:[232,161,61],c3:[124,140,240]},DIM=[91,97,86],SW=0.6,OFF={c1:0.06,c2:0.18,c3:0.30};
+  ['c1','c2','c3'].forEach(id=>{const rows=document.querySelectorAll('#'+id+' .ask');const N=rows.length;const hw=0.75*SW/N;
+    rows.forEach((row,k)=>{const t=OFF[id]+SW*(k+0.5)/N;const w=Math.max(0,1-Math.abs(p-t)/hw);
+      row.style.setProperty('--chev',w>0?`rgb(${DIM.map((v,i)=>Math.round(v+(ACC[id][i]-v)*w)).join(',')})`:'');});});
   const lw=0.5+0.5*Math.sin(2*Math.PI*p);const ld=document.getElementById('livedot');ld.style.opacity=0.45+0.55*lw;ld.style.boxShadow=`0 0 ${(3+8*lw).toFixed(1)}px rgba(63,214,140,${(0.3+0.5*lw).toFixed(2)})`;
 }
 buildWires(); setPhase(0); window.setPhase=setPhase;

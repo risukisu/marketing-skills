@@ -247,6 +247,28 @@ section{padding:clamp(56px,7vw,92px) 0; border-top:1px solid var(--line)}
 .pending p:last-child{margin-bottom:0}
 .pending code{color:var(--ink)}
 
+/* audit excerpt */
+.audit{border:1px solid var(--line); background:var(--panel)}
+.audit-top{display:grid; grid-template-columns:auto 1fr; gap:clamp(18px,3vw,44px); padding:clamp(16px,2.2vw,26px); border-bottom:1px solid var(--line); align-items:start}
+.audit-top .big{font-family:var(--sans); font-weight:800; letter-spacing:-.04em; color:var(--ink); font-size:clamp(56px,7vw,84px); line-height:1}
+.audit-top .big span{display:block; font:400 11.5px/1.4 var(--mono); letter-spacing:.14em; color:var(--dim-text); margin-top:8px}
+.audit table{width:100%; border-collapse:collapse; font-size:13.5px}
+.audit td{padding:6px 0; border-bottom:1px solid var(--line-2); color:var(--muted)}
+.audit tr:last-child td{border-bottom:0}
+.audit td:nth-child(2){color:var(--dim-text); text-align:right; padding-right:18px; font-size:12px; white-space:nowrap}
+.audit td:nth-child(3){color:var(--ink); text-align:right; font-weight:700; width:3ch}
+.findings{margin:0; padding:clamp(16px,2.2vw,26px); list-style:none; counter-reset:f}
+.findings li{position:relative; padding:12px 0 12px 46px; border-bottom:1px solid var(--line-2); font-size:14px; line-height:1.65; color:var(--muted)}
+.findings li:last-child{border-bottom:0; padding-bottom:4px}
+.findings li:first-child{padding-top:0}
+.findings li:first-child::before{top:1px}
+.findings li::before{counter-increment:f; content:"0" counter(f); position:absolute; left:0; top:13px; font-size:11.5px; letter-spacing:.14em; color:var(--dim-text)}
+.findings b{color:var(--ink); font-weight:700}
+.findings code{color:var(--ink); font-size:13px}
+.findings .sev{font-size:10.5px; letter-spacing:.14em; margin-left:8px; white-space:nowrap}
+.findings .crit{color:var(--amber)} .findings .high{color:var(--blue)}
+@media (max-width:720px){ .audit-top{grid-template-columns:1fr} }
+
 /* ── how it runs ─────────────────────────────────────────────────────── */
 .howimg{border:1px solid var(--line); background:var(--panel); padding:clamp(14px,2vw,26px); line-height:0}
 .howimg img{width:100%; height:auto; display:block}
@@ -486,13 +508,14 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
       </div>
       <p class="demo-note">
         The hero at the top of this repository's README, before and after. Light mode moves only
-        what is already in the image — the dots march, the cursor blinks, current flows along the
-        connectors. Nothing new was drawn. Drag the divider.
+        what is already in the image — the header's dot grid drifts one cell per loop, a highlight
+        walks down each column's command list, the cursor blinks, the constellation breathes,
+        current flows along the connectors. Nothing new was drawn. Drag the divider.
       </p>
       <div class="ba" id="ba" style="--x:42%">
         <img src="assets/hero.png" width="1200" height="1170" loading="lazy" decoding="async" alt="The marketing-skills schematic hero, static: three columns of what a marketer types and the command that answers it.">
         <div class="ba-after">
-          <img src="assets/hero.gif" width="1200" height="1170" loading="lazy" decoding="async" alt="The same schematic hero as a seamless loop: the dot grid marches, the cursor blinks and current flows along the connector strip.">
+          <img src="assets/hero.gif" width="1200" height="1170" loading="lazy" decoding="async" alt="The same schematic hero as a seamless loop: the header dot grid drifts, a highlight walks down each command list, the cursor blinks and current flows along the connector strip.">
         </div>
         <div class="ba-bar"></div>
         <div class="ba-grip"><b></b><b></b></div>
@@ -500,7 +523,7 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
         <span class="ba-lab r">AFTER · LOOP</span>
         <input class="ba-range" id="ba-range" type="range" min="0" max="100" value="42" aria-label="Reveal the animated version">
       </div>
-      <p class="tells"><b>Shipped as</b> an animated WebP with a static PNG fallback, or a GIF when it has to live in a README. The renderer checks the loop seam, the moving region and the file weight before it hands anything back.</p>
+      <p class="tells"><b>Shipped as</b> an animated WebP with a static PNG fallback, or a GIF when it has to live in a README. The renderer checks the loop seam, the moving region and the file weight before it hands anything back. This one: 40 frames, a 3.2-second loop, 0.30 MB as a GIF; the wrap step measured 0.021 against a typical step of 0.022, and frame 0 differs from the original still by a 3×10 px patch.</p>
     </div>
 
     <!-- copy-deslop -->
@@ -550,17 +573,33 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
         <span class="say">"Audit the whole site."</span>
       </div>
       <p class="demo-note">
-        The orchestrator: crawls up to 500 pages, detects the business type, fans out to up to 15
-        specialists in parallel, and returns a health score with the findings ranked.
+        The orchestrator: crawls the site, detects the business type, fans out to specialists in
+        parallel, and returns a health score with the findings ranked. Run on 2026-09-21 against
+        <a href="https://skillcraft.cloud">skillcraft.cloud</a> — the author's own marketplace, so
+        the uncomfortable findings below are his to fix. Excerpt; the full report is 52 findings.
       </p>
-      <div class="pending">
-        <span class="badge"><i></i>PENDING A REAL RUN</span>
-        <p>This panel stays empty until the crawl has actually happened. The rule for this page is
-        that nothing appears here that did not come out of a real run, so an invented health score
-        is not an option.</p>
-        <p>Next step: run <code>/seo-audit</code> against a live site and paste the genuine excerpt
-        in — the score, the ranked findings, and the specialists that fired.</p>
+      <div class="audit">
+        <div class="audit-top">
+          <div class="big">51<span>/ 100 HEALTH · 28 PAGES</span></div>
+          <table>
+            <tr><td>Technical SEO</td><td>22%</td><td>58</td></tr>
+            <tr><td>Content quality</td><td>23%</td><td>48</td></tr>
+            <tr><td>On-page / search experience</td><td>20%</td><td>30</td></tr>
+            <tr><td>Structured data</td><td>10%</td><td>55</td></tr>
+            <tr><td>Performance (lab only, no CrUX key)</td><td>10%</td><td>74</td></tr>
+            <tr><td>AI search readiness</td><td>10%</td><td>46</td></tr>
+            <tr><td>Images</td><td>5%</td><td>82</td></tr>
+          </table>
+        </div>
+        <ol class="findings">
+          <li><b>The catalogue is invisible to Google.</b><span class="sev crit">CRITICAL</span> <code>/marketplace</code> ships 47 words and zero skill links in HTML; the grid is filled by <code>fetch("/api/skills")</code>, and robots.txt says <code>Disallow: /api/</code>. Googlebot's renderer honours that rule, so the one page whose job is to list the skills lists none of them.</li>
+          <li><b>The skill pages are orphans.</b><span class="sev crit">CRITICAL</span> No page on the site links to any <code>/skill/</code> URL in raw HTML; the sitemap is the only path, and it lists 13 of the 15 skills the API serves. Sixteen months of Search Console show two URLs that have ever had an impression: <code>/</code> and <code>/whats-new</code>.</li>
+          <li><b>URLs are UUIDs and titles never say "Claude Code".</b><span class="sev crit">CRITICAL</span> Every competing listing seen for "seo audit skill claude code" uses a keyword slug and the phrase verbatim. All five queries with impressions in 90 days are the brand name or a misspelling of it.</li>
+          <li><b>The homepage has no structured data.</b><span class="sev crit">CRITICAL</span> Every other template carries JSON-LD — SoftwareApplication, BlogPosting, FAQPage, CollectionPage, BreadcrumbList. The front door has none: no WebSite, no Organization, no SearchAction.</li>
+          <li><b>Soft 404s and no security headers.</b><span class="sev high">HIGH</span> Unknown URLs return a <code>307</code> to the homepage. CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy and Permissions-Policy are all absent on a site with sign-in and user-submitted content.</li>
+        </ol>
       </div>
+      <p class="tells"><b>Fired:</b> technical · content · schema · sitemap · performance · visual · GEO · search-experience · backlinks (Common Crawl tier), plus live Search Console and GA4 through the workspace connectors. 52 findings: 7 critical, 11 high, 15 medium, 11 low, 8 info. Not run: PageSpeed and CrUX field data (no API key), paid backlink indexes. Where a check could not be made, the report says so instead of guessing.</p>
     </div>
   </div>
 </section>
