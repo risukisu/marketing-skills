@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>marketing-skills — a working marketer's skill library for Claude Code</title>
-<meta name="description" content="Type the problem in your own words. The matching skill asks a couple of questions, reads your files only when you say yes, and does the work. MIT, no API keys.">
+<title>Marketing skills for Claude Code</title>
+<meta name="description" content="Marketing skills for Claude Code: SEO audits, content strategy, CRO, ads, reporting, and copy. Describe the problem and the matching skill does the work. MIT.">
 <link rel="canonical" href="https://skills.abialas.pl/">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="author" content="Andrzej Białaś">
@@ -13,8 +13,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="marketing-skills">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="marketing-skills — a working marketer's skill library for Claude Code">
-<meta property="og:description" content="Type the problem in your own words. The matching skill asks a couple of questions, reads your files only when you say yes, and does the work. MIT, no API keys.">
+<meta property="og:title" content="Marketing skills for Claude Code">
+<meta property="og:description" content="Marketing skills for Claude Code: SEO audits, content strategy, CRO, ads, reporting, and copy. Describe the problem and the matching skill does the work. MIT.">
 <meta property="og:url" content="https://skills.abialas.pl/">
 <meta property="og:image" content="https://skills.abialas.pl/assets/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -22,8 +22,8 @@
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:alt" content="The marketing-skills schematic: three columns of what a marketer types and the command that answers it.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="marketing-skills — a working marketer's skill library for Claude Code">
-<meta name="twitter:description" content="Type the problem in your own words. The matching skill asks a couple of questions, reads your files only when you say yes, and does the work. MIT, no API keys.">
+<meta name="twitter:title" content="Marketing skills for Claude Code">
+<meta name="twitter:description" content="Marketing skills for Claude Code: SEO audits, content strategy, CRO, ads, reporting, and copy. Describe the problem and the matching skill does the work. MIT.">
 <meta name="twitter:image" content="https://skills.abialas.pl/assets/og-image.png">
 <meta name="twitter:image:alt" content="The marketing-skills schematic: three columns of what a marketer types and the command that answers it.">
 
@@ -102,6 +102,7 @@ section{padding:clamp(56px,7vw,92px) 0; border-top:1px solid var(--line)}
 .shead .num{font-size:12px; color:var(--dim-text); letter-spacing:.14em}
 .shead h2{font-size:clamp(1.5rem,3.1vw,2.1rem)}
 .sdek{color:var(--muted-2); max-width:62ch; margin:0 0 38px; font-size:14.5px}
+.sdek + .sdek{margin-top:-24px}
 
 .rule{height:1px; background:var(--line); position:relative}
 .rule::after{content:""; position:absolute; right:0; top:-2px; width:5px; height:5px; background:var(--line)}
@@ -311,6 +312,7 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
 .else{list-style:none; margin:0; padding:0; font-size:13.5px}
 .else li{padding:9px 0; border-top:1px solid var(--line-2); display:flex; gap:16px; justify-content:space-between}
 .else span{color:var(--dim-text); text-align:right}
+.else a{white-space:nowrap}
 .foot-end{display:flex; align-items:center; gap:14px; margin-top:44px; padding-top:22px; border-top:1px solid var(--line); font-size:12.5px; color:var(--dim-text); flex-wrap:wrap}
 .foot-end img{width:22px; height:22px; image-rendering:pixelated; display:block}
 .foot-end a{color:var(--muted-2)}
@@ -330,7 +332,7 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
       "@id": "https://skills.abialas.pl/#website",
       "url": "https://skills.abialas.pl/",
       "name": "marketing-skills",
-      "description": "A working marketer's skill library for Claude Code.",
+      "description": "Marketing skills for Claude Code.",
       "inLanguage": "en",
       "publisher": { "@id": "https://abialas.pl/#person" }
     },
@@ -342,20 +344,22 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
       "sameAs": [
         "https://github.com/risukisu",
         "https://www.linkedin.com/in/andrzej-bialas/",
-        "https://risu.pl"
+        "https://risu.pl",
+        "https://grugbrained.substack.com"
       ]
     },
     {
       "@type": "SoftwareSourceCode",
       "@id": "https://skills.abialas.pl/#software",
       "name": "marketing-skills",
-      "headline": "A working marketer's skill library for Claude Code",
+      "headline": "Marketing skills for Claude Code",
       "description": "A library of marketing skills for Claude Code: SEO audits, content strategy, conversion reviews, customer research, LinkedIn Ads planning, launch plans and copy editing. Each skill asks a couple of questions, reads your files only with your permission, and returns the finished work as a file.",
       "url": "https://skills.abialas.pl/",
       "codeRepository": "https://github.com/risukisu/marketing-skills",
       "programmingLanguage": "Markdown",
       "runtimePlatform": "Claude Code",
       "license": "https://opensource.org/licenses/MIT",
+      "dateModified": "2026-09-23",
       "image": "https://skills.abialas.pl/assets/og-image.png",
       "author": { "@id": "https://abialas.pl/#person" },
       "maintainer": { "@id": "https://abialas.pl/#person" },
@@ -387,10 +391,11 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
 <!-- ── hero ─────────────────────────────────────────────────────────── -->
 <section class="hero">
   <div class="wrap">
-    <h1>A working marketer's skill library for <em>Claude&nbsp;Code</em></h1>
+    <h1>Marketing skills for <em>Claude&nbsp;Code</em></h1>
     <p class="hero-dek">
-      Type a slash command, or describe the problem in your own words. The matching skill asks a
-      couple of questions, reads your files only when you say yes, and does the work.
+      For high-performing marketers going <span style="white-space:nowrap">AI-native</span> (or&nbsp;trying&nbsp;to). Type a slash command, or
+      describe the problem in your own words. The matching skill asks a couple of questions, reads
+      your files only when you say yes, and does the work.
     </p>
     <div class="hero-meta">
       <span><i></i>MIT</span>
@@ -466,6 +471,10 @@ footer{border-top:1px solid var(--line); padding:clamp(48px,6vw,72px) 0 44px}
     <p class="sdek">
       One folder per skill, each with its own <code>SKILL.md</code>. The folder name is the slash
       command. Every skill is self-contained — take the whole library or copy one folder.
+    </p>
+    <p class="sdek">
+      It's a live list, curated by me. Every few weeks I add new skills and rework or drop old
+      ones. Last change: <time datetime="2026-09-23">2026-09-23</time>.
     </p>
 
     <div class="shelf-top">
@@ -680,8 +689,9 @@ D:\marketing-skills\install.ps1</pre>
         <h3>ELSEWHERE</h3>
         <ul class="else">
           <li><a href="https://skillcraft.cloud">skillcraft.cloud</a><span>a marketplace for skills like these</span></li>
-          <li><a href="https://risu.pl">risu.pl</a><span>notes on marketing, AI and building things</span></li>
-          <li><a href="https://abialas.pl">abialas.pl</a><span>who I am and what I do</span></li>
+          <li><a href="https://abialas.pl">abialas.pl</a><span>who I am, and where I write about marketing</span></li>
+          <li><a href="https://grugbrained.substack.com">Grug-Brained Marketer</a><span>my newsletter: simple marketing, and where AI helps</span></li>
+          <li><a href="https://risu.pl">risu.pl</a><span>random memories, my personal blog</span></li>
           <li><a href="https://www.linkedin.com/in/andrzej-bialas/">LinkedIn</a><span>where I post most</span></li>
         </ul>
       </div>

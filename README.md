@@ -6,9 +6,9 @@
   <a href="https://skills.abialas.pl/"><b>skills.abialas.pl</b></a> — the shelf, the demos and the install, on one page
 </p>
 
-A working marketer's skill library for Claude Code. Type a slash command, or describe the problem in your own words, and the matching skill asks you a couple of questions, reads your files only when you say yes, and does the work: a 500-page SEO audit, a content strategy with a quarterly plan, a conversion review of the page that isn't converting, a launch plan, a LinkedIn Ads budget, a draft in your voice with the AI tells scrubbed out.
+Marketing skills for Claude Code. For high-performing marketers going AI-native (or trying to). Type a slash command, or describe the problem in your own words, and the matching skill asks you a couple of questions, reads your files only when you say yes, and does the work: a 500-page SEO audit, a content strategy with a quarterly plan, a conversion review of the page that isn't converting, a launch plan, a LinkedIn Ads budget, a draft in your voice with the AI tells scrubbed out.
 
-Every skill here runs real marketing work every week. This is not a showcase of skill ideas; it's the toolshed, with the sawdust left in.
+Every skill here runs real marketing work every week. This is not a showcase of skill ideas; it's the toolshed, with the sawdust left in. It's also a live list, curated by me: every few weeks I add new skills and rework or drop old ones.
 
 **What you can ask**
 
