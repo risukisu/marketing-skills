@@ -1,0 +1,44 @@
+name: Shelf
+
+# Validates shelf.json, the list skillcraft.cloud/marketing-skills renders.
+# SkillCraft keeps serving the last good shelf when this file is broken,
+# so this check is where a bad edit shows up.
+
+on:
+  push:
+    paths:
+      - 'shelf.json'
+      - '.github/workflows/shelf.yml'
+  pull_request:
+    paths:
+      - 'shelf.json'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate shelf.json
+        run: |
+          node -e '
+            const s = JSON.parse(require("fs").readFileSync("shelf.json", "utf8"));
+            const fail = (m) => { console.error("shelf.json: " + m); process.exit(1); };
+            if (!Array.isArray(s.categories) || !s.categories.length) fail("categories must be a non-empty array");
+            if (!Array.isArray(s.skills) || !s.skills.length) fail("skills must be a non-empty array");
+            const seen = new Set();
+            s.skills.forEach((k, i) => {
+              if (!s.categories.includes(k.category)) fail(`skills[${i}]: category "${k.category}" is not in categories`);
+              if (typeof k.command !== "string" || !k.command.startsWith("/") || k.command.length < 2) fail(`skills[${i}]: command must start with "/"`);
+              if (typeof k.blurb !== "string" || !k.blurb.trim()) fail(`skills[${i}]: blurb is empty`);
+              if (k.group !== undefined && typeof k.group !== "string") fail(`skills[${i}]: group must be a string`);
+              if (seen.has(k.command)) fail(`skills[${i}]: duplicate command ${k.command}`);
+              seen.add(k.command);
+            });
+            console.log(`shelf.json OK: ${s.skills.length} skills in ${s.categories.length} categories`);
+          '

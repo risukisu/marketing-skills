@@ -1,0 +1,304 @@
+{
+  "categories": [
+    "Writing",
+    "SEO",
+    "Marketing Ops",
+    "Visual"
+  ],
+  "skills": [
+    {
+      "category": "Writing",
+      "group": "",
+      "command": "/writing-assistant",
+      "blurb": "Sparring partner and draft-writer for posts, essays and newsletters. Four modes, voice profiles, an anti-AI-writing guard built in."
+    },
+    {
+      "category": "Writing",
+      "group": "",
+      "command": "/copy-deslop",
+      "blurb": "Checks copy against the live Wikipedia list of AI-writing tells and fixes what it finds."
+    },
+    {
+      "category": "Writing",
+      "group": "",
+      "command": "/copy-longform",
+      "blurb": "Page-by-page copyedit for long documents, with a tracked edit list that survives a session reset."
+    },
+    {
+      "category": "SEO",
+      "group": "The two that run everything",
+      "command": "/seo",
+      "blurb": "The router. Reads what you asked for and hands it to the right specialists."
+    },
+    {
+      "category": "SEO",
+      "group": "The two that run everything",
+      "command": "/seo-audit",
+      "blurb": "The orchestrator. Crawls up to 500 pages, detects the business type, fans out to up to 15 specialists, returns a health score."
+    },
+    {
+      "category": "SEO",
+      "group": "Built here",
+      "command": "/seo-report",
+      "blurb": "SEO health report from live GA4 and Search Console data, read against Google's own guidelines."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-technical",
+      "blurb": "Crawlability, indexability, security, URLs, mobile, Core Web Vitals, JavaScript rendering, IndexNow."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-page",
+      "blurb": "Deep single-page read: on-page elements, content, meta, schema, images, performance."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-content",
+      "blurb": "Content quality and E-E-A-T, with an AI-citation readiness score."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-content-brief",
+      "blurb": "Competitive content brief with per-section word counts and competitor scoring."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-schema",
+      "blurb": "Detects, validates and writes Schema.org structured data as JSON-LD."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-sitemap",
+      "blurb": "Validates an XML sitemap, or generates one from an industry template."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-hreflang",
+      "blurb": "International SEO: validates language and region codes, generates correct hreflang."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-images",
+      "blurb": "Alt text, file size, format, responsive images, lazy loading, CLS prevention."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-geo",
+      "blurb": "Scores citability for AI Overviews, ChatGPT and Perplexity, and tracks brand mentions."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-sxo",
+      "blurb": "Reads the SERP backwards to catch page-type and intent mismatch, then scores by persona."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-flow",
+      "blurb": "Evidence-led SEO on the Find → Leverage → Optimize → Win loop, with 41 stage prompts."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-cluster",
+      "blurb": "Clusters keywords by real SERP overlap, then designs hub-and-spoke architecture and link matrices."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-plan",
+      "blurb": "SEO strategy for a new or existing site: industry templates, competitive analysis, roadmap."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-programmatic",
+      "blurb": "Pages generated at scale: URL patterns, template engines, thin-content safeguards."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-competitor-pages",
+      "blurb": "Builds \"X vs Y\" and \"alternatives to X\" pages, with matrices and schema."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-local",
+      "blurb": "Google Business Profile, NAP consistency, citations, review signals, local schema."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-maps",
+      "blurb": "Geo-grid rank tracking, GBP audit, review intelligence, competitor radius mapping."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-ecommerce",
+      "blurb": "Product schema, Google Shopping visibility, Amazon intelligence, pricing gaps."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-backlinks",
+      "blurb": "Referring domains, anchor text, toxic links, competitor gap. Free APIs first."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-drift",
+      "blurb": "Git for on-page SEO: capture a baseline, diff it, track the regressions."
+    },
+    {
+      "category": "SEO",
+      "group": "Specialists",
+      "command": "/seo-google",
+      "blurb": "Search Console, PageSpeed Insights, CrUX field data, the Indexing API, GA4 organic."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-dataforseo",
+      "blurb": "Live SERPs, keyword metrics, backlinks and AI visibility via DataForSEO."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-firecrawl",
+      "blurb": "Full-site crawl, scrape and site map via Firecrawl."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-ahrefs",
+      "blurb": "Referring domains, backlinks, organic keywords and Content Explorer via Ahrefs."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-bing",
+      "blurb": "Bing Webmaster and IndexNow. The Bing index is what feeds Copilot citations."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-seranking",
+      "blurb": "AI share-of-voice across ChatGPT, Gemini, Perplexity, AI Overviews and AI Mode."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-profound",
+      "blurb": "Time-series brand citation rates across ChatGPT, Perplexity and other LLMs."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-unlighthouse",
+      "blurb": "Multi-page Lighthouse, run locally, with no API quota to burn."
+    },
+    {
+      "category": "SEO",
+      "group": "Connectors — need an external service",
+      "command": "/seo-image-gen",
+      "blurb": "Generates OG images, blog heroes and infographics through Gemini."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Strategy and decisions",
+      "command": "/content-strategy",
+      "blurb": "Builds or audits a 7-part content strategy on the Orbit Media framework, and ends in a quarterly hub."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Strategy and decisions",
+      "command": "/product-launch",
+      "blurb": "Launch planning: messaging, assets, distribution, tiered launch systems."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Strategy and decisions",
+      "command": "/marketing-council",
+      "blurb": "Twelve marketing thinkers argue your decision from their documented frameworks, and the output maps where they disagree."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Research",
+      "command": "/customer-research",
+      "blurb": "Three modes: mine transcripts and tickets, mine public reviews and forums, or run the interviews and surveys."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Research",
+      "command": "/competitor-intel",
+      "blurb": "Scans competitor sites and ad libraries, diffs against the last run, writes the briefing."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Conversion",
+      "command": "/cro",
+      "blurb": "Audits a page or form for value proposition, CTA hierarchy, trust, objections and friction."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Conversion",
+      "command": "/lead-magnets",
+      "blurb": "Picks the problem, the format and the distribution for a gated offer that leads to the product."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Reporting",
+      "command": "/marketing-monthly",
+      "blurb": "The marketing page of a board pack: pipeline, MQL, leads, traffic, quarter progress, per-lead journeys."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Reporting",
+      "command": "/campaign-report",
+      "blurb": "One campaign's pipeline, content and funnel, reconciled three ways against the CRM."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Reporting",
+      "command": "/pipeline-analysis",
+      "blurb": "RevOps diagnostic: flow and diagnosis planes, cohort against throughput conversion, failure modes A–F, reverse funnel to the target."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Paid",
+      "command": "/linkedin-ads",
+      "blurb": "Budget math, targeting, the campaign-setup traps, thought-leader and conversation ad copy."
+    },
+    {
+      "category": "Visual",
+      "group": "",
+      "command": "/beautify-github-readme",
+      "blurb": "Turns a repository README into a cohesive visual story. Every marketer has a GitHub in 2026."
+    },
+    {
+      "category": "Visual",
+      "group": "",
+      "command": "/frontend-design-anti-slop",
+      "blurb": "Builds or reviews web UI with a named anti-pattern list for the generic AI look."
+    },
+    {
+      "category": "Visual",
+      "group": "",
+      "command": "/cinemagraph",
+      "blurb": "Turns a still hero, chart or diagram into a subtle seamless loop. Light mode moves only what is already there."
+    }
+  ]
+}
