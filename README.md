@@ -10,6 +10,10 @@ Marketing skills for Claude Code. For high-performing marketers going AI-native 
 
 Every skill here runs real marketing work every week. This is not a showcase of skill ideas; it's the toolshed, with the sawdust left in. It's also a live list, curated by me: every few weeks I add new skills and rework or drop old ones.
 
+<p align="center">
+  <img src="./assets/readme/motion-keys.svg" width="100%" alt="Type it. It runs. Five phrases a marketer says, each with the command that answers it: audit the whole site runs /seo-audit, this page isn't converting runs /cro, sounds like AI wrote it runs /copy-deslop, the blog brings no leads runs /content-strategy, what would Ogilvy say runs /marketing-council. A keyboard lights each key as the command types, in the command's colour, and Enter flashes when it runs.">
+</p>
+
 **What you can ask**
 
 | You say | It runs |
@@ -25,6 +29,10 @@ Every skill here runs real marketing work every week. This is not a showcase of 
 | "This reads like AI wrote it." | `/copy-deslop` checks the copy against the live list of AI-writing tells and fixes it |
 | "What would Ogilvy say about this?" | `/marketing-council` seats a simulated board of 12 marketing thinkers and maps where they disagree |
 | "Make this hero move, but subtly." | `/cinemagraph` turns the still image into a seamless loop and moves only what is already in it |
+
+<p align="center">
+  <img src="./assets/readme/motion-work.svg" width="100%" alt="It does the work. The same five phrases and commands, each beside a small wireframe of what the skill hands back, building itself: /seo-audit scans a page and flags three problems, /cro finds the button and presses it, /copy-deslop strikes out AI-sounding phrases and rewrites them, /content-strategy grows a content hub, /marketing-council seats five voices that speak and reach a verdict.">
+</p>
 
 Nothing here needs an API key to start. Connect Google Analytics and Search Console and the data-driven skills switch from asking you for numbers to pulling them.
 
@@ -132,7 +140,7 @@ marketing-skills/
 │       ├── beautify-github-readme/     SKILL.md + references/ + scripts/ (SVG render, motion GIF)
 │       ├── cinemagraph/                SKILL.md + scripts/ (probe, phase renderer) + references/ + assets/template.html
 │       └── frontend-design-anti-slop/  SKILL.md + references/
-├── assets/readme/                  hero, section headers, social preview
+├── assets/readme/                  hero, section headers, motion panels, social preview
 │   └── archive/                    superseded heroes with their sources
 ├── brand/                          the visual system
 │   └── source/                     generators for every asset above

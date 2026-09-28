@@ -46,6 +46,7 @@ is the system sans at weight 800 with tight tracking. Essential text sits at 17p
 | `source/hero.html` | the animated hero (`assets/readme/hero.gif`, 1200×1170) |
 | `source/og-image.html` | the social preview (`assets/readme/og-image.png`, 1200×630) |
 | `source/gen_assets.py` | the five section headers and `how-it-works.svg`, straight into `assets/readme/` |
+| `source/gen_motion.py` | the two animated panels, `motion-keys.svg` (the keys light as the command types) and `motion-work.svg` (a wireframe of what each skill hands back); pure SVG + CSS, one 13 s loop in step with the readout, ported from the abialas.pl tile options |
 | `source/render.py` | drives headless Chromium over a page's `setPhase(p)` hook to make a seamless GIF |
 | `source/risu-favicon.png` | the pixel squirrel, 70px, drawn at 30px |
 
@@ -53,6 +54,7 @@ Rebuild:
 
 ```powershell
 python brand\source\gen_assets.py
+python brand\source\gen_motion.py
 cd brand\source
 python render.py hero.html ..\..\assets\readme\hero.gif ..\..\assets\readme\hero.png 1200 1170
 ```
