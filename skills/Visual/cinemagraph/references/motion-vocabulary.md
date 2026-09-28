@@ -1,6 +1,6 @@
 # Motion vocabulary
 
-Every motion is a pure function of the phase `p` in [0, 1). State at `p = 1` equals state at `p = 0`, so the loop closes regardless of frame count. Amplitudes below are starting points for "subtle"; halve them before you double them.
+Every motion is a pure function of the phase `p` in [0, 1). State at `p = 1` equals state at `p = 0`, so the loop closes regardless of frame count. Amplitudes below are starting points for an ambient loop ("subtle"); halve them before you double them. A choreographed loop reuses these motions as pieces inside beats (see Choreographed loops below).
 
 `sin(p)` below means `Math.sin(2 * Math.PI * p)`, which is periodic in p by construction.
 
@@ -17,7 +17,7 @@ Every motion is a pure function of the phase `p` in [0, 1). State at `p = 1` equ
 | **Sway** | `rotate(1.5 × sin(p), pivot)` on a hanging or leaf-like element | A gentle environment (photos, illustrations) | Anything mechanical or diagrammatic |
 | **Shimmer** | a soft diagonal white band with `opacity 0.08`, `translate(p × width)` clipped to a card | Glass, polish, "new" | On a chart or anything with text under the band |
 
-Combine at most three, at different frequencies. Two motions at the same period side by side read as a rendering glitch.
+In an ambient loop, combine at most three, at different frequencies. Two motions at the same period side by side read as a rendering glitch.
 
 ## Heavy-mode motions (add elements, keep ~95%)
 
@@ -35,7 +35,28 @@ Combine at most three, at different frequencies. Two motions at the same period 
 - Loop length from the slowest motion: pulse and drift want 3–4 s; scan and draw 5–6 s; blink can nest inside any of them at an integer multiple of the loop frequency.
 - Frame period 60–100 ms. Fewer frames per second look choppy on continuous motions (march, drift); more inflate the file with no visible gain at hero size.
 - Easing only on motions that start and stop (draw, scan). Continuous motions (march, drift, orbit) must be linear in p or the seam shows as a speed change.
+- Choreographed: loop = beats × hold, 2–3 s per beat; a beat's action finishes by 60% of the beat so its result holds on screen.
 
-## What reads as "too much"
+## What reads as "too much" (ambient)
 
 Whole-canvas motion; text that moves; layout that changes; bounce or elastic; two things pulsing; anything faster than about one event per second; motion on the element the eye needs for reading the data. If a reviewer says "nice animation" instead of commenting on the image, cut one layer.
+
+## Choreographed loops (beats)
+
+The loop is split into `N` beats: `beat = floor(p × N)`, `q = p × N − beat` (0 to 1 inside the beat). Each piece belongs to one beat and has a start `d` between 0 and 0.6.
+
+| Piece | Inside its beat | Use for |
+|---|---|---|
+| **Light** | resting look → active look when `q ≥ d`, over 0.02–0.05 of `q` | a box, a key, a list row, a label's colour |
+| **Pop** | `scale 0.6 → 1` and `opacity 0 → 1` over 0.04 of `q` | an issue flag, a drop-off, a stamp |
+| **Sweep** | `y = y0 + clamp((q − d) / 0.4, 0, 1) × height` | a scan over a page or a list |
+| **Tick** | a box fill or strike line appears at `d` | a list being worked through |
+| **Stagger** | `n` pieces with `d_k = d0 + k × step`, step 0.03–0.15 of `q` (70–400 ms at a 2.6 s hold) | keys typed, dots arriving, seats speaking |
+| **Trace** | after its active look, the piece drops to 20–30% and holds until `q = 0.95` | what the beat already touched |
+| **Reset** | everything the beat lit fades out over `q` 0.95 → 1 | the hand-over to the next beat |
+
+As CSS (an SVG that has to run without script): one keyframe set per piece type whose visible window is the first `1/N` of the loop (0–20% for five beats), `animation-duration` = the loop, `animation-delay` = `beat × hold + d × hold`.
+
+### What reads as too much (choreographed)
+
+Two beats lit at once; motion outside the beat's focal region; text that moves; pieces closer than about 70 ms; an action that runs past 60% of the beat, so its result never holds; beats shorter than 2 s; a layout that changes from beat to beat.

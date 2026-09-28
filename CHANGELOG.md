@@ -2,6 +2,10 @@
 
 Releases are tagged on `master`; notes live here and on the GitHub release.
 
+## Unreleased
+
+**`/cinemagraph` gets a second intensity.** Next to *ambient* (one to three quiet layers, noticed on the second look), *choreographed* acts the image's own content out one beat at a time, like a product demo loop: each beat lights its part of the image, stages a staggered build, holds the result and resets, so dozens of pieces move per loop but only one beat plays at once. Intake now asks for the intensity next to the mode, and a report that the last loop went unnoticed maps to choreographed. New output: a CSS-animated SVG for vector art, which plays in an `<img>` and in GitHub READMEs at a few tens of KB whatever the loop length.
+
 ## v1.1.1 — 2026-09-15
 
 **Visual category completed.** `/beautify-github-readme` and `/frontend-design-anti-slop` move from Marketing Ops into `skills/Visual/`, next to `/cinemagraph`. No skill content changed; the Presence block in the README is dissolved into the Visual section. Existing junctions or symlinks made by an earlier `install.ps1` / `install.sh` run point at the old paths: re-run the installer once after pulling.

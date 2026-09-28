@@ -18,6 +18,12 @@
       "prompt": "make this product screenshot feel alive for a linkedin post, subtle please, dont redesign anything (shot.png)",
       "expected_output": "Asks the intake question briefly, recognises a UI screenshot (overlay or region loop, not redraw), proposes 1-2 motions such as a cursor blink or a pulsing status dot, refuses to move text, delivers WebP + PNG + source.",
       "files": ["shot.png"]
+    },
+    {
+      "id": 4,
+      "prompt": "We animated our pricing hero last month (pricing.svg: three plan cards with feature lists and a 'most popular' badge) with a soft glow on the badge. Nobody noticed it moved. Make it feel alive, more like a product demo loop, but keep the page recognisable. It's vector, so an SVG is fine if that's lighter.",
+      "expected_output": "Confirms heavy + choreographed (does not argue the ambient version worked), treats each plan card as a beat with its own focal region, stages each beat (trigger, staggered action, held result, reset) with dozens of pieces per loop but one card active at a time, keeps text and layout still, loop of beats x 2-3 s, offers a CSS-animated SVG, checks a contact sheet of every beat.",
+      "files": ["pricing.svg"]
     }
   ]
 }

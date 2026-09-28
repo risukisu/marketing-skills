@@ -110,7 +110,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 |---|---|
 | `/beautify-github-readme` | Turns a repository README into a cohesive visual story; every marketer has a GitHub in 2026 |
 | `/frontend-design-anti-slop` | Builds or reviews web UI with real design taste; a named anti-pattern list for the generic AI look (purple gradients, rounded-xl, "Transform your X") |
-| `/cinemagraph` | Turns a static hero, chart or diagram into a subtle seamless loop (animated WebP + PNG fallback, GIF on request). Light mode moves only what is already in the image; heavy mode adds moving elements and keeps ~95% of it. Phase-parametric HTML rendered with Playwright, seam-checked |
+| `/cinemagraph` | Turns a static hero, chart or diagram into a seamless loop (animated WebP + PNG fallback, GIF on request, CSS-animated SVG for vector art). Light mode moves only what is already in the image; heavy mode adds moving elements and keeps ~95% of it. Ambient intensity keeps it to a few quiet layers; choreographed acts the image's content out beat by beat, like a product demo loop. Phase-parametric HTML rendered with Playwright, seam-checked |
 
 ### What's in the repo
 

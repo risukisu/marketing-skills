@@ -298,7 +298,7 @@
       "category": "Visual",
       "group": "",
       "command": "/cinemagraph",
-      "blurb": "Turns a still hero, chart or diagram into a subtle seamless loop. Light mode moves only what is already there."
+      "blurb": "Turns a still hero, chart or diagram into a seamless loop, from a quiet ambient one to a choreographed demo loop."
     }
   ]
 }
