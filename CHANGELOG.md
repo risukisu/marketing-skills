@@ -2,7 +2,9 @@
 
 Releases are tagged on `master`; notes live here and on the GitHub release.
 
-## Unreleased
+## v1.1.2 — 2026-09-29
+
+**Fix: `/cinemagraph` GIFs keep every beat’s colour.** `render_loop.py --gif` built the GIF’s 256-colour palette from two frames, the first and the middle one. A colour that appeared on neither frame was swapped for the nearest one that did. In a choreographed loop, where each beat has its own accent, that meant whole beats rendered in the wrong hue: in a five-beat test loop, amber came out green, and coral and violet came out blue. The palette is now sampled from frames spread evenly across the loop (as many as fit in about 40 megapixels). A new test, `tests/test_gif_palette.py`, renders a five-beat loop with one hue per beat and fails if any beat changes colour in the GIF. WebP output was never affected. If you made a GIF of a multi-colour loop with an earlier version, render it again.
 
 **`/cinemagraph` gets a second intensity.** Next to *ambient* (one to three quiet layers, noticed on the second look), *choreographed* acts the image's own content out one beat at a time, like a product demo loop: each beat lights its part of the image, stages a staggered build, holds the result and resets, so dozens of pieces move per loop but only one beat plays at once. Intake now asks for the intensity next to the mode, and a report that the last loop went unnoticed maps to choreographed. New output: a CSS-animated SVG for vector art, which plays in an `<img>` and in GitHub READMEs at a few tens of KB whatever the loop length.
 
