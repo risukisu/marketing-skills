@@ -121,7 +121,7 @@ Defaults: 40 frames at 80 ms (3.2 s loop), opaque, WebP quality 82, plus `out.pn
 
 Choose the loop length from the slowest motion. A pulse or drift wants 3–4 s; a blink can live inside that; a scan or draw in heavy mode may need 5–6 s. Longer loops cost frames; keep the frame period at 60–100 ms and add frames, not speed.
 
-A choreographed loop is beats × hold, usually 8–15 s: 80–150 frames at 100 ms. A WebP stays around 1–2 MB at hero width; a GIF of that length is usually too heavy, so offer the WebP or, for vector art, the CSS-animated SVG, which stays at a few tens of KB whatever the length. Frames for review come from the browser either way (`--frames` stepping `setPhase`, or, for the SVG, pausing `document.getAnimations()` at a chosen `currentTime`).
+A choreographed loop is beats × hold, usually 8–15 s: 80–150 frames at 100 ms. A WebP stays around 1–2 MB at hero width. A GIF works too when the art is flat and only one beat moves at a time: the GIF stores only the part of each frame that changed and merges identical frames, so five-beat, 13 s loops at 1080 × 1080 on a flat dark ground came to 0.6–1.5 MB with 139–188 frames. Soft gradients, photos, or motion spread across the whole canvas every frame make a GIF that long too heavy; then offer the WebP or, for vector art, the CSS-animated SVG, which stays at a few tens of KB whatever the length. Check the destination's limits before rendering: LinkedIn is commonly cited at 5 MB and 250 frames for a GIF. Frames for review come from the browser either way (`--frames` stepping `setPhase`, or, for the SVG, pausing `document.getAnimations()` at a chosen `currentTime`).
 
 ## 7. Verify before handing over
 

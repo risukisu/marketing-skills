@@ -2,6 +2,10 @@
 
 Releases are tagged on `master`; notes live here and on the GitHub release.
 
+## Unreleased
+
+**`/cinemagraph`: GIF guidance for choreographed loops.** The skill no longer says a long choreographed GIF is usually too heavy. With flat art and one beat moving at a time, the GIF stores only the part of each frame that changed and merges identical frames, so 13 s loops at 1080 × 1080 came to 0.6–1.5 MB. Gradients, photos, and whole-canvas motion still call for the WebP or the CSS-animated SVG. The skill now also says to check the destination’s GIF limits before rendering.
+
 ## v1.1.2 — 2026-09-29
 
 **Fix: `/cinemagraph` GIFs keep every beat’s colour.** `render_loop.py --gif` built the GIF’s 256-colour palette from two frames, the first and the middle one. A colour that appeared on neither frame was swapped for the nearest one that did. In a choreographed loop, where each beat has its own accent, that meant whole beats rendered in the wrong hue: in a five-beat test loop, amber came out green, and coral and violet came out blue. The palette is now sampled from frames spread evenly across the loop (as many as fit in about 40 megapixels). A new test, `tests/test_gif_palette.py`, renders a five-beat loop with one hue per beat and fails if any beat changes colour in the GIF. WebP output was never affected. If you made a GIF of a multi-colour loop with an earlier version, render it again.
