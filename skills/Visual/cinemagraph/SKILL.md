@@ -117,7 +117,7 @@ For a vector redraw that ships as a **CSS-animated SVG**, write the same timelin
 python scripts/render_loop.py page.html out.webp --frames 40 --duration 80 --width 1300 --height 820
 ```
 
-Defaults: 40 frames at 80 ms (3.2 s loop), opaque, WebP quality 82, plus `out.png` (frame 0) written next to it. Flags: `--alpha` for a transparent canvas, `--gif` to also emit a GIF with a shared adaptive palette (add `--dither` if the source has smooth gradients and the 256-color version shows banding; it costs file size and adds faint frame noise, so look at both), `--scale` for device scale factor, `--check` to run the QA below and print the numbers.
+Defaults: 40 frames at 80 ms (3.2 s loop), opaque, WebP quality 82, plus `out.png` (frame 0) written next to it. Flags: `--alpha` for a transparent canvas, `--gif` to also emit a GIF with one adaptive palette sampled from frames across the whole loop, so every beat's accent keeps its colour (add `--dither` if the source has smooth gradients and the 256-color version shows banding; it costs file size and adds faint frame noise, so look at both), `--scale` for device scale factor, `--check` to run the QA below and print the numbers.
 
 Choose the loop length from the slowest motion. A pulse or drift wants 3–4 s; a blink can live inside that; a scan or draw in heavy mode may need 5–6 s. Longer loops cost frames; keep the frame period at 60–100 ms and add frames, not speed.
 
@@ -168,6 +168,7 @@ A dark product tile: a wordmark, a tagline, and a readout that cycles five "you 
 
 - `scripts/probe_image.py` — size, palette, type guess for the source image.
 - `scripts/render_loop.py` — phase-stepping renderer: HTML → WebP/GIF/PNG, with `--check`.
+- `tests/test_gif_palette.py` — renders a five-beat loop, one hue per beat, and checks that the GIF shows every beat in its hue. Run it after changing the GIF path.
 - `assets/template.html` — starting page with `setPhase(p)` wiring and the fixed-canvas boilerplate.
 - `references/techniques.md` — overlay, region loop and redraw: how, formulas, pitfalls.
 - `references/motion-vocabulary.md` — the motion catalogue with phase formulas and when each is wrong.

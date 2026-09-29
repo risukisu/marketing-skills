@@ -138,7 +138,7 @@ marketing-skills/
 │       └── pipeline-analysis/          SKILL.md + definitions.md + compute_funnel.py + tests + references/
 │   └── Visual/
 │       ├── beautify-github-readme/     SKILL.md + references/ + scripts/ (SVG render, motion GIF)
-│       ├── cinemagraph/                SKILL.md + scripts/ (probe, phase renderer) + references/ + assets/template.html
+│       ├── cinemagraph/                SKILL.md + scripts/ (probe, phase renderer) + tests + references/ + assets/template.html
 │       └── frontend-design-anti-slop/  SKILL.md + references/
 ├── assets/readme/                  hero, section headers, motion panels, social preview
 │   └── archive/                    superseded heroes with their sources

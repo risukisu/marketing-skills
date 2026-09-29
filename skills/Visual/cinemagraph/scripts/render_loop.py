@@ -13,10 +13,13 @@ Writes out.webp, out.png (frame 0) and, with --gif, out.gif.
 """
 import argparse
 import io
+import math
 import sys
 from pathlib import Path
 
 from PIL import Image, ImageChops
+
+PALETTE_PIXELS = 40_000_000  # frames sampled for the GIF palette, in pixels (~120 MB as RGB)
 
 
 def parse():
@@ -64,9 +67,14 @@ def save(a, frames):
     frames[0].save(a.out.with_suffix(".png"))
     written = [out, a.out.with_suffix(".png")]
     if a.gif:
-        strip = Image.new("RGB", (frames[0].width, frames[0].height * 2))
-        strip.paste(frames[0].convert("RGB"), (0, 0))
-        strip.paste(frames[len(frames) // 2].convert("RGB"), (0, frames[0].height))
+        # One palette for the whole loop, built from frames spread evenly across it, so a
+        # hue that shows in only one beat (a choreographed loop's accents) keeps its colour.
+        w, h = frames[0].size
+        step = max(1, math.ceil(len(frames) / max(1, PALETTE_PIXELS // (w * h))))
+        sample = frames[::step]
+        strip = Image.new("RGB", (w, h * len(sample)))
+        for k, fr in enumerate(sample):
+            strip.paste(fr.convert("RGB"), (0, k * h))
         pal = strip.quantize(colors=256)
         dither = Image.Dither.FLOYDSTEINBERG if a.dither else Image.Dither.NONE
         q = [f.convert("RGB").quantize(palette=pal, dither=dither) for f in frames]
