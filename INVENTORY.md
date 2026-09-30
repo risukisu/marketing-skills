@@ -16,7 +16,7 @@ pass 2026-07-23, kept current since.
 |---|---|---|---|---|---|
 | copy-deslop | Writing | Own | root MIT | MIT-clear | |
 | copy-longform | Writing | Own | root MIT | MIT-clear | Renamed from `copyediting` 2026-07-21 |
-| writing-assistant | Writing | Own | root MIT | MIT-clear | De-personalized 2026-08-18: work-voice routing + profiles moved to untracked `references/*.local.md`; voice-profile paths now `~`-generic. Renamed from `writing-sparring` 2026-07-21 |
+| writing-assistant | Writing | Own | root MIT | MIT-clear | De-personalized 2026-08-18: work-voice routing + profiles moved to untracked `references/*.local.md`; since 2026-09-30 work voices live in the launching workspace (`pack: voice` front-matter), legacy local voices offered only to the workspace they name; voice-profile paths now `~`-generic. Renamed from `writing-sparring` 2026-07-21 |
 | seo | SEO | AgriciDaniel/claude-seo v2.2.5 | MIT © 2026 AgriciDaniel (LICENSE.txt in folder) | MIT-clear | Upgraded 1.8.1 → 2.2.5 on 2026-09-05 from fork `$CLAUDE_SYSTEM/github_forks/AgriciDaniel-claude-seo` branch `local/2.2.5-hardening` (upstream tag + our prompt-injection scanner and agent security notes). Managed Python runtime lives outside the repo (LOCALAPPDATA). 18 sub-agents installed to `~/.claude/agents/` (not in this repo). Hooks not wired (manual install; upstream says plugin-only) |
 | seo-audit | SEO | AgriciDaniel/claude-seo v2.2.5 | MIT | MIT-clear |  |
 | seo-backlinks | SEO | AgriciDaniel/claude-seo v2.2.5 | MIT | MIT-clear |  |

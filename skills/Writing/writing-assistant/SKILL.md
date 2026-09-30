@@ -11,13 +11,15 @@ Your default mode is sparring: challenge, question, structure. But when asked, y
 
 ## Voice profile
 
-The default voice is the writer's **personal voice**. Additional voices (company blogs, employer content) are **machine-local**: they're defined in `references/voices.local.md`, which never ships with this skill.
+The default voice is the writer's **personal voice**. Work voices (company blogs, employer content) live in the workspace they belong to, never in this skill's folder: this library is a public repository.
 
 ### Detecting the voice context
 
-**Machine-local voices** — If `references/voices.local.md` exists, read it first. It defines each additional voice context, its detection triggers (launch root, directory, topic, the user's own words), any scope rules, and where its voice profile lives. Follow its routing.
+**Workspace voices** — Search the launch directory for markdown files whose front-matter says `pack: voice`. Read only their front-matter first: `voice` (its name), optional `company`, optional `extends` (a path, relative to the file, to a broader voice it builds on). One found → it is the voice for work pieces here. Several (a workspace baseline plus per-company voices) → use the one for the company the piece is about; ask if that is unclear.
 
-**Personal writing** — Use the personal voice for everything else (personal blog, newsletter, personal LinkedIn, personal essays).
+**Personal writing** — Use the personal voice for everything else (personal blog, newsletter, personal LinkedIn, personal essays), and whenever the launch directory has no workspace voice.
+
+**Legacy voices (transition only)** — Older installs kept work voices in this skill's folder (`references/voices.local.md` routing to `references/<client>-voice.local.md`). Use a `<client>-voice.local.md` only when the launch directory has no workspace voice and `<client>` appears in its path, so a workspace never sees another workspace's voice. Say it is the old location and offer to move it into the workspace with the `pack: voice` front-matter. Don't read the routing file.
 
 When in doubt across contexts, ask which one the piece is for.
 
@@ -28,7 +30,7 @@ When in doubt across contexts, ask which one the piece is for.
 (`<personal-root-namespace>` = the folder under `~/.claude/projects/` that matches your personal launch root.)
 This contains the writer's personal style — opinionated, sentence fragments, conversational, first-person.
 
-**For machine-local voices:** Load the profile that the matching entry in `references/voices.local.md` points to, and apply the guard adjustments it specifies (a company voice may carry its own vocabulary rules — the anti-AI structural pattern rules always still apply).
+**For workspace voices:** Read the chosen file, then the file it `extends` (the chosen file wins where they differ). Apply the guard adjustments it specifies (a company voice may carry its own vocabulary rules — the anti-AI structural pattern rules always still apply). Blank sections mean "not defined yet": fall back to the file it extends, then to a plain professional register. Never fall back to the personal voice for work content.
 
 If a profile doesn't exist yet, that's fine — you'll create the personal one after you learn enough (see "Learning loop" below).
 
@@ -110,7 +112,7 @@ Activated when the writer asks for a draft, rough version, or "write me somethin
 - **Always write to a file** (they keep it open in preview on another monitor). **Pick the destination with the selector rule — never blanket-default to any single folder:**
   - Derive the *contextual* home (the project / campaign / site the piece is about) and the *launch-folder* home (the project you're currently working in).
   - If they agree on an obvious home, save there and report the path. If they disagree or it's ambiguous, present a destination picker (contextual / launch-folder / editorial default `<ROOT>\writing\{type}` / custom path) and let the writer choose.
-  - Standalone personal editorial (blog, newsletter, LinkedIn, notes) → the personal root's `writing\{type}`. Work/company content → per the destination rules in `references/voices.local.md` (if present) or the launch root's `CLAUDE.md`. Project- or campaign-attached copy lives WITH the project/campaign, not in `writing\`. Full rule: see the launch root's `CLAUDE.md` "Where Content Goes".
+  - Standalone personal editorial (blog, newsletter, LinkedIn, notes) → the personal root's `writing\{type}`. Work/company content → per the destination rules in the workspace voice file (if it has any) or the launch root's `CLAUDE.md`. Project- or campaign-attached copy lives WITH the project/campaign, not in `writing\`. Full rule: see the launch root's `CLAUDE.md` "Where Content Goes".
   - Reuse the chosen path for every revision — don't create new files per iteration. If the writer specifies a path, use it.
 - Update the same file on each revision — don't create new files for each draft iteration.
 - After writing/updating the file, shut up. Don't explain what you did or ask if they like it. Wait for their feedback.
