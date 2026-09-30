@@ -2,7 +2,11 @@
 
 Releases are tagged on `master`; notes live here and on the GitHub release.
 
-## Unreleased
+## v1.1.3 — 2026-09-30
+
+**Reporting skills keep company packs in your workspace, not in the library.** `/pipeline-analysis`, `/marketing-monthly`, and `/campaign-report` no longer store or list context packs inside their own folders. They search the directory you launch from for markdown files whose front-matter says `pack: reporting` (with `company` and optional `aliases`), take company and period as arguments in any order (`/marketing-monthly September Acme`, `/pipeline-analysis Q3 Acme`), and always confirm both in one question. Without arguments they list the companies they found and propose a period. New packs are created in the workspace, with `pipeline-analysis`'s three engine files in a `reporting/` folder beside the pack. `/marketing-monthly` now proposes the last full month instead of the running month. Why: every workspace on a machine could see, and load, every other workspace's pack, and a pack file sitting in the library's working tree was one misnamed file away from a public commit. Packs in the old location (`references/<client>-context.local.md`) still work during the move, but only from a directory whose path contains the client's name; move them into your workspace and add the front-matter from `context-pack.TEMPLATE.md`.
+
+**`/linkedin-ads` and `/content-strategy` follow the same rule.** Both already read company context from the launch directory first. Their optional machine-local packs (`references/<client>-context.local.md`) are now legacy: offered only when the client's name appears in the launch directory's path, with an offer to move them into the workspace. Neither skill saves company context in its own folder.
 
 **`/cinemagraph`: GIF guidance for choreographed loops.** The skill no longer says a long choreographed GIF is usually too heavy. With flat art and one beat moving at a time, the GIF stores only the part of each frame that changed and merges identical frames, so 13 s loops at 1080 × 1080 came to 0.6–1.5 MB. Gradients, photos, and whole-canvas motion still call for the WebP or the CSS-animated SVG. The skill now also says to check the destination’s GIF limits before rendering.
 

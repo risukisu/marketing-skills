@@ -3,8 +3,9 @@
 These rules are the single source of truth for `/pipeline-analysis`; `/campaign-report` and
 `/marketing-monthly` point here instead of redefining metrics. The **rules** are generic and live
 in this file. The **ids** (pipelines, stages, ticket stages, fields, targets, loss reasons) are
-client configuration and live in the client's context pack (`references/<client>-context.local.md`
-+ the `.local.json` engine files; template: `references/context-pack.TEMPLATE.md`). Keep the
+client configuration and live in the company's context pack, kept in the workspace the report runs
+from (a `pack: reporting` markdown file plus three engine files in a `reporting/` folder beside it;
+template: `references/context-pack.TEMPLATE.md`). Keep the
 engine (`compute_funnel.py`) and this file in sync when a rule changes.
 
 ---
@@ -73,7 +74,7 @@ The marketing→sales handoff, inferred from ticket stage. First gate in the New
 ## 5. Reason map
 
 The engine loads a JSON map of picklist **values** → failure mode + owner (`reason_map.json` ships
-as a starter; the client's real map is `references/<client>-reason-map.local.json`, passed with
+as a starter; the client's real map is `reporting/reason-map.json` beside its pack, passed with
 `--reason-map`). Adding rows needs no engine change.
 
 - **Blank / "Other reason" / unknown value → Unattributed.** Never dropped; reported as its own row
@@ -117,7 +118,7 @@ rate.
 
 `targets.json` shape: `{ "revisions": [ { "label", "effective_from", "set_by", "mql"[12], "sql"[12],
 "leads": null, "won_eur_nb", "won_eur_am" } ] }`. The shipped file is empty; the client's targets
-live in `references/<client>-targets.local.json` (`--targets`).
+live in `reporting/targets.json` beside its pack (`--targets`).
 
 **Append-only.** A mid-year revision = append a new block; never edit old ones, so past reports
 stay valid and any period can be re-run against any named revision (`--targets-revision`).

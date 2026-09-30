@@ -90,7 +90,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 | `/cro` | Audits a page or form for conversion: value proposition, headline, CTA hierarchy, trust, objections, friction; returns quick wins, big changes, and test ideas |
 | `/lead-magnets` | Picks the problem, format, and distribution for a gated offer that leads naturally to the product |
 
-**Reporting** (HubSpot + GA4; company and CRM ids come from a per-client context pack, never from the skill)
+**Reporting** (HubSpot + GA4; company and CRM ids come from a per-company context pack kept in your own workspace, never from the skill. Pass company and period: `/marketing-monthly September Acme`)
 
 | Skill | One line |
 |---|---|

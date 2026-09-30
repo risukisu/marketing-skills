@@ -1,8 +1,16 @@
+---
+pack: reporting
+company: <Company, as you would type it: /marketing-monthly September <Company>>
+aliases: [<optional short names>]
+---
+
 # <Client> — RevOps reporting context pack
 
-> Copy this file to `references/<client>-context.local.md` (the `.local.md` suffix keeps it out of
-> git) and fill every `<...>`. One pack per client. `/pipeline-analysis`, `/marketing-monthly`, and
-> `/campaign-report` all read this same pack, so a CRM id is defined once. Values marked *verify*
+> Save a copy inside the workspace you launch reports from, next to the company's other context
+> (e.g. `companies/<company>/context/reporting.md`), and fill every `<...>`. **Never save it inside
+> a skill folder**: the skills library is a public repository. The front-matter above is how the
+> skills find the pack; keep `pack: reporting` exactly. One pack per company. `/pipeline-analysis`,
+> `/marketing-monthly`, and `/campaign-report` all read this same pack, so a CRM id is defined once. Values marked *verify*
 > must be confirmed against the live portal before the first run — pipeline and stage ids differ
 > per HubSpot portal and are not guessable.
 
@@ -40,7 +48,7 @@ Stage-entry property names for the AM pipeline (HubSpot names them `hs_v2_date_e
 
 Known quirks to carry into every report: `<e.g. a stage-entry property the SQL layer rejects; a pipeline whose captures should count as MQL; a reseller pass-through deal type to exclude>`.
 
-### Engine config (paste into `pa_input.json` or keep as `references/<client>-config.local.json`)
+### Engine config (paste into `pa_input.json` or keep as `reporting/config.json` beside this pack)
 
 ```json
 {
@@ -64,7 +72,7 @@ Known quirks to carry into every report: `<e.g. a stage-entry property the SQL l
 }
 ```
 
-Companion files, same folder, same `.local.json` suffix: `<client>-targets.local.json` (append-only revisions, see `targets.json` for the shape) and `<client>-reason-map.local.json` (this portal's closed-lost picklist values → failure mode, see `reason_map.json`).
+Companion files in the same `reporting/` folder: `targets.json` (append-only revisions, see the skill's `targets.json` for the shape) and `reason-map.json` (this portal's closed-lost picklist values → failure mode, see the skill's `reason_map.json`).
 
 ## 3. Analytics
 

@@ -52,9 +52,12 @@ Run this after the entry gate and before the intake question:
    `content-strategy-*.md` or `content-audit-*.md`, offer to continue from it
    (audit a built strategy, refresh a hub, re-score) rather than start over.
 
-Optional extra: `references/*-context.local.md` packs, if any exist on this
-machine, are listed in step 2 alongside the scan results and follow the same
-rule: nothing is read until the user picks it. They never ship with the skill.
+Company context belongs in the user's workspace, never in this skill's folder:
+this library is a public repository. Legacy packs
+(`references/<client>-context.local.md` from older installs) are listed in step 2
+only when `<client>` appears in the launch directory's path, so a workspace never
+sees another workspace's pack. Same rule: nothing is read until the user picks it;
+say it is the old location and offer to move it into the workspace.
 
 ## Entry gate
 

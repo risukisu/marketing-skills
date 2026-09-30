@@ -1,6 +1,6 @@
 ---
 name: campaign-report
-description: "Generate a per-campaign marketing performance report (pipeline + content + funnel) for the board: a two-funnel (New Business / Account Management) HubSpot analysis built from a manual lead sweep reconciled three ways, destination-dated conversions (monthly counts, quarterly and YTD rates), GA4 traffic on one unified campaign page set, edition-over-edition deltas, and a board key takeaway. Markdown source + self-contained HTML; optional gated publishing step. Use when the user says \"/campaign-report\", \"campaign performance report for [campaign]\", \"build the [X] campaign report\", or wants one campaign's marketing and pipeline performance packaged for leadership. NOT the monthly board snapshot (marketing-monthly) and NOT the company-wide RevOps diagnostic (pipeline-analysis). Company, CRM ids, page sets, templates, and publishing targets come from a client context pack chosen per run; nothing client-specific lives in this skill."
+description: "Generate a per-campaign marketing performance report (pipeline + content + funnel) for the board: a two-funnel (New Business / Account Management) HubSpot analysis built from a manual lead sweep reconciled three ways, destination-dated conversions (monthly counts, quarterly and YTD rates), GA4 traffic on one unified campaign page set, edition-over-edition deltas, and a board key takeaway. Markdown source + self-contained HTML; optional gated publishing step. Use when the user says \"/campaign-report\", \"campaign performance report for [campaign]\", \"build the [X] campaign report\", or wants one campaign's marketing and pipeline performance packaged for leadership. NOT the monthly board snapshot (marketing-monthly) and NOT the company-wide RevOps diagnostic (pipeline-analysis). Company, CRM ids, page sets, templates, and publishing targets come from a context pack in the workspace you launch from, chosen per run from the company and period you pass (e.g. /campaign-report Acme spring-launch YTD); nothing client-specific lives in this skill."
 ---
 
 # campaign-report — per-campaign performance report
@@ -13,17 +13,31 @@ redefine them here.
 **Paths.** `references/…` is relative to this skill's folder. Every output, template, and
 publishing path comes from the client pack, never from the current directory.
 
-## Step 0 — Client context (every run, ask before reading)
+## Step 0 — Company, campaign, and period (every run, one question)
 
-1. List candidate packs: `references/*-context.local.md` here and in the sibling
-   `pipeline-analysis/references/`, plus anything in the launch directory that looks like campaign
-   context (a campaign README, a content plan, an earlier `*-performance-*.md`). Filenames only.
-2. Ask one question: use this pack / point me elsewhere / paste the essentials / start with none.
+Same procedure as `pipeline-analysis` Step 0 (one pack serves all three reporting skills). This
+skill's folder never stores company data: the library is a public repository.
+
+1. **Read the arguments**, in any order: a company, a campaign, and a period, e.g.
+   `/campaign-report Acme "Spring launch" YTD`. Any may be missing.
+2. **Find the packs** in the launch directory: markdown files with `pack: reporting` in their
+   front-matter (skip `*.TEMPLATE.md`); read only `company` and `aliases`. Note filenames of
+   campaign context nearby (a campaign README, a content plan, an earlier `*-performance-*.md`).
+3. **Ask one question, always**, pre-filled from the arguments: "Acme · Spring launch · YTD to
+   31 Aug · pack `…/reporting.md` — go?" No company given → list the companies found. No campaign
+   → list the campaign page sets in the chosen pack. No period → propose YTD to the end of the
+   last full month. Other answers: point me elsewhere / paste the essentials / start with none.
    Wait.
-3. Read only what was approved. "None" means Step 1 also collects portal id, funnels, GA4 property,
-   and output path, and the run renders in the neutral default style.
-4. No pack yet? Copy `pipeline-analysis/references/context-pack.TEMPLATE.md` to
-   `references/<client>-context.local.md`, fill it with the user, verify ids live, continue.
+4. **Read only the approved pack**; its relative paths resolve from its folder. "None" means Step 1
+   also collects portal id, funnels, GA4 property, and output path, and the run renders in the
+   neutral default style.
+5. **No pack yet?** Create one in the launch workspace from
+   `pipeline-analysis/references/context-pack.TEMPLATE.md` (next to the company's other context,
+   e.g. `companies/<company>/context/reporting.md`; ask), fill it with the user, verify ids live,
+   continue. Never create it inside a skill folder.
+6. **Legacy packs** (`references/<client>-context.local.md` here or in `pipeline-analysis/`): offer
+   one only when `<client>` appears in the launch directory's path; say it is the old location
+   and offer to move it into the workspace.
 
 ## Critical rules
 
@@ -56,8 +70,7 @@ publishing path comes from the client pack, never from the current directory.
 ## Workflow
 
 ### Step 1 — Intake (always ask)
-In one message: **which campaign**; **period** (default YTD to end of last full month); **the
-authoritative lead list** (CRM record links; offer to draft a candidate list for confirmation if
+Campaign and period are settled in Step 0. In one message: **the authoritative lead list** (CRM record links; offer to draft a candidate list for confirmation if
 none is ready, but membership is the owner's call); **the campaign page set** (landing pages +
 posts; confirm slugs against the pack).
 

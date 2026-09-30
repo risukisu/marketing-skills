@@ -1,6 +1,6 @@
 ---
 name: pipeline-analysis
-description: "Run a HubSpot RevOps pipeline and conversion analysis over a period (a quarter, a year, a custom or trailing range) and return a diagnosis-first report: verdict (binding constraint A–F with owner and value), reverse-funnel scorecard, New Business full diagnostic (flow plane, diagnosis plane, cohort conversion, velocity, sources), Account Management condensed, reconciliation, method note. Markdown by default; HTML on request. Use when the user says \"/pipeline-analysis\", \"run a pipeline analysis\", \"revops analysis\", \"conversion analysis for [period]\", or asks how leads, MQLs, and SQLs converted over a period. NOT the monthly board snapshot (that is marketing-monthly) and NOT a single campaign's report (that is campaign-report). Company and CRM ids come from a client context pack chosen per run; nothing client-specific lives in this skill."
+description: "Run a HubSpot RevOps pipeline and conversion analysis over a period (a quarter, a year, a custom or trailing range) and return a diagnosis-first report: verdict (binding constraint A–F with owner and value), reverse-funnel scorecard, New Business full diagnostic (flow plane, diagnosis plane, cohort conversion, velocity, sources), Account Management condensed, reconciliation, method note. Markdown by default; HTML on request. Use when the user says \"/pipeline-analysis\", \"run a pipeline analysis\", \"revops analysis\", \"conversion analysis for [period]\", or asks how leads, MQLs, and SQLs converted over a period. NOT the monthly board snapshot (that is marketing-monthly) and NOT a single campaign's report (that is campaign-report). Company and CRM ids come from a context pack in the workspace you launch from, chosen per run from the company and period you pass (e.g. /pipeline-analysis Q3 Acme); nothing client-specific lives in this skill."
 ---
 
 # pipeline-analysis — RevOps funnel & conversion analysis
@@ -12,23 +12,38 @@ and `marketing-monthly` point at it rather than redefining metrics.
 **Paths in this file.** `compute_funnel.py`, `definitions.md`, `references/…` are relative to
 **this skill's folder**. Output paths come from the client pack, never from the current directory.
 
-## Step 0 — Client context (every run, ask before reading)
+## Step 0 — Company and period (every run, one question)
 
-The skill holds no company or CRM data and never uses any without the user's say-so.
+The skill holds no company or CRM data, and its folder never stores any: this library is a public
+repository. Context packs live in the workspace you launch from. `/marketing-monthly` and
+`/campaign-report` use the same packs and the same procedure.
 
-1. List the candidate packs: `references/*-context.local.md` in this skill's folder (machine-local,
-   never shipped), plus anything in the launch directory that looks like reporting context
-   (`CLAUDE.md`, `AGENTS.md`, a `context/` folder, files named for pipeline, funnel, targets, or
-   earlier `*-pipeline-conversion-analysis.md` reports). Filenames only; read nothing yet.
-2. Ask one question: use this pack / point me at another file / paste the ids / start with none.
-   Wait.
-3. Read only what was approved. A pack supplies portal id, pipeline→funnel mapping, stage ids,
-   ticket stages, AM sources, targets, reason map, output root, house style. "None" means Step 1
-   must collect the ids by hand and the run stops at markdown with generic labels.
-4. **No pack for this company yet?** Copy `references/context-pack.TEMPLATE.md` to
-   `references/<client>-context.local.md`, fill it with the user *verifying every id against the
-   live portal* (`SELECT pipeline, dealstage, COUNT(*) FROM DEAL GROUP BY pipeline, dealstage`
-   is the fastest way), and create the three `.local.json` engine files it describes. Then continue.
+1. **Read the arguments**, in any order: a company and a period, e.g. `/pipeline-analysis Q3 Acme`
+   or `/pipeline-analysis Acme 2026`. Either may be missing.
+2. **Find the packs** in the launch directory: markdown files whose front-matter says
+   `pack: reporting` (grep `^pack: reporting` over `**/*.md`; skip `*.TEMPLATE.md`). Read only
+   their front-matter (`company`, `aliases`), nothing else yet.
+3. **Ask one question, always**, even when the arguments look complete: the company (matched
+   against `company` and `aliases`) and the period, pre-filled from the arguments. For example:
+   "Acme · Q3 2026 (1 Jul–30 Sep) · pack `companies/acme/context/reporting.md` — go?" No company
+   given → list the companies found. No period given → propose the last full quarter. Other
+   answers: point me at another file / paste the ids / start with none. Wait.
+4. **Read only the approved pack.** Relative paths in it (output root, templates, engine files)
+   resolve from the pack's folder. A pack supplies portal id, pipeline→funnel mapping, stage ids,
+   ticket stages, AM sources, targets, reason map, output root, house style. "None" means the ids
+   are collected by hand and the run stops at markdown with generic labels.
+5. **No pack for this company yet?** Create one in the launch workspace, never in this skill's
+   folder: next to the company's other context if the workspace has such a place (ask; e.g.
+   `companies/<company>/context/reporting.md`), otherwise `reporting-packs/<company>.md`. Start
+   from `references/context-pack.TEMPLATE.md`, fill it with the user *verifying every id against
+   the live portal* (`SELECT pipeline, dealstage, COUNT(*) FROM DEAL GROUP BY pipeline, dealstage`
+   is the fastest way), and create the three engine files it describes in a `reporting/` folder
+   beside the pack. Then continue.
+6. **Legacy packs (transition only).** Older installs kept packs as
+   `references/<client>-context.local.md` inside the skill folders. Offer one only when `<client>`
+   appears in the launch directory's path, so a workspace never sees another workspace's pack. Say
+   it is the old location and offer to move it into the workspace. Its engine files keep their old
+   `references/<client>-*.local.json` paths until moved.
 
 ## Critical rules
 1. **No fabrication.** Every number traces to a query. Empty result → say so.
@@ -57,9 +72,9 @@ The skill holds no company or CRM data and never uses any without the user's say
 
 ## Workflow
 
-### Step 1 — Intake (always ask)
-Ask, in one message: the **period** (a quarter, a year, a custom range, or trailing-to-today).
-Resolve to `start`/`end` ISO dates. Both funnels are always produced.
+### Step 1 — Period
+Resolve the period confirmed in Step 0 (a quarter, a year, a custom range, or trailing-to-today)
+to `start`/`end` ISO dates. Both funnels are always produced.
 
 ### Step 2 — Pull data (HubSpot MCP)
 Call `mcp__claude_ai_HubSpot__tool_guidance(["query_crm_data"])` once first. Substitute every id
@@ -116,13 +131,14 @@ Write `pa_input.json` to the scratchpad:
   `targets_revision`, `avg_deal_override`, `sql_reentry`. The `crm` and `funnels` blocks may be
   inlined here or supplied with `--config`.
 
-Run the engine with the client's files:
+Run the engine with the company's files from the `reporting/` folder beside its pack:
 ```
 python compute_funnel.py <scratch>/pa_input.json <scratch>/pa_out.json \
-  --config    references/<client>-config.local.json \
-  --targets   references/<client>-targets.local.json \
-  --reason-map references/<client>-reason-map.local.json
+  --config     <pack folder>/reporting/config.json \
+  --targets    <pack folder>/reporting/targets.json \
+  --reason-map <pack folder>/reporting/reason-map.json
 ```
+A legacy pack (Step 0.6) still points at `references/<client>-{config,targets,reason-map}.local.json`.
 Output: `{period, generated, targets_revision, funnels: {nb: {...verdict}, am: {...}}}`. NB carries
 `flow_gates / accept_gate / mql_cohorts / funnel / leak_events / leak_pnl / execution_flags /
 conversions / throughput / throughput_vs_target / velocity / ticket_cohorts / sources / flags /

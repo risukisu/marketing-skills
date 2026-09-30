@@ -36,10 +36,14 @@ the user's say-so.
    paste the context as text / start with none. Wait for the answer.
 3. Read only what was approved. A pasted block is the context for this run.
    "None" means Step 0 gathers the essentials from scratch.
-4. Optional extra: `references/*-context.local.md` packs on this machine (never
-   shipped) are listed in the same question and need the same yes. If an
-   approved pack defines a **scope** (one company vs. a set), resolve it per the
-   pack's instructions.
+4. Company context belongs in the user's workspace, never in this skill's
+   folder: this library is a public repository. Legacy packs
+   (`references/<client>-context.local.md` from older installs) are offered only
+   when `<client>` appears in the launch directory's path, so a workspace never
+   sees another workspace's pack; they need the same yes, and you say it is the
+   old location and offer to move it into the workspace. If an approved pack or
+   file defines a **scope** (one company vs. a set), resolve it per its
+   instructions.
 
 ## Step 0 - Always start by understanding the job
 

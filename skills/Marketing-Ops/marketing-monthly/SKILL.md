@@ -1,6 +1,6 @@
 ---
 name: marketing-monthly
-description: "Generate the monthly marketing board snapshot for a company: headline metrics (pipeline value, MQL, leads, web traffic) vs the prior month, quarter progress vs targets with YTD sparklines, traffic by campaign, what-we're-learning insights, and a per-lead journey section, as a self-contained HTML report plus a markdown companion. Use when the user says \"/marketing-monthly\", \"monthly board report\", \"marketing monthly\", \"marketing snapshot for [month]\", or asks for the next edition of the board-prep marketing report. NOT a single campaign's report (campaign-report) and NOT the RevOps diagnostic (pipeline-analysis). Company, CRM ids, GA4 property, templates, and output paths come from a client context pack chosen per run; nothing client-specific lives in this skill."
+description: "Generate the monthly marketing board snapshot for a company: headline metrics (pipeline value, MQL, leads, web traffic) vs the prior month, quarter progress vs targets with YTD sparklines, traffic by campaign, what-we're-learning insights, and a per-lead journey section, as a self-contained HTML report plus a markdown companion. Use when the user says \"/marketing-monthly\", \"monthly board report\", \"marketing monthly\", \"marketing snapshot for [month]\", or asks for the next edition of the board-prep marketing report. NOT a single campaign's report (campaign-report) and NOT the RevOps diagnostic (pipeline-analysis). Company, CRM ids, GA4 property, templates, and output paths come from a context pack in the workspace you launch from, chosen per run from the company and period you pass (e.g. /marketing-monthly September Acme); nothing client-specific lives in this skill."
 ---
 
 # /marketing-monthly — monthly board snapshot
@@ -14,18 +14,30 @@ skill in this library); do not redefine them here.
 the client pack, resolved from the pack — never from the current directory (the skill is often
 launched from a workspace root, not from the reporting repo).
 
-## Step 0 — Client context (every run, ask before reading)
+## Step 0 — Company and month (every run, one question)
 
-1. List candidate packs: `references/*-context.local.md` here and in the sibling
-   `pipeline-analysis/references/` (one pack serves all three reporting skills), plus anything in
-   the launch directory that looks like reporting context or an earlier
-   `*-monthly-marketing-snapshot.md`. Filenames only.
-2. Ask one question: use this pack / point me elsewhere / paste the essentials / start with none.
-   Wait.
-3. Read only what was approved. "None" means the run collects portal id, pipelines, GA4 property,
-   and output path by hand and renders a first edition in the default style (below).
-4. No pack yet? Copy `pipeline-analysis/references/context-pack.TEMPLATE.md` to
-   `references/<client>-context.local.md`, fill it with the user, verify ids live, continue.
+Same procedure as `pipeline-analysis` Step 0 (one pack serves all three reporting skills). This
+skill's folder never stores company data: the library is a public repository.
+
+1. **Read the arguments**, in any order: a company and a month, e.g.
+   `/marketing-monthly September Acme`. A bare month name means its latest occurrence that has
+   started. Either may be missing.
+2. **Find the packs** in the launch directory: markdown files with `pack: reporting` in their
+   front-matter (skip `*.TEMPLATE.md`); read only `company` and `aliases`.
+3. **Ask one question, always**, pre-filled from the arguments: "Acme · September 2026 vs August ·
+   pack `…/reporting.md` — go?" No company given → list the companies found. No month given →
+   propose the last full month (the running month, truncated to today, only if asked for). Other
+   answers: point me elsewhere / paste the essentials / start with none. Wait.
+4. **Read only the approved pack**; its relative paths resolve from its folder. "None" means the
+   run collects portal id, pipelines, GA4 property, and output path by hand and renders a first
+   edition in the default style (below).
+5. **No pack yet?** Create one in the launch workspace from
+   `pipeline-analysis/references/context-pack.TEMPLATE.md` (next to the company's other context,
+   e.g. `companies/<company>/context/reporting.md`; ask), fill it with the user, verify ids live,
+   continue. Never create it inside a skill folder.
+6. **Legacy packs** (`references/<client>-context.local.md` here or in `pipeline-analysis/`): offer
+   one only when `<client>` appears in the launch directory's path; say it is the old location
+   and offer to move it into the workspace.
 
 ## Critical rules
 
@@ -44,14 +56,13 @@ launched from a workspace root, not from the reporting repo).
 
 ## Workflow
 
-### Step 1 — Style, then period
+### Step 1 — Style, then targets
 - **Style:** if the pack lists templates, ask which one (AskUserQuestion). If none exist, this
   run builds the first template from the section spec below in a neutral editorial style (paper
   background, one serif display face, one humanist sans, single accent colour) and saves it to
   the pack's template path for every later edition.
-- **Period:** the "Current" month (default: current calendar month, truncated to today if
-  mid-month); comparison = prior full month. Confirm the quarter's MQL and SQL targets from the
-  pack; ask if they changed.
+- **Period:** the "Current" month is the one confirmed in Step 0; comparison = the prior full
+  month. Confirm the quarter's MQL and SQL targets from the pack; ask if they changed.
 
 ### Step 2 — Pull data
 Substitute every id from the pack.
