@@ -36,6 +36,7 @@ In an ambient loop, combine at most three, at different frequencies. Two motions
 - Frame period 60–100 ms. Fewer frames per second look choppy on continuous motions (march, drift); more inflate the file with no visible gain at hero size.
 - Easing only on motions that start and stop (draw, scan). Continuous motions (march, drift, orbit) must be linear in p or the seam shows as a speed change.
 - Choreographed: loop = beats × hold, 2–3 s per beat; a beat's action finishes by 60% of the beat so its result holds on screen.
+- Choreographed fades are timed in frames. With `F` frames per beat one frame is `1/F` of `q`; the renderer samples `q = 0, 1/F, …, (F−1)/F` and never `q = 1`. The reset spans at least 3 frames and ends by the last rendered frame: `end ≤ (F−1)/F`, `start ≤ end − 3/F`. At `F = 28` (2.8 s at 100 ms) that is `q` 0.84 → 0.96; a reset over 0.95 → 1 is still about 68% lit on the last frame and snaps into the next beat. A fade-in shorter than `1/F` (0.02–0.05 of `q` at `F = 28`) renders as a cut, which is acceptable for a light piece; give anything the eye tracks 2–3 frames.
 
 ## What reads as "too much" (ambient)
 
@@ -47,13 +48,13 @@ The loop is split into `N` beats: `beat = floor(p × N)`, `q = p × N − beat` 
 
 | Piece | Inside its beat | Use for |
 |---|---|---|
-| **Light** | resting look → active look when `q ≥ d`, over 0.02–0.05 of `q` | a box, a key, a list row, a label's colour |
+| **Light** | resting look → active look when `q ≥ d`, over 0.02–0.05 of `q` (under one frame at 28 frames per beat, so a cut: fine for a light piece, 2–3 frames for anything the eye tracks) | a box, a key, a list row, a label's colour |
 | **Pop** | `scale 0.6 → 1` and `opacity 0 → 1` over 0.04 of `q` | an issue flag, a drop-off, a stamp |
 | **Sweep** | `y = y0 + clamp((q − d) / 0.4, 0, 1) × height` | a scan over a page or a list |
 | **Tick** | a box fill or strike line appears at `d` | a list being worked through |
 | **Stagger** | `n` pieces with `d_k = d0 + k × step`, step 0.03–0.15 of `q` (70–400 ms at a 2.6 s hold) | keys typed, dots arriving, seats speaking |
-| **Trace** | after its active look, the piece drops to 20–30% and holds until `q = 0.95` | what the beat already touched |
-| **Reset** | everything the beat lit fades out over `q` 0.95 → 1 | the hand-over to the next beat |
+| **Trace** | after its active look, the piece drops to 20–30% and holds until the reset starts | what the beat already touched |
+| **Reset** | everything the beat lit fades out over at least 3 frames, ending by the beat's last rendered frame: with `F` frames per beat, `end ≤ (F−1)/F` and `start ≤ end − 3/F` (at `F = 28`: `q` 0.84 → 0.96; 0.95 → 1 snaps) | the hand-over to the next beat |
 
 As CSS (an SVG that has to run without script): one keyframe set per piece type whose visible window is the first `1/N` of the loop (0–20% for five beats), `animation-duration` = the loop, `animation-delay` = `beat × hold + d × hold`.
 
