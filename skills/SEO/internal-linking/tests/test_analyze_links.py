@@ -90,3 +90,90 @@ def test_pagerank_ignores_nofollow_and_self_links():
     _, outbound = al.link_index(data)
     pr = al.pagerank(data["pages"], outbound)
     assert pr[S + "y.html"] > pr[S + "x.html"]
+
+
+def test_priority_gap_matches_paths_and_flags_unknown():
+    inbound, outbound = al.link_index(SITE)
+    counts = al.page_counts(SITE, inbound, outbound)
+    pr = al.pagerank(SITE["pages"], outbound)
+    rows = al.priority_gap(["/orphan.html", S + "c.html", "/missing.html"], pr, counts, S)
+    assert rows[0]["url"] == S + "orphan.html" and rows[0]["priority_rank"] == 1 and rows[0]["gap"] > 0
+    assert rows[1]["url"] == S + "c.html" and rows[1]["authority_rank"] <= 3
+    assert rows[2]["note"] == "not crawled" and rows[2]["gap"] is None
+
+
+def test_hygiene_classifies_targets_and_anchors():
+    data = make(
+        [page("", "Home"), page("p.html", "P", 1), page("q.html", "Q", 1)],
+        [link("", "q.html", "click here"), link("", "q.html", ""), link("p.html", "gone.html", "old"),
+         link("p.html", "moved.html", "moved"), link("p.html", "secret.html", "s"), link("q.html", "p.html", "P", nofollow=True)]
+        + [link("q.html", "p.html", "Same Anchor")] * 5,  # five followed links, one anchor
+        targets={S + "gone.html": {"status": 404, "final_status": 404, "final_url": S + "gone.html", "chain": [], "checked": "HEAD", "error": None},
+                 S + "moved.html": {"status": 301, "final_status": 200, "final_url": S + "p.html", "chain": [S + "p.html"], "checked": "HEAD", "error": None},
+                 S + "secret.html": {"status": None, "final_status": None, "final_url": S + "secret.html", "chain": [], "checked": "blocked", "error": None},
+                 S + "p.html": {"status": 200, "final_status": 200, "final_url": S + "p.html", "chain": [], "checked": "GET", "error": None}},
+    )
+    inbound, _ = al.link_index(data)
+    h = al.hygiene(data, inbound)
+    assert [b["target"] for b in h["broken"]] == [S + "gone.html"] and h["broken"][0]["sources"] == [S + "p.html"]
+    assert h["redirects"][0]["target"] == S + "moved.html" and h["redirects"][0]["final_url"] == S + "p.html"
+    assert h["blocked"] == [S + "secret.html"]
+    assert {g["anchor"] for g in h["generic_anchors"]} == {"click here", "(empty)"}
+    assert h["nofollow_internal"][0]["source"] == S + "q.html"
+    assert h["low_variety"][0]["target"] == S + "p.html" and h["low_variety"][0]["inlinks"] == 5
+
+
+def test_candidate_sources_prefer_topical_overlap_and_skip_existing_links():
+    data = make(
+        [page("", "Home", h2=["Why teams pick us"]), page("plan.html", "Sprint planning for small teams", depth=1),
+         page("retro.html", "Running retrospectives that stick", depth=1),
+         page("orphan.html", "Estimating work without story points", h2=["Sprint planning without estimates"], depth=None),
+         page("linked.html", "Sprint planning tools", depth=1)],
+        [link("", "plan.html"), link("", "retro.html"), link("", "linked.html"), link("linked.html", "orphan.html", "estimates")],
+    )
+    inbound, outbound = al.link_index(data)
+    pr = al.pagerank(data["pages"], outbound)
+    cands = al.candidate_sources(data, inbound, pr, [S + "orphan.html"])
+    sources = [c["source"] for c in cands[S + "orphan.html"]]
+    assert sources[0] == S + "plan.html"  # shares "sprint" and "planning"
+    assert S + "linked.html" not in sources  # already links to the target
+    assert S + "orphan.html" not in sources
+    assert cands[S + "orphan.html"][0]["topical"] is True
+    assert "sprint" in cands[S + "orphan.html"][0]["shared_terms"]
+
+
+def test_mermaid_graph_has_nodes_and_body_edges():
+    inbound, outbound = al.link_index(SITE)
+    pr = al.pagerank(SITE["pages"], outbound)
+    g = al.mermaid_graph(SITE, outbound, pr)
+    assert g.startswith("graph LR")
+    assert '["/c.html"]' in g and '["/"]' in g
+    assert "-->" in g
+
+
+def test_analyze_end_to_end_on_fixture_site(site, tmp_path, capsys):
+    from crawl_links import crawl
+    data = crawl(site, max_pages=50, delay=0)
+    m = al.analyze(data, priority=["/pricing.html", "/services.html", "/blog/post-c.html"])
+    assert m["orphans"] == [site + "blog/post-c.html"]
+    assert m["needs"][0] == site + "blog/post-c.html"
+    assert [b["target"] for b in m["hygiene"]["broken"]] == [site + "old-page.html"]
+    assert m["hygiene"]["redirects"][0]["final_url"] == site + "pricing.html"
+    assert {g["anchor"] for g in m["hygiene"]["generic_anchors"]} == {"click here"}
+    assert m["priority_gap"][0]["url"] == site + "pricing.html"
+    post_a = site + "blog/post-a.html"
+    assert post_a in [c["source"] for c in m["candidates"][site + "blog/post-c.html"]]
+    assert m["summary"]["pages"] == 8 and m["summary"]["orphans"] == 1 and m["summary"]["broken"] == 1
+    md = al.render_markdown(m)
+    assert "## Pages by inbound links" in md and "## Hygiene" in md and "graph LR" in md and "## Priority gap" in md
+
+    crawl_path = tmp_path / "crawl.json"
+    crawl_path.write_text(json.dumps(data), encoding="utf-8")
+    prio = tmp_path / "priority.txt"
+    prio.write_text("/pricing.html\n\n# comment\n/services.html\n", encoding="utf-8")
+    out = tmp_path / "metrics.json"
+    assert al.main([str(crawl_path), "--priority", str(prio), "--out", str(out)]) == 0
+    written = json.loads(out.read_text(encoding="utf-8"))
+    assert [r["url"] for r in written["priority_gap"]] == [site + "pricing.html", site + "services.html"]
+    assert "## Pages by inbound links" in capsys.readouterr().out
+    assert al.main([str(tmp_path / "nope.json")]) == 1
