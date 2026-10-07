@@ -65,3 +65,15 @@ def test_main_writes_file(tmp_path):
     assert main([str(INLINKS), "--pages", str(PAGES), "--out", str(out)]) == 0
     assert json.loads(out.read_text(encoding="utf-8"))["pages_crawled"] == 6
     assert main([str(tmp_path / "missing.csv"), "--out", str(out)]) == 1
+
+
+def test_import_warns_about_200_targets_missing_from_pages_export():
+    data = import_export(INLINKS, PAGES)
+    assert any("not in internal_html" in w and "post-a.html" in w for w in data["warnings"])
+    assert import_export(INLINKS)["warnings"] and not any("not in internal_html" in w for w in import_export(INLINKS)["warnings"])
+
+
+def test_import_redirect_targets_have_unknown_final_url():
+    data = import_export(INLINKS, PAGES)
+    assert data["targets"][S + "moved.html"]["final_url"] is None
+    assert data["targets"][S + "old-page.html"]["final_url"] == S + "old-page.html"

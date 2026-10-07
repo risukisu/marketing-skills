@@ -17,7 +17,7 @@ fine for GitHub and Obsidian.
 
 | Pages | Orphans | Near-orphans | Broken targets | Priority pages under-linked |
 |---|---|---|---|---|
-| {n} | {n} | {n} | {n} | {n of m} |
+| {n} | {n} | {n} | {n} | {n of m, or "n/a (none given)"} |
 
 {Three sentences: what the structure looks like, the single biggest problem, what to do first.}
 
@@ -41,6 +41,8 @@ fine for GitHub and Obsidian.
 - **Top authority:** {table from analyze_links.py}
 - **Priority gap:** {table from analyze_links.py, or "no priority pages given"}
 
+{One-line legend: top pages by internal PageRank and the followed body links between them; nav, footer, and nofollow links are not drawn.}
+
 ~~~mermaid
 {graph from analyze_links.py}
 ~~~
@@ -51,17 +53,19 @@ fine for GitHub and Obsidian.
 |---|---|---|---|---|
 | 1 | /source | /target | anchor | orphan / priority gap / near-orphan |
 
-{Order: orphans first, then priority pages by gap, then near-orphans. Each row is one row from section 4.}
+{Order: orphans first, then priority pages by gap, then near-orphans. Each row is one row from section 4. Fewer than 20 rows on a small site is right; say so in one line.}
 
 ## 7. Hygiene
 
-- **Broken targets:** {table}
-- **Redirected targets:** {table}
-- **Generic anchors:** {table}
-- **Low anchor variety:** {table}
-- **Nofollow internal links:** {table}
-- **Over-linked pages:** {list with unique outlink counts}
-- **Blocked by robots.txt:** {list}
+Every row ends with a fix. Columns:
+
+- **Broken targets:** Target | Status | Linked from (page, anchor) | Fix
+- **Redirected targets:** Target | Status | Final URL (or "unknown" for an export) | Linked from (page, anchor) | Fix
+- **Generic anchors:** Source | Target | Anchor | New anchor
+- **Low anchor variety:** Target | Body inlinks | The one anchor | Vary to
+- **Nofollow internal links:** Source | Target | Anchor | Fix
+- **Over-linked pages:** {list with unique outlink counts and what to remove}
+- **Blocked by robots.txt:** {list; say whether the block is intended}
 
 ## 8. Method and limits
 

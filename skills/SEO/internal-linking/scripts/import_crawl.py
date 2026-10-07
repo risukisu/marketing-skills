@@ -129,10 +129,16 @@ def import_export(inlinks_path, pages_path=None, start_url=None, include_params:
                       "nofollow": _get(r, cols, "follow").lower() == "false", "is_image": is_image})
         status = _int(_get(r, cols, "status"))
         if target not in targets:
-            targets[target] = {"status": status, "final_status": status, "final_url": target, "chain": [],
-                               "checked": "export", "error": None}
+            redirect = 300 <= (status or 0) < 400
+            targets[target] = {"status": status, "final_status": status, "final_url": None if redirect else target,
+                               "chain": [], "checked": "export", "error": None}
     if any(300 <= (t["status"] or 0) < 400 for t in targets.values()):
         warnings.append("Redirect targets come from the export without chains or final URLs; verify them live.")
+    if pages_path:
+        unexported = sorted(t for t, info in targets.items() if info["status"] == 200 and t not in pages)
+        if unexported:
+            warnings.append(f"{len(unexported)} link target(s) answer 200 but are not in internal_html.csv (non-HTML, "
+                            f"or the export was filtered); they count as targets only: {', '.join(unexported[:10])}")
 
     return {"ok": True, "schema": 1, "source": "import_crawl.py",
             "crawled_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),

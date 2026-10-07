@@ -48,7 +48,8 @@ Different source pages use different natural phrasings for the same target. The 
 every inbound link reads as manipulation and tells the crawler less.
 
 **Check:** across the proposals for one target, no two anchors are identical; vary with
-synonyms and sentence fit, not keyword stuffing.
+synonyms and sentence fit, not keyword stuffing. Template anchors in nav and footer ("Home",
+"Pricing") repeat by design and are not counted.
 
 ## Rule 5: important links high on the page and from the homepage
 
@@ -64,7 +65,8 @@ Old, well-linked, well-ranking pages should link to new and under-linked pages. 
 linking out to old ones does not help the new page.
 
 **Check:** sources in the plan are above the target in internal PageRank, or at least not far
-below it.
+below it. The homepage counts as top authority whatever its computed rank: exports and some
+crawls record no link to it.
 
 ## Rule 7: no link stuffing, no all-to-all
 
@@ -109,7 +111,7 @@ Proposal check:
 - [ ] Every orphan has ≥ 2 sources; every near-orphan ≥ 1 body link
 - [ ] No source page gets more than 5 new links
 - [ ] No anchor is generic; anchors to one target differ
-- [ ] No proposal duplicates an existing link
+- [ ] No proposal duplicates an existing body link (a nav or footer link to the same target does not count)
 - [ ] No all-to-all cluster linking
 - [ ] Sources sit at or above the target in internal authority, or the reason says why not
 - [ ] Every broken and redirected target has a fix

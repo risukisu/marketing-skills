@@ -51,10 +51,11 @@ STOP_WORDS = {"a", "an", "and", "the", "of", "for", "to", "in", "on", "with", "b
               "how", "what", "why", "your", "you", "our", "we", "it", "that", "this", "or", "as", "be", "vs"}
 # Word characters in any script (so "Białaś" stays one token), three or more; underscores excluded.
 TOKEN_RE = re.compile(r"[^\W_]{3,}")
-# A term in the titles or headings of more than 80% of pages is site boilerplate (the brand suffix
-# on every title), not a topic. Found on the first real run: "andrzej" matched every page. Lower
-# values drop a site's main topic word on small sites, which is a differentiator there.
-BOILERPLATE_SHARE = 0.8
+# A term in the titles or headings of more than 60% of pages is site boilerplate (the brand suffix
+# on most titles), not a topic. Found on the first real run: "andrzej" matched every page; on a
+# six-page export the brand sat on four titles. Lower values start dropping a small site's main
+# topic word, which is a differentiator there.
+BOILERPLATE_SHARE = 0.6
 
 
 def load(path) -> dict:
@@ -218,7 +219,8 @@ def hygiene(data: dict, inbound: dict, variety_min: int = VARIETY_MIN_INLINKS) -
                             "position": l["position"]})
     low_variety = []
     for t, inl in inbound.items():
-        followed = [l for l in inl if not l["nofollow"]]
+        # Nav and footer links repeat one template anchor by design; only body anchors are judged.
+        followed = [l for l in inl if not l["nofollow"] and l["position"] in BODY_POSITIONS]
         if len(followed) >= variety_min and len({l["anchor"].strip().lower() for l in followed}) == 1:
             low_variety.append({"target": t, "inlinks": len(followed), "anchor": followed[0]["anchor"]})
     return {"broken": sorted(broken, key=lambda b: b["target"]), "redirects": sorted(redirects, key=lambda r: r["target"]),
@@ -234,9 +236,24 @@ def _page_tokens(page: dict) -> set:
     return tokens(" ".join([page.get("title") or "", page.get("h1") or ""] + list(page.get("h2") or [])))
 
 
+def _parent_page(url: str, pages: dict):
+    """The crawled page one path level up (/blog/ for /blog/post.html), the structural source for a page."""
+    parts = urllib.parse.urlsplit(url)
+    path = parts.path.rstrip("/")
+    while "/" in path:
+        path = path.rsplit("/", 1)[0]
+        for candidate in (path + "/", path or "/"):
+            full = urllib.parse.urlunsplit((parts.scheme, parts.netloc, candidate, "", ""))
+            if full in pages and full != url:
+                return full
+    return None
+
+
 def candidate_sources(data: dict, inbound: dict, pr: dict, needs: list, per_target: int = CANDIDATES_PER_TARGET) -> dict:
     """Shortlist of pages that could link to each target: title/heading overlap weighted by PageRank.
 
+    The target's parent page (its index or category) is always listed first when it does not link
+    to the target yet: an index that omits one of its own pages is the usual cause of an orphan.
     Excludes the target itself, pages that already link to it, and non-indexable pages. When no
     page shares a term, falls back to the highest-authority pages and marks them topical=False.
     """
@@ -260,9 +277,18 @@ def candidate_sources(data: dict, inbound: dict, pr: dict, needs: list, per_targ
             scored.append((overlap * (pr.get(s, 0.0) + 1e-9), overlap, pr.get(s, 0.0), s, shared))
         topical = sorted((c for c in scored if c[1] > 0), key=lambda c: (-c[0], c[3]))[:per_target]
         chosen, is_topical = (topical, True) if topical else (sorted(scored, key=lambda c: (-c[2], c[3]))[:per_target], False)
-        out[t] = [{"source": s, "title": data["pages"][s].get("title") or s, "overlap": round(o, 3),
-                   "pagerank": round(p, 5), "shared_terms": sorted(sh)[:8], "topical": is_topical}
-                  for _, o, p, s, sh in chosen]
+        rows = [{"source": s, "title": data["pages"][s].get("title") or s, "overlap": round(o, 3),
+                 "pagerank": round(p, 5), "shared_terms": sorted(sh)[:8], "topical": is_topical, "parent": False}
+                for _, o, p, s, sh in chosen]
+        parent = _parent_page(t, data["pages"])
+        # The start page is every top-level page's parent; it stays ranked by topic (Rule 5 covers it).
+        if parent and parent not in existing and parent != data["start_url"]:
+            rows = [r for r in rows if r["source"] != parent]
+            rows.insert(0, {"source": parent, "title": data["pages"][parent].get("title") or parent,
+                            "overlap": round(len(tt & toks[parent]) / len(tt | toks[parent]), 3) if (tt | toks[parent]) else 0.0,
+                            "pagerank": round(pr.get(parent, 0.0), 5), "shared_terms": sorted(tt & toks[parent])[:8],
+                            "topical": bool(tt & toks[parent]), "parent": True})
+        out[t] = rows
     return out
 
 
@@ -344,7 +370,7 @@ def render_markdown(m: dict) -> str:
     out += ["## Pages by inbound links (lowest first, top 30)", "",
             _table(["Page", "Body inlinks", "All inlinks", "Sources", "PageRank", "Depth", "Indexable"],
                    [[L(u), pages[u]["inlinks_body"], pages[u]["inlinks_all"], pages[u]["inlink_sources"], pages[u]["pagerank"],
-                     "sitemap only" if pages[u]["depth"] is None else pages[u]["depth"], "yes" if pages[u]["indexable"] else "no"]
+                     "no link path" if pages[u]["depth"] is None else pages[u]["depth"], "yes" if pages[u]["indexable"] else "no"]
                     for u in m["ranking_by_inlinks"][:30]]), ""]
     out += ["## Orphans and near-orphans with candidate sources", ""]
     for group, urls in (("Orphan", m["orphans"]), ("Near-orphan", m["near_orphans"])):
@@ -370,7 +396,8 @@ def render_markdown(m: dict) -> str:
             "", "## Structure", "",
             f"- Over-linked pages (> {m['thresholds']['hub_outlinks']} unique outlinks): " + (", ".join(L(u) for u in m["hubs"]) or "none"),
             f"- Deep pages (depth ≥ {m['thresholds']['deep_depth']}): " + (", ".join(L(u) for u in m["deep"]) or "none"),
-            "- Reachable only through the sitemap: " + (", ".join(L(u) for u in m["unreachable_by_links"]) or "none"),
+            "- No link path from the start page (sitemap-only, or export without depth): " + (", ".join(L(u) for u in m["unreachable_by_links"]) or "none"),
+            "", "Top pages by internal PageRank and the followed body links between them (nav, footer, nofollow links not drawn):",
             "", "```mermaid", m["mermaid"], "```", ""]
     h = m["hygiene"]
     out += ["## Hygiene", "", "### Broken targets", _table(["Target", "Status", "Linked from"],

@@ -196,3 +196,46 @@ def test_candidate_terms_ignore_site_name_boilerplate_and_keep_unicode_words():
     assert best["shared_terms"] == ["planning"]
     assert not any("andrzej" in c["shared_terms"] or "bia" in c["shared_terms"] for c in cands[S + "orphan.html"])
     assert al.tokens("Białaś pisze") == {"białaś", "pisze"}
+
+
+def test_candidate_sources_always_include_the_parent_index_page():
+    # /blog/ shares no title terms with the orphan post but is its structural parent; it must be listed first.
+    data = make(
+        [page("", "Home"), page("blog/", "Blog", depth=1), page("blog/post-a.html", "Sprint planning for small teams", depth=2),
+         page("blog/post-c.html", "Estimating work without story points", depth=None)],
+        [link("", "blog/", "Blog", "nav"), link("blog/", "blog/post-a.html", "Sprint planning")],
+    )
+    inbound, outbound = al.link_index(data)
+    pr = al.pagerank(data["pages"], outbound)
+    cands = al.candidate_sources(data, inbound, pr, [S + "blog/post-c.html"])[S + "blog/post-c.html"]
+    assert cands[0]["source"] == S + "blog/" and cands[0]["parent"] is True
+    assert S + "blog/post-a.html" in [c["source"] for c in cands]
+
+
+def test_low_variety_ignores_nav_and_footer_links():
+    data = make([page("", "Home"), page("p.html", "P", 1)] + [page(f"q{i}.html", f"Q{i}", 1) for i in range(5)],
+                [link(f"q{i}.html", "", "Home", "nav") for i in range(5)]
+                + [link(f"q{i}.html", "p.html", "Pricing", "footer") for i in range(5)])
+    inbound, _ = al.link_index(data)
+    assert al.hygiene(data, inbound)["low_variety"] == []
+
+
+def test_brand_suffix_on_most_titles_is_boilerplate():
+    # The brand name sits on 4 of 6 titles (the eval-3 export); it must not drive candidate matching.
+    data = make(
+        [page("", "Example Co - Home"), page("about.html", "About Example Co", depth=1), page("services.html", "Services - Example Co", depth=1),
+         page("pricing.html", "Pricing - Example Co", depth=1), page("blog/post-b.html", "Running retrospectives that stick", depth=2),
+         page("blog/post-c.html", "Estimating work without story points", depth=None)],
+        [link("", "services.html"), link("", "pricing.html"), link("services.html", "pricing.html")],
+    )
+    inbound, outbound = al.link_index(data)
+    pr = al.pagerank(data["pages"], outbound)
+    cands = al.candidate_sources(data, inbound, pr, [S + "about.html"])[S + "about.html"]
+    assert not any("example" in c["shared_terms"] for c in cands)
+
+
+def test_render_labels_unlinked_pages_without_claiming_a_sitemap():
+    data = make([page("", "Home"), page("x.html", "X", depth=None)], [])
+    data["source"] = "import_crawl.py"
+    md = al.render_markdown(al.analyze(data))
+    assert "sitemap only" not in md and "no link path" in md

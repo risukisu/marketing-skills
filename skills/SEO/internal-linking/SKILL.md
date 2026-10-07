@@ -47,13 +47,16 @@ without the user's say-so.
 3. Read only what was approved. An earlier report, if approved, is the baseline: note which
    earlier actions were done. "None" means the audit stands on crawl data alone.
 4. Optional extra: a machine-local `~/.claude/skills/workspace.local.md` (never shipped) may
-   define an output path. List it in the same question; use it only if approved.
+   define an output path. List it in the same question; use it only if approved. "None"
+   declines it too: the report then goes to the launch folder.
 
-**Step 1: Intake question.** Ask once, then do not ask again:
+**Step 1: Intake question.** Ask once, then do not ask again. Ask only for what the user's
+message has not already given; if it answers everything, confirm the values in one line and
+proceed without a question.
 
 > **Which site, and which pages matter most?**
 >
-> 1. Start URL (the homepage).
+> 1. Start URL (the homepage). Not needed when you import an export: the host comes from it.
 > 2. Priority pages, most important first: paste a list, or say "pull from analytics" and I'll
 >    use the top 20 organic landing pages (needs the GA4 or Search Console MCP connected), or
 >    "none".
@@ -101,12 +104,17 @@ thresholds only when the user asks: `--hub-outlinks`, `--deep-depth`.
 
 **Step 4: Judgment pass.** This is the part only you can do. For every target in `needs`:
 
-1. Read its candidates (`candidates[target]`: source, title, shared terms, PageRank, topical).
-   Open the source and target pages' titles and headings from `crawl.json`; fetch the source
-   page text only when the headings are not enough to place a sentence.
+1. Read its candidates (`candidates[target]`: source, title, shared terms, PageRank, topical,
+   parent). The shortlist is a hint, not a fence: a `parent: true` row is the target's own
+   index or category page and is usually the first fix; sources may also come from outside
+   the list when a page's title or headings make the topic link obvious. Open the source and
+   target pages' titles and headings from `crawl.json`; fetch the source page text only when
+   the headings are not enough to place a sentence. On the import path there is no page text:
+   place sentences from titles and headings and say so under limits.
 2. Pick 2–3 sources that are truly about a related topic (Rule 1). Prefer sources at or above
    the target's authority (Rule 6) and body placement (Rule 5). Reject candidates that would
    exist only for SEO (Rule 2). If none fit, say so for that target rather than forcing one.
+   A body link is not a duplicate of an existing nav or footer link to the same target.
 3. For each chosen source write: a descriptive anchor of 3–7 words that differs from the other
    anchors to the same target (Rules 3, 4); one draft sentence that would sit naturally in the
    source page with the anchor in it; one short reason (shared topic, fixes orphan, closes a
@@ -116,9 +124,12 @@ thresholds only when the user asks: `--hub-outlinks`, `--deep-depth`.
    404, rewrite a generic anchor, vary a repeated anchor, drop nofollow on an internal link.
 
 **Step 5: Write the report.** Follow `references/report-template.md` exactly. File name
-`internal-linking-<host>-<YYYY-MM-DD>.md` in the launch folder (or the approved output path).
-Section 6 (action plan) is the first 20 rows of section 4 in `needs` order: orphans, then
-priority pages by gap, then near-orphans. Say what the data source was and every limit.
+`internal-linking-<host>-<YYYY-MM-DD>.md` in the launch folder (or the approved output path);
+in `<host>` replace `:` and any character that is not a letter, digit, dot, or hyphen with
+`-`. Write the file with a file-writing tool, not a shell heredoc: the report holds quotes
+and fences. Section 6 (action plan) is the first 20 rows of section 4 in `needs` order:
+orphans, then priority pages by gap, then near-orphans; on a small site fewer than 20 rows
+is right, say so rather than pad. Say what the data source was and every limit.
 
 **Step 6: Verify.** Copy the proposal checklist from `references/linking-rules.md`, tick each
 line against the report, fix anything that fails, then hand back the file path and the

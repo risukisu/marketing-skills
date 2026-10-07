@@ -54,13 +54,13 @@ start host, fragment dropped, query dropped unless `--include-params`, path left
 | `thresholds` | the constants used, for the report's method section |
 | `pages` | url → `inlinks_all`, `inlink_sources`, `inlinks_body`, `outlinks_unique`, `depth`, `indexable`, `title`, `pagerank`, `authority_rank` |
 | `ranking_by_inlinks` | urls, fewest body inlinks first |
-| `orphans`, `near_orphans` | indexable pages with 0 sources; with 1 source or nav/footer links only (start page skipped) |
+| `orphans`, `near_orphans` | indexable pages with 0 source pages; with exactly 1 source page, or with body inlinks 0 (every inbound link sits in nav, header, aside, or footer). The start page is skipped. A page with 7 nav sources and 1 body link is neither |
 | `hubs` | pages over the outbound threshold |
-| `deep`, `unreachable_by_links` | depth ≥ threshold; depth null |
+| `deep`, `unreachable_by_links` | depth ≥ threshold; depth null (reachable only through the sitemap, or an export row without a crawl depth) |
 | `top_authority` | top 10 urls by internal PageRank |
 | `priority_gap` | per priority page: `priority_rank`, `authority_rank`, `inlinks_body`, `gap`, `note` |
 | `needs` | targets that need links, in action-plan order: orphans, under-linked priority pages, near-orphans |
-| `candidates` | target → up to 5 sources with `title`, `overlap`, `pagerank`, `shared_terms`, `topical` |
+| `candidates` | target → up to 5 sources with `title`, `overlap`, `pagerank`, `shared_terms`, `topical`, `parent` (true for the target's own index or category page, always listed first when it does not link to the target yet; the start page is never pinned) |
 | `hygiene` | `broken`, `redirects`, `blocked`, `nofollow_internal`, `generic_anchors`, `low_variety` |
 | `mermaid` | graph of the top 30 pages with followed body links |
 
@@ -85,4 +85,6 @@ header, `Content` → main, `Sidebar` → aside, `Footer` → footer, anything e
 `Crawl Depth`.
 
 Headers match case-insensitively. A missing column is named in `warnings` and left empty.
-Redirect chains are not in the export; redirected targets carry their first status only.
+Redirect chains are not in the export; redirected targets carry their first status only and
+`final_url` null. Link targets that answer 200 but are missing from `internal_html.csv` are
+listed in `warnings` and count as targets, not pages.
