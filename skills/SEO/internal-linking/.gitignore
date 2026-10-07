@@ -1,0 +1,6 @@
+# Run outputs never belong in the public repo. SKILL.md tells the model to run from the
+# launch folder; this is the second guard in case a run lands here anyway.
+crawl*.json
+metrics*.json
+priority.txt
+internal-linking-*.md

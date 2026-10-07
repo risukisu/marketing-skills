@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import http.client
 import json
 import re
 import sys
@@ -49,6 +50,12 @@ SKIP_ELEMENTS = ("script", "style", "noscript", "template", "svg")
 JS_RENDER_MIN_LINKS = 3
 # Schemes that can be crawled. Everything else (mailto, tel, javascript) is not a page.
 CRAWLABLE_SCHEMES = ("http", "https")
+# An HTML page larger than this is not something a reader waits for; the cap keeps a crawl of a
+# site with huge generated pages inside memory. Non-HTML bodies are never read at all.
+MAX_BODY_BYTES = 5 * 1024 * 1024
+# Characters that may stay unescaped in a URL path or query (RFC 3986 reserved and unreserved,
+# plus % so already-encoded sequences are kept as they are).
+URL_SAFE = "/%:@!$&'()*+,;=-._~"
 # Sitemap <loc> entries.
 LOC_RE = re.compile(r"<loc>\s*([^<\s]+)\s*</loc>", re.IGNORECASE)
 
@@ -77,8 +84,8 @@ def normalize_url(href: str, base: str, start_netloc: str, include_params: bool 
         return None
     if host_key(parts.netloc) != host_key(start_netloc):
         return None
-    path = parts.path or "/"
-    query = parts.query if include_params else ""
+    path = urllib.parse.quote(parts.path or "/", safe=URL_SAFE)
+    query = urllib.parse.quote(parts.query, safe=URL_SAFE + "?") if include_params else ""
     return urllib.parse.urlunsplit((parts.scheme.lower(), start_netloc.lower(), path, query, ""))
 
 
@@ -202,12 +209,15 @@ class _ChainRecorder(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
-def fetch(url: str, method: str = "GET") -> dict:
+def fetch(url: str, method: str = "GET", read_any: bool = False) -> dict:
     """Fetch url following redirects. Never raises.
 
     status is the first response code (301 for a redirect), final_status the last one, chain
-    the redirect hops. body is bytes for GET (empty on HEAD or error). A HEAD that answers 405
-    is retried as GET. A timeout is retried once, then recorded as error "timeout".
+    the redirect hops. body is bytes for a GET of an HTML response (any content type when
+    read_any, for robots.txt and sitemaps), capped at MAX_BODY_BYTES; empty for other content
+    types, HEAD, or error. A HEAD that answers 405 is retried as GET. A timeout is retried once,
+    then recorded as error "timeout". A body cut short by the server is recorded as error
+    "incomplete read".
     """
     result = {"url": url, "status": None, "final_status": None, "final_url": url, "chain": [],
               "body": b"", "content_type": "", "error": None}
@@ -223,8 +233,16 @@ def fetch(url: str, method: str = "GET") -> dict:
                 result["chain"] = [u for _, u in recorder.hops]
                 result["status"] = recorder.hops[0][0] if recorder.hops else resp.status
                 result["final_status"] = resp.status
-                if method == "GET":
-                    result["body"] = resp.read()
+                if method == "GET" and (read_any or "html" in result["content_type"].lower()):
+                    try:
+                        result["body"] = resp.read(MAX_BODY_BYTES)
+                    except http.client.IncompleteRead as e:  # chunked bodies cut short
+                        result["body"] = e.partial
+                        result["error"] = "incomplete read"
+                    announced = resp.headers.get("Content-Length", "")
+                    # With a byte limit, read() returns a short body silently; compare with the header.
+                    if announced.isdigit() and len(result["body"]) < min(int(announced), MAX_BODY_BYTES):
+                        result["error"] = "incomplete read"
                 return result
         except urllib.error.HTTPError as e:
             result["status"] = recorder.hops[0][0] if recorder.hops else e.code
@@ -232,9 +250,9 @@ def fetch(url: str, method: str = "GET") -> dict:
             result["final_url"] = getattr(e, "url", None) or url
             result["chain"] = [u for _, u in recorder.hops]
             if e.code == 405 and method == "HEAD":
-                return fetch(url, "GET")
+                return fetch(url, "GET", read_any)
             return result
-        except (urllib.error.URLError, OSError, ValueError) as e:
+        except (urllib.error.URLError, http.client.HTTPException, OSError, ValueError) as e:
             reason = getattr(e, "reason", e)
             timed_out = isinstance(reason, TimeoutError) or "timed out" in str(reason).lower()
             result["error"] = "timeout" if timed_out else str(reason)
@@ -271,8 +289,8 @@ def load_robots(start_url: str, warnings: list):
     """Fetch robots.txt. Returns (parser, sitemap_urls, blocked_prefixes). A missing file allows all."""
     rp = urllib.robotparser.RobotFileParser()
     robots_url = urllib.parse.urljoin(start_url, "/robots.txt")
-    resp = fetch(robots_url)
-    text = _decode(resp["body"], resp["content_type"]) if resp["final_status"] == 200 else ""
+    resp = fetch(robots_url, read_any=True)
+    text = _decode(resp["body"], resp["content_type"]) if resp["final_status"] == 200 and not resp["error"] else ""
     if resp["error"] or resp["final_status"] != 200:
         rp.allow_all = True
     rp.parse(text.splitlines())
@@ -293,14 +311,18 @@ def load_sitemap_pages(sitemap_urls: list, start_netloc: str, include_params: bo
     seen: set = set()
 
     def read(url: str) -> str:
-        resp = fetch(url)
+        resp = fetch(url, read_any=True)
         _pause(delay)
         if resp["error"] or (resp["final_status"] or 600) >= 400:
             warnings.append(f"sitemap {url} not readable ({resp['error'] or resp['final_status']})")
             return ""
         body = resp["body"]
         if body[:2] == b"\x1f\x8b":
-            body = gzip.decompress(body)
+            try:
+                body = gzip.decompress(body)
+            except (OSError, EOFError) as e:  # gzip.BadGzipFile is an OSError
+                warnings.append(f"sitemap {url} is not valid gzip ({e})")
+                return ""
         return _decode(body, resp["content_type"])
 
     for sm in sitemap_urls:
@@ -375,9 +397,12 @@ def crawl(start_url: str, max_pages: int = DEFAULT_MAX_PAGES, delay: float = DEF
             continue
         final = normalize_url(resp["final_url"], resp["final_url"], start_netloc, include_params)
         if final != url:
-            if final and final not in depth:
-                depth[final] = depth[url]
-                found_via[final] = found_via[url]
+            if final and final not in pages and final not in targets:
+                if final not in depth:
+                    depth[final] = depth[url]
+                    found_via[final] = found_via[url]
+                # The redirect already delivered the final page: reuse it instead of fetching twice.
+                pending[final] = {**resp, "url": final, "status": resp["final_status"], "chain": []}
                 link_queue.appendleft(final)
             continue
         parser = PageParser()

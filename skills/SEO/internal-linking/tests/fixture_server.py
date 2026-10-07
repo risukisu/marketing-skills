@@ -2,9 +2,9 @@
 
     python tests/fixture_server.py        prints the URL and serves until Ctrl+C
 
-Adds what a static server cannot: /moved.html answers 301 to /pricing.html, and robots.txt
-and sitemap.xml have {HOST} replaced with the request's Host header so the Sitemap line and
-the <loc> entries are absolute.
+Adds what a static server cannot: /moved.html answers 301 to /pricing.html, /truncated.html
+announces more bytes than it sends, and robots.txt and sitemap.xml have {HOST} replaced with
+the request's Host header so the Sitemap line and the <loc> entries are absolute.
 """
 from __future__ import annotations
 
@@ -40,7 +40,19 @@ class Handler(SimpleHTTPRequestHandler):
         if send_body:
             self.wfile.write(data)
 
+    def _truncated(self):
+        """Announces 1000 bytes and sends 10: the client sees http.client.IncompleteRead."""
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html")
+        self.send_header("Content-Length", "1000")
+        self.end_headers()
+        self.wfile.write(b"<html>cut")
+        self.wfile.flush()
+        self.close_connection = True
+
     def do_GET(self):
+        if self.path == "/truncated.html":
+            return self._truncated()
         if self.path == "/moved.html":
             return self._redirect()
         if self.path in TEMPLATED:

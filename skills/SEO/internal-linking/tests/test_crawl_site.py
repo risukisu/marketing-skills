@@ -14,7 +14,7 @@ def by_target(data, path):
 def test_crawl_finds_all_pages_and_the_sitemap_orphan(site):
     data = crawl(site, max_pages=50, delay=0)
     assert data["ok"] is True
-    assert data["pages_crawled"] == 8
+    assert data["pages_crawled"] == 9
     assert data["cap_reached"] is False
     orphan = data["pages"][site + "blog/post-c.html"]
     assert orphan["found_via"] == "sitemap"
@@ -84,7 +84,7 @@ def test_crawl_cap_stops_pages_but_still_checks_targets(site):
 def test_crawl_without_sitemap_never_sees_the_orphan(site):
     data = crawl(site, max_pages=50, delay=0, use_sitemap=False)
     assert site + "blog/post-c.html" not in data["pages"]
-    assert data["pages_crawled"] == 7
+    assert data["pages_crawled"] == 8
 
 
 def test_crawl_start_url_failure(site):
@@ -98,7 +98,7 @@ def test_main_writes_file_and_exit_codes(site, tmp_path, capsys):
     assert main([site, "--max-pages", "50", "--delay", "0", "--out", str(out)]) == 0
     data = json.loads(out.read_text(encoding="utf-8"))
     assert data["source"] == "crawl_links.py" and data["schema"] == 1
-    assert "Crawled 8 pages" in capsys.readouterr().out
+    assert "Crawled 9 pages" in capsys.readouterr().out
     assert main([site + "nope.html", "--delay", "0", "--out", str(out)]) == 2
 
 
@@ -108,3 +108,28 @@ def test_js_render_warning_fires_only_below_threshold(monkeypatch, site):
     monkeypatch.setattr(crawl_links, "JS_RENDER_MIN_LINKS", 100)
     data = crawl(site, max_pages=2, delay=0, use_sitemap=False)
     assert any("JavaScript" in w for w in data["warnings"])
+
+
+def test_crawl_survives_space_href_non_ascii_slug_and_truncated_body(site):
+    """Review findings: an href with a space or a non-ASCII slug must be percent-encoded and fetched,
+    and a server that cuts a body short must become an error target, never a crash."""
+    data = crawl(site, max_pages=50, delay=0)
+    assert by_target(data, "files/data%20sheet.pdf")["final_status"] == 200
+    fable = site + "blog/za%C5%BC%C3%B3%C5%82%C4%87.html"
+    assert fable in data["pages"] and data["pages"][fable]["title"].startswith("Zażółć")
+    assert not any("zaż" in t or "zażółć" in t for t in data["targets"])  # one encoded form only
+    truncated = by_target(data, "truncated.html")
+    assert truncated["error"] and site + "truncated.html" not in data["pages"]
+
+
+def test_fetch_reads_body_only_for_html(site):
+    from crawl_links import fetch
+    assert fetch(site + "files/brochure.pdf")["body"] == b""
+    assert fetch(site)["body"].startswith(b"<!doctype html>")
+
+
+def test_crawl_reuses_the_redirect_response_for_the_final_page(site):
+    data = crawl(site, max_pages=50, delay=0)
+    blog = by_target(data, "blog")
+    assert blog["status"] == 301 and blog["final_url"] == site + "blog/"
+    assert site + "blog/" in data["pages"]

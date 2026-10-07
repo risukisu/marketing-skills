@@ -71,11 +71,12 @@ with the Search Console MCP use `gsc:advanced_search_analytics` (in Claude Code:
 top 20. Strip query strings. If neither MCP is connected, say so and ask for the list as text.
 Never guess priority pages.
 
-**Step 2: Crawl or import.** Run from the skill folder (`~/.claude/skills/internal-linking`)
-or with full paths. Write outputs into the launch folder.
+**Step 2: Crawl or import.** Run from the launch folder with the script's full path, so
+`crawl.json`, `metrics.json`, `priority.txt`, and the report land next to the user's work and
+never inside the skill folder (which is a checkout of a public repo).
 
 ```bash
-python scripts/crawl_links.py https://example.com/ --out crawl.json
+python ~/.claude/skills/internal-linking/scripts/crawl_links.py https://example.com/ --out crawl.json
 ```
 
 Options: `--max-pages 500` (cap), `--delay 0.5` (seconds between requests), `--include-params`
@@ -85,7 +86,7 @@ found). Exit code 2 means the start URL could not be fetched: report the error a
 For a Screaming Frog export or a JavaScript-rendered site:
 
 ```bash
-python scripts/import_crawl.py all_inlinks.csv --pages internal_html.csv --out crawl.json
+python ~/.claude/skills/internal-linking/scripts/import_crawl.py all_inlinks.csv --pages internal_html.csv --out crawl.json
 ```
 
 Read the printed summary and every `warning:` line; they go into the report's limits.
@@ -94,7 +95,7 @@ Read the printed summary and every `warning:` line; they go into the report's li
 first; paths like `/pricing` are fine), then:
 
 ```bash
-python scripts/analyze_links.py crawl.json --priority priority.txt --out metrics.json
+python ~/.claude/skills/internal-linking/scripts/analyze_links.py crawl.json --priority priority.txt --out metrics.json
 ```
 
 Omit `--priority` when none were given. The script prints markdown tables (paste them into

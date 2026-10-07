@@ -157,13 +157,16 @@ def test_analyze_end_to_end_on_fixture_site(site, tmp_path, capsys):
     m = al.analyze(data, priority=["/pricing.html", "/services.html", "/blog/post-c.html"])
     assert m["orphans"] == [site + "blog/post-c.html"]
     assert m["needs"][0] == site + "blog/post-c.html"
-    assert [b["target"] for b in m["hygiene"]["broken"]] == [site + "old-page.html"]
-    assert m["hygiene"]["redirects"][0]["final_url"] == site + "pricing.html"
+    assert [b["target"] for b in m["hygiene"]["broken"]] == [site + "old-page.html", site + "truncated.html"]
+    redirects = {r["target"]: r for r in m["hygiene"]["redirects"]}
+    assert redirects[site + "moved.html"]["final_url"] == site + "pricing.html"
+    assert redirects[site + "moved.html"]["sources"] == [site + "blog/post-b.html"]
+    assert site + "blog/" not in m["orphans"] + m["near_orphans"]  # linked via the /blog redirect and nav
     assert {g["anchor"] for g in m["hygiene"]["generic_anchors"]} == {"click here"}
     assert m["priority_gap"][0]["url"] == site + "pricing.html"
     post_a = site + "blog/post-a.html"
     assert post_a in [c["source"] for c in m["candidates"][site + "blog/post-c.html"]]
-    assert m["summary"]["pages"] == 8 and m["summary"]["orphans"] == 1 and m["summary"]["broken"] == 1
+    assert m["summary"]["pages"] == 9 and m["summary"]["orphans"] == 1 and m["summary"]["broken"] == 2
     md = al.render_markdown(m)
     assert "## Pages by inbound links" in md and "## Hygiene" in md and "graph LR" in md and "## Priority gap" in md
 
@@ -180,8 +183,8 @@ def test_analyze_end_to_end_on_fixture_site(site, tmp_path, capsys):
 
 
 def test_candidate_terms_ignore_site_name_boilerplate_and_keep_unicode_words():
-    # Every title ends with the site name; "Białaś" must stay one token and never count as shared.
-    suffix = " — Andrzej Białaś"
+    # Every title ends with the brand; "Zażółć" must stay one token and never count as shared.
+    suffix = " — Zażółć Studio"
     data = make(
         [page("", "Home" + suffix), page("plan.html", "Sprint planning for small teams" + suffix, depth=1),
          page("retro.html", "Running retrospectives that stick" + suffix, depth=1),
@@ -194,7 +197,7 @@ def test_candidate_terms_ignore_site_name_boilerplate_and_keep_unicode_words():
     best = cands[S + "orphan.html"][0]
     assert best["source"] == S + "plan.html"
     assert best["shared_terms"] == ["planning"]
-    assert not any("andrzej" in c["shared_terms"] or "bia" in c["shared_terms"] for c in cands[S + "orphan.html"])
+    assert not any("studio" in c["shared_terms"] or "zażółć" in c["shared_terms"] for c in cands[S + "orphan.html"])
     assert al.tokens("Białaś pisze") == {"białaś", "pisze"}
 
 
@@ -239,3 +242,31 @@ def test_render_labels_unlinked_pages_without_claiming_a_sitemap():
     data["source"] = "import_crawl.py"
     md = al.render_markdown(al.analyze(data))
     assert "sitemap only" not in md and "no link path" in md
+
+
+def test_links_through_a_redirect_credit_the_final_page():
+    """Review finding: /blog -> 301 -> /blog/ must count as an inbound link to /blog/, not a false orphan."""
+    data = make([page("", "Home"), page("blog/", "Blog", depth=1), page("a.html", "A", depth=1)],
+                [link("", "blog", "older posts"), link("a.html", "blog", "the blog"), link("", "a.html", "A")],
+                targets={S + "blog": {"status": 301, "final_status": 200, "final_url": S + "blog/", "chain": [S + "blog/"], "checked": "GET", "error": None}})
+    inbound, outbound = al.link_index(data)
+    counts = al.page_counts(data, inbound, outbound)
+    assert counts[S + "blog/"]["inlink_sources"] == 2 and counts[S + "blog/"]["inlinks_body"] == 2
+    orphans, near = al.find_orphans(counts, S)
+    assert orphans == [] and S + "blog/" not in near  # a.html is a near-orphan on its own merits (one source)
+    assert al.pagerank(data["pages"], outbound)[S + "blog/"] > al.pagerank(data["pages"], outbound)[S + "a.html"]
+
+
+def test_is_indexable_ignores_scheme_and_www_in_canonical():
+    assert al.is_indexable(page("a", canonical="https://www.example.com/a"))
+    assert al.is_indexable({**page("a"), "url": "http://example.com/a", "canonical": "https://www.example.com/a"})
+    assert not al.is_indexable(page("a", canonical="https://www.example.com/b"))
+
+
+def test_label_uses_the_path_whatever_the_start_url():
+    assert al._label(S + "en/pricing", S + "en/") == "/en/pricing"
+    assert al._label(S + "pricing", S + "en/") == "/pricing"
+    assert al._label(S + "en/", S + "en/") == "/en/"
+    assert al._label(S, S + "index.html") == "/"
+    assert al._label(S + "p?page=2", S) == "/p?page=2"
+    assert al._label("https://other.example.org/x", S) == "https://other.example.org/x"

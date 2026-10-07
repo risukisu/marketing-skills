@@ -17,10 +17,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import urllib.parse
 from collections import defaultdict
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from crawl_links import host_key  # noqa: E402
 
 # Google's long-standing "keep the links on a page to a reasonable number" was read as about
 # 100 for years; above it a page spreads what it passes on too thin. Override with --hub-outlinks.
@@ -52,8 +56,8 @@ STOP_WORDS = {"a", "an", "and", "the", "of", "for", "to", "in", "on", "with", "b
 # Word characters in any script (so "Białaś" stays one token), three or more; underscores excluded.
 TOKEN_RE = re.compile(r"[^\W_]{3,}")
 # A term in the titles or headings of more than 60% of pages is site boilerplate (the brand suffix
-# on most titles), not a topic. Found on the first real run: "andrzej" matched every page; on a
-# six-page export the brand sat on four titles. Lower values start dropping a small site's main
+# on most titles), not a topic. Found on the first real run: the owner's name from every title
+# matched every page; on a six-page export the brand sat on four titles. Lower values start dropping a small site's main
 # topic word, which is a differentiator there.
 BOILERPLATE_SHARE = 0.6
 
@@ -63,33 +67,53 @@ def load(path) -> dict:
         return json.load(f)
 
 
-def _same_page(a: str, b: str) -> bool:
-    return a.rstrip("/") == b.rstrip("/")
+def _page_key(url: str) -> tuple:
+    """Host (www and port ignored) plus path and query, so scheme and www variants compare equal."""
+    p = urllib.parse.urlsplit(url.split("#")[0])
+    return host_key(p.netloc), (p.path or "/").rstrip("/") or "/", p.query
 
 
 def is_indexable(page: dict) -> bool:
-    """200 HTML page without noindex whose canonical, if any, points at itself."""
+    """200 HTML page without noindex whose canonical, if any, points at itself (scheme and www ignored)."""
     if (page.get("status") or 0) != 200:
         return False
     if "noindex" in (page.get("meta_robots") or "").lower():
         return False
     canonical = (page.get("canonical") or "").strip()
-    if canonical:
-        resolved = urllib.parse.urljoin(page["url"], canonical)
-        if not _same_page(resolved.split("#")[0], page["url"]):
-            return False
+    if canonical and _page_key(urllib.parse.urljoin(page["url"], canonical)) != _page_key(page["url"]):
+        return False
     return True
 
 
+def _resolve_target(target: str, data: dict) -> str:
+    """The crawled page a link lands on: the target itself, or the final page of its redirect."""
+    pages = data["pages"]
+    if target in pages:
+        return target
+    final = (data.get("targets", {}).get(target) or {}).get("final_url")
+    if final:
+        final = final.split("#")[0]
+        for variant in (final, final.rstrip("/"), final + "/"):
+            if variant in pages:
+                return variant
+    return target
+
+
 def link_index(data: dict):
-    """Per-target inbound and per-source outbound link records; self links dropped."""
+    """Per-target inbound and per-source outbound link records; self links dropped.
+
+    A link whose target redirects to a crawled page is credited to that page (`target`), with
+    the URL as written kept in `raw_target`; hygiene still reports the redirect.
+    """
     inbound: dict = defaultdict(list)
     outbound: dict = defaultdict(list)
     for l in data["links"]:
-        if l["source"] == l["target"]:
+        resolved = _resolve_target(l["target"], data)
+        if l["source"] == resolved:
             continue
-        inbound[l["target"]].append(l)
-        outbound[l["source"]].append(l)
+        rec = {**l, "target": resolved, "raw_target": l["target"]}
+        inbound[resolved].append(rec)
+        outbound[l["source"]].append(rec)
     return inbound, outbound
 
 
@@ -196,8 +220,8 @@ def _generic(anchor: str) -> bool:
 
 def hygiene(data: dict, inbound: dict, variety_min: int = VARIETY_MIN_INLINKS) -> dict:
     """Broken and redirected targets, blocked targets, nofollow internal links, generic anchors, low anchor variety."""
-    def sources_of(t):
-        return sorted({l["source"] for l in inbound.get(t, [])})
+    def sources_of(t):  # by the URL as written, so a redirecting target keeps its sources
+        return sorted({l["source"] for l in data["links"] if l["target"] == t and l["source"] != t})
 
     broken, redirects, blocked = [], [], []
     for t, info in data["targets"].items():
@@ -293,8 +317,11 @@ def candidate_sources(data: dict, inbound: dict, pr: dict, needs: list, per_targ
 
 
 def _label(url: str, start_url: str) -> str:
-    path = url[len(start_url) - 1:] if url.startswith(start_url) else url
-    return (path or "/").replace('"', "'")
+    """Path (plus query) for URLs on the site's host, the full URL otherwise."""
+    p = urllib.parse.urlsplit(url)
+    if host_key(p.netloc) != host_key(urllib.parse.urlsplit(start_url).netloc):
+        return url.replace('"', "'")
+    return ((p.path or "/") + (f"?{p.query}" if p.query else "")).replace('"', "'")
 
 
 def mermaid_graph(data: dict, outbound: dict, pr: dict, limit: int = MERMAID_NODES) -> str:
