@@ -437,7 +437,15 @@ def crawl(start_url: str, max_pages: int = DEFAULT_MAX_PAGES, delay: float = DEF
             "pages": pages, "links": links, "targets": targets, "warnings": warnings}
 
 
+def _utf8_stdout() -> None:
+    """Warnings may quote page titles and URLs; legacy Windows consoles (cp1250, cp1252) cannot encode them all."""
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main(argv=None) -> int:
+    _utf8_stdout()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("start_url")
     ap.add_argument("--max-pages", type=int, default=DEFAULT_MAX_PAGES)

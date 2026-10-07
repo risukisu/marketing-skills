@@ -142,7 +142,15 @@ def import_export(inlinks_path, pages_path=None, start_url=None, include_params:
             "warnings": warnings}
 
 
+def _utf8_stdout() -> None:
+    """Warnings may quote column names and URLs; legacy Windows consoles (cp1250, cp1252) cannot encode them all."""
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main(argv=None) -> int:
+    _utf8_stdout()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("inlinks", help="Screaming Frog all_inlinks.csv")
     ap.add_argument("--pages", help="Screaming Frog internal_html.csv")

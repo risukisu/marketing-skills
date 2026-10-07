@@ -49,7 +49,12 @@ BODY_POSITIONS = {"main", "body"}
 # Words ignored when comparing titles and headings for the candidate shortlist.
 STOP_WORDS = {"a", "an", "and", "the", "of", "for", "to", "in", "on", "with", "by", "at", "from", "is", "are",
               "how", "what", "why", "your", "you", "our", "we", "it", "that", "this", "or", "as", "be", "vs"}
-TOKEN_RE = re.compile(r"[a-z0-9]{3,}")
+# Word characters in any script (so "Białaś" stays one token), three or more; underscores excluded.
+TOKEN_RE = re.compile(r"[^\W_]{3,}")
+# A term in the titles or headings of more than 80% of pages is site boilerplate (the brand suffix
+# on every title), not a topic. Found on the first real run: "andrzej" matched every page. Lower
+# values drop a site's main topic word on small sites, which is a differentiator there.
+BOILERPLATE_SHARE = 0.8
 
 
 def load(path) -> dict:
@@ -236,6 +241,12 @@ def candidate_sources(data: dict, inbound: dict, pr: dict, needs: list, per_targ
     page shares a term, falls back to the highest-authority pages and marks them topical=False.
     """
     toks = {u: _page_tokens(p) for u, p in data["pages"].items()}
+    df: dict = defaultdict(int)
+    for ts in toks.values():
+        for term in ts:
+            df[term] += 1
+    boilerplate = {term for term, n in df.items() if len(toks) > 1 and n > BOILERPLATE_SHARE * len(toks)}
+    toks = {u: ts - boilerplate for u, ts in toks.items()}
     out = {}
     for t in needs:
         existing = {l["source"] for l in inbound.get(t, [])}
@@ -378,7 +389,15 @@ def render_markdown(m: dict) -> str:
     return "\n".join(out)
 
 
+def _utf8_stdout() -> None:
+    """The tables carry arrows and middle dots; legacy Windows consoles (cp1250, cp1252) cannot encode them."""
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main(argv=None) -> int:
+    _utf8_stdout()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("crawl", help="crawl.json from crawl_links.py or import_crawl.py")
     ap.add_argument("--priority", help="text file, one URL or path per line, most important first")

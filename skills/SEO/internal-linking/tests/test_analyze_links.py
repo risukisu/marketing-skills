@@ -177,3 +177,22 @@ def test_analyze_end_to_end_on_fixture_site(site, tmp_path, capsys):
     assert [r["url"] for r in written["priority_gap"]] == [site + "pricing.html", site + "services.html"]
     assert "## Pages by inbound links" in capsys.readouterr().out
     assert al.main([str(tmp_path / "nope.json")]) == 1
+
+
+def test_candidate_terms_ignore_site_name_boilerplate_and_keep_unicode_words():
+    # Every title ends with the site name; "Białaś" must stay one token and never count as shared.
+    suffix = " — Andrzej Białaś"
+    data = make(
+        [page("", "Home" + suffix), page("plan.html", "Sprint planning for small teams" + suffix, depth=1),
+         page("retro.html", "Running retrospectives that stick" + suffix, depth=1),
+         page("orphan.html", "Planning sprints without estimates" + suffix, depth=None)],
+        [link("", "plan.html"), link("", "retro.html")],
+    )
+    inbound, outbound = al.link_index(data)
+    pr = al.pagerank(data["pages"], outbound)
+    cands = al.candidate_sources(data, inbound, pr, [S + "orphan.html"])
+    best = cands[S + "orphan.html"][0]
+    assert best["source"] == S + "plan.html"
+    assert best["shared_terms"] == ["planning"]
+    assert not any("andrzej" in c["shared_terms"] or "bia" in c["shared_terms"] for c in cands[S + "orphan.html"])
+    assert al.tokens("Białaś pisze") == {"białaś", "pisze"}
