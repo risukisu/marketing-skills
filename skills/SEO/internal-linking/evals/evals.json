@@ -1,0 +1,35 @@
+[
+  {
+    "skills": ["internal-linking"],
+    "query": "Audit the internal links on http://127.0.0.1:8765/ (my test site is running there). I don't have a list of priority pages.",
+    "files": [],
+    "expected_behavior": [
+      "Runs the context intake once (scan, list, ask) and the single intake question before crawling; does not ask again later",
+      "Runs scripts/crawl_links.py against the start URL, then scripts/analyze_links.py on the resulting crawl.json",
+      "Reports /blog/post-c.html as an orphan (found via sitemap, zero inbound links) and proposes at least two source pages for it with distinct, descriptive anchors and one draft sentence each",
+      "Lists /old-page.html as broken (404) with its source page, /moved.html as a redirect to /pricing.html, and the 'click here' anchor on /services.html under hygiene",
+      "Writes one report file named internal-linking-<host>-<date>.md in the launch folder following references/report-template.md, with the priority-gap table omitted and a note saying no priority pages were given"
+    ]
+  },
+  {
+    "skills": ["internal-linking"],
+    "query": "Internal linking check for http://127.0.0.1:8765/. Priority pages, most important first: /pricing.html, /services.html, /blog/post-c.html.",
+    "files": [],
+    "expected_behavior": [
+      "Passes the three priority URLs to scripts/analyze_links.py via --priority",
+      "Puts /blog/post-c.html (priority page with zero inbound links) at the top of the action plan, and /pricing.html above /services.html because its only body inbound links are a generic anchor, a nofollow link, and a redirect",
+      "Proposes no link that already exists and never suggests every page link to every page",
+      "Includes the broken /old-page.html under hygiene with its source, not in the opportunities table"
+    ]
+  },
+  {
+    "skills": ["internal-linking"],
+    "query": "I exported our site from Screaming Frog (all_inlinks.csv and internal_html.csv in this folder). The site is JS-rendered so don't crawl it. What internal links should we add?",
+    "files": ["all_inlinks.csv", "internal_html.csv"],
+    "expected_behavior": [
+      "Uses scripts/import_crawl.py with both CSVs and does not run scripts/crawl_links.py",
+      "States 'Screaming Frog export' as the data source in the report header and notes that redirect chains come from the export, not from live checks",
+      "Produces the same report sections as a crawled run"
+    ]
+  }
+]

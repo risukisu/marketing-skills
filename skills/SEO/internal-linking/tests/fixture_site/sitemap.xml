@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>http://{HOST}/</loc></url>
+<url><loc>http://{HOST}/about.html</loc></url>
+<url><loc>http://{HOST}/services.html</loc></url>
+<url><loc>http://{HOST}/pricing.html</loc></url>
+<url><loc>http://{HOST}/blog/</loc></url>
+<url><loc>http://{HOST}/blog/post-a.html</loc></url>
+<url><loc>http://{HOST}/blog/post-b.html</loc></url>
+<url><loc>http://{HOST}/blog/post-c.html</loc></url>
+</urlset>
