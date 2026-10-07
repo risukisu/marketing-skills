@@ -1,0 +1,4 @@
+Type,Source,Destination,Anchor,Status Code,Follow
+Hyperlink,https://www.example.com/,https://www.example.com/about.html,About,200,True
+Hyperlink,https://www.example.com/,https://www.example.com/services.html,our sprint planning services,200,True
+Hyperlink,https://www.example.com/services.html,https://www.example.com/pricing.html,click here,200,True

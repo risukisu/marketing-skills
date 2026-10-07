@@ -1,0 +1,12 @@
+Type,Source,Destination,Size (Bytes),Alt Text,Anchor,Status Code,Status,Follow,Target,Rel,Path Type,Link Path,Link Position,Link Origin
+Hyperlink,https://www.example.com/,https://www.example.com/about.html,0,,About,200,OK,True,,,Absolute,/html/body/nav/a[2],Navigation,HTML
+Hyperlink,https://www.example.com/,https://www.example.com/services.html,0,,our sprint planning services,200,OK,True,,,Absolute,/html/body/main/p/a,Content,HTML
+Hyperlink,https://www.example.com/,https://www.example.com/pricing.html,0,,Pricing,200,OK,True,,,Absolute,/html/body/footer/a[2],Footer,HTML
+Hyperlink,https://www.example.com/services.html,https://www.example.com/pricing.html,0,,click here,200,OK,True,,,Absolute,/html/body/main/p/a,Content,HTML
+Hyperlink,https://www.example.com/blog/post-b.html,https://www.example.com/old-page.html,0,,old guide,404,Not Found,True,,,Absolute,/html/body/main/p/a,Content,HTML
+Hyperlink,https://www.example.com/blog/post-b.html,https://www.example.com/moved.html,0,,pricing details,301,Moved Permanently,True,,,Absolute,/html/body/main/p/a[2],Content,HTML
+Hyperlink,https://www.example.com/blog/post-b.html,https://www.example.com/pricing.html,0,,plans,200,OK,False,,nofollow,Absolute,/html/body/main/p/a[3],Content,HTML
+Image,https://www.example.com/blog/post-b.html,https://www.example.com/services.html,0,Retrospective facilitation service,,200,OK,True,,,Absolute,/html/body/main/p/a/img,Content,HTML
+Hyperlink,https://www.example.com/blog/post-c.html,https://www.example.com/blog/post-a.html,0,,sprint planning for small teams,200,OK,True,,,Absolute,/html/body/main/p/a,Content,HTML
+Hyperlink,https://www.example.com/about.html,https://other.example.org/x,0,,elsewhere,200,OK,True,,,Absolute,/html/body/main/p/a,Content,HTML
+CSS,https://www.example.com/,https://www.example.com/site.css,0,,,200,OK,True,,,Absolute,/html/head/link,Head,HTML

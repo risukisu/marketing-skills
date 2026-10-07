@@ -1,0 +1,8 @@
+Address,Content Type,Status Code,Status,Indexability,Indexability Status,Title 1,H1-1,H2-1,H2-2,Canonical Link Element 1,Meta Robots 1,Word Count,Crawl Depth
+https://www.example.com/,text/html; charset=UTF-8,200,OK,Indexable,,Example Co - Home,Example Co,Why teams pick us,,,,40,0
+https://www.example.com/about.html,text/html; charset=UTF-8,200,OK,Indexable,,About Example Co,About us,The team,,https://www.example.com/about.html,,38,1
+https://www.example.com/services.html,text/html; charset=UTF-8,200,OK,Indexable,,Services - Example Co,Services,Sprint planning,Retrospectives,,,35,1
+https://www.example.com/pricing.html,text/html; charset=UTF-8,200,OK,Indexable,,Pricing - Example Co,Pricing,,,,,20,1
+https://www.example.com/blog/post-b.html,text/html; charset=UTF-8,200,OK,Indexable,,Running retrospectives that stick,Running retrospectives that stick,End with owners,Further reading,,,60,2
+https://www.example.com/blog/post-c.html,text/html; charset=UTF-8,200,OK,Indexable,,Estimating work without story points,Estimating work without story points,Sprint planning without estimates,,,,30,
+https://www.example.com/old-page.html,text/html,404,Not Found,Non-Indexable,Client Error,,,,,,,0,2
