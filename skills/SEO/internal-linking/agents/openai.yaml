@@ -1,0 +1,4 @@
+interface:
+  display_name: "Internal Linking"
+  short_description: "Crawl a site, find orphan and under-linked pages, propose links with anchors and a top-20 plan"
+  default_prompt: "Use $internal-linking to audit the internal links of my site; ask me for the start URL and priority pages first, then crawl, analyze, and write the report."
