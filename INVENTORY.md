@@ -10,7 +10,7 @@ pass 2026-07-23, kept current since.
 **Layout:** `skills/<Category>/<skill>`, four categories (Writing, SEO, Marketing Ops, Visual). Skills reach
 `~/.claude/skills` through links made by `install.ps1` / `install.sh`.
 
-## The skills — 49
+## The skills — 50
 
 | Skill | Domain | Source | License evidence | Verdict | Notes |
 |---|---|---|---|---|---|
@@ -49,6 +49,7 @@ pass 2026-07-23, kept current since.
 | seo-seranking | SEO | AgriciDaniel/claude-seo v2.2.5 (extension: seranking) | MIT | MIT-clear | New in 2.x; needs the seranking MCP/CLI to do anything |
 | seo-unlighthouse | SEO | AgriciDaniel/claude-seo v2.2.5 (extension: unlighthouse) | MIT | MIT-clear | New in 2.x; needs the unlighthouse MCP/CLI to do anything |
 | seo-report | SEO | Own | root MIT | MIT-clear | De-personalized 2026-08-18: per-root output map moved to untracked `workspace.local.md`; portfolio mode written generically |
+| internal-linking | SEO | Own | root MIT | MIT-clear | Added 2026-10-07. Rules distilled from Surfer's internal-linking guides and Google Search Central; skeleton after a public "Internal Linking Analyzer" prompt (ryze.ai); no passages copied. Stdlib-only crawler, Screaming Frog importer, analyzer, offline fixture-site tests |
 | linkedin-ads | Marketing Ops | Own, on the AdConversion methodology (credited) | root MIT | MIT-clear | Methodology credited inline; expression own. Company context packs moved to untracked `references/*-context.local.md` 2026-08-18; since 2026-09-30 context comes from the launching workspace (legacy packs offered only to the workspace they name) |
 | product-launch | Marketing Ops | Own; framework credited to Luke Harries | root MIT | MIT-clear | Credit inline — re-verified 2026-08-18 |
 | beautify-github-readme | Visual | oil-oil/beautify-github-readme | MIT © 2026 oil-oil (LICENSE in folder) | MIT-clear | Ingested 2026-08-20; scripts reviewed (local-only: SVG render + ffmpeg GIF, no network). Kept in scope by owner call 2026-08-31: a marketer's GitHub presence is marketing |

@@ -56,13 +56,14 @@ Nothing here needs an API key to start. Connect Google Analytics and Search Cons
 
 ### 🔎 SEO — `skills/SEO/`
 
-Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDaniel/claude-seo) suite by [AgriciDaniel](https://github.com/AgriciDaniel) (v2.2.5, MIT, 31 skills in `skills/SEO/claude-seo/`) and one home-grown report skill.
+Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDaniel/claude-seo) suite by [AgriciDaniel](https://github.com/AgriciDaniel) (v2.2.5, MIT, 31 skills in `skills/SEO/claude-seo/`) and two home-grown skills.
 
 | Skill | One line |
 |---|---|
 | `/seo` | The router. Reads what you asked for and hands it to the right specialist skills and sub-agents |
 | `/seo-audit` | The orchestrator. Crawls up to 500 pages, detects the business type, fans out to up to 15 specialists in parallel, returns a health score |
 | `/seo-report` | Own. SEO health report from **live GA4 + Search Console** data against Google's guidelines |
+| `/internal-linking` | Own. Crawls a site, finds orphan and under-linked pages, broken links and weak anchors, and proposes links with anchors and draft sentences plus a top-20 plan |
 
 `/seo` and `/seo-audit` delegate to 29 specialist skills and 18 sub-agents: technical, schema, sitemaps, hreflang, images, content quality, GEO for AI search, local and maps, ecommerce, backlinks, and connectors for Google APIs, DataForSEO, Firecrawl, Ahrefs, Bing, and more. Every specialist is also callable on its own (`/seo-technical`, `/seo-schema`, `/seo-geo`, ...) when you want one check without the full fan-out. Full list with one-liners: [`INVENTORY.md`](./INVENTORY.md#tracked-skills) or the [upstream README](https://github.com/AgriciDaniel/claude-seo#readme). The sub-agents live in `skills/SEO/claude-seo/agents/` and `install.ps1` copies them into `~/.claude/agents`; the suite's Python runtime is created once with `claude-seo setup`.
 
@@ -130,7 +131,8 @@ marketing-skills/
 │   │   │   ├── seo-audit/          the orchestrator
 │   │   │   ├── seo-technical/  seo-geo/  seo-schema/  …27 more specialists
 │   │   │   └── agents/             18 sub-agents, copied to ~/.claude/agents by the installer
-│   │   └── seo-report/             SKILL.md + references/
+│   │   ├── seo-report/             SKILL.md + references/
+│   │   └── internal-linking/       SKILL.md + scripts/ (crawler, importer, analyzer) + tests + references/ + evals/
 │   ├── Marketing-Ops/
 │       ├── content-strategy/           cro/                  customer-research/
 │       ├── lead-magnets/               linkedin-ads/         marketing-council/
@@ -153,7 +155,7 @@ marketing-skills/
 └── NOTICE                          which license covers which folder
 ```
 
-**Company context, every skill the same way.** Skills that need to know about your company (`/content-strategy`, `/linkedin-ads`, `/seo-report`, `/cro`, `/customer-research`, `/lead-magnets`, `/marketing-council`, and the three reporting skills) never assume a folder layout. They scan the folder you launched from, list what they found, and ask: use these, point me elsewhere, paste the context, or start with none. Nothing is read until you say so. Machine-local `*.local.md` files are an optional extra and never ship.
+**Company context, every skill the same way.** Skills that need to know about your company (`/content-strategy`, `/linkedin-ads`, `/seo-report`, `/internal-linking`, `/cro`, `/customer-research`, `/lead-magnets`, `/marketing-council`, and the three reporting skills) never assume a folder layout. They scan the folder you launched from, list what they found, and ask: use these, point me elsewhere, paste the context, or start with none. Nothing is read until you say so. Machine-local `*.local.md` files are an optional extra and never ship.
 
 <p align="center">
   <img src="./assets/readme/section-home.svg" width="100%" alt="Section 02 — Take It Home: clone, run the installer, start asking.">
