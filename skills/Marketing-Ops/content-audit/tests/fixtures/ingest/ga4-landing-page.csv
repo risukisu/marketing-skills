@@ -1,0 +1,23 @@
+# ----------------------------------------
+# Landing page
+# Account: Example
+# Property: Example
+# ----------------------------------------
+#
+# All Users
+# Start date: 20250801
+# End date: 20251031
+Landing page,Session default channel group,Sessions,Active users,Key events
+/blog/what-is-a-data-platform.html,Organic Search,400,380,2
+/blog/what-is-a-data-platform.html,Email,60,55,3
+/blog/excel-shortcuts.html,Organic Search,2500,2400,0
+/services/data-platform.html,Organic Search,90,80,4
+/services/data-platform.html,Paid Search,150,140,1
+/contact.html,Direct,120,110,9
+/index.html,Direct,800,700,5
+/services/forecasting.html,Organic Search,30,28,0
+(not set),Direct,50,50,0
+
+# a second table GA4 sometimes appends
+Date,Sessions
+20250801,100

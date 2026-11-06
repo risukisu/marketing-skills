@@ -23,6 +23,7 @@ Every skill here runs real marketing work every week. This is not a showcase of 
 | "Does ChatGPT cite us?" | `/seo-geo` scores citability for AI Overviews, ChatGPT, Perplexity |
 | "How did we do in search this month?" | `/seo-report` pulls live GA4 and Search Console data against Google's guidelines |
 | "Our blog doesn't generate leads." | `/content-strategy` builds or audits a 7-part strategy and a 12-piece quarterly hub |
+| "Where does our buyer journey break?" | `/content-audit` maps every page to an offering and an AIDA stage and names each offering's gap: content, findability, conversion or distribution |
 | "What do customers actually say?" | `/customer-research` mines transcripts, reviews, and forums, or runs the interviews |
 | "This page isn't converting." | `/cro` returns quick wins, high-impact changes, and test ideas |
 | "How much should we spend on LinkedIn?" | `/linkedin-ads` does the budget math and the campaign setup, traps included |
@@ -74,6 +75,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 | Skill | One line |
 |---|---|
 | `/content-strategy` | Build or audit an SEO-driven B2B content strategy on the 7-part Orbit Media framework; ends in a quarterly content hub or a ranked gap list |
+| `/content-audit` | Own. Crawls a site, derives its offerings, classifies every page by offering and AIDA stage, scores value-proposition clarity, and adds optional Search Console, GA4, HubSpot and Ads exports; one HTML report with a per-offering verdict on where to invest |
 | `/product-launch` | Launch planning: messaging, assets, distribution, tiered launch systems |
 | `/marketing-council` | A simulated board of 12 marketing thinkers (Godin, Ogilvy, Dunford, Sharp, Hormozi, ...) argues your decision from their documented frameworks and maps where they disagree |
 
@@ -134,6 +136,7 @@ marketing-skills/
 │   │   ├── seo-report/             SKILL.md + references/
 │   │   └── internal-linking/       SKILL.md + scripts/ (crawler, importer, analyzer) + tests + references/ + evals/
 │   ├── Marketing-Ops/
+│       ├── content-audit/              SKILL.md + scripts/ (crawler, export loader, analyzer, report builder) + tests + references/ + evals/
 │       ├── content-strategy/           cro/                  customer-research/
 │       ├── lead-magnets/               linkedin-ads/         marketing-council/
 │       ├── marketing-monthly/          campaign-report/      product-launch/
@@ -155,7 +158,7 @@ marketing-skills/
 └── NOTICE                          which license covers which folder
 ```
 
-**Company context, every skill the same way.** Skills that need to know about your company (`/content-strategy`, `/linkedin-ads`, `/seo-report`, `/internal-linking`, `/cro`, `/customer-research`, `/lead-magnets`, `/marketing-council`, and the three reporting skills) never assume a folder layout. They scan the folder you launched from, list what they found, and ask: use these, point me elsewhere, paste the context, or start with none. Nothing is read until you say so. Machine-local `*.local.md` files are an optional extra and never ship.
+**Company context, every skill the same way.** Skills that need to know about your company (`/content-strategy`, `/content-audit`, `/linkedin-ads`, `/seo-report`, `/internal-linking`, `/cro`, `/customer-research`, `/lead-magnets`, `/marketing-council`, and the three reporting skills) never assume a folder layout. They scan the folder you launched from, list what they found, and ask: use these, point me elsewhere, paste the context, or start with none. Nothing is read until you say so. Machine-local `*.local.md` files are an optional extra and never ship.
 
 <p align="center">
   <img src="./assets/readme/section-home.svg" width="100%" alt="Section 02 — Take It Home: clone, run the installer, start asking.">

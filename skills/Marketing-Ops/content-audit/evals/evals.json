@@ -1,0 +1,46 @@
+[
+  {
+    "skills": ["content-audit"],
+    "query": "Run a content audit of http://127.0.0.1:8766/index.html (my test site is running there). I want to know where the buyer journey breaks for each thing we sell.",
+    "files": [],
+    "expected_behavior": [
+      "Runs the context intake (scan, list, ask) and asks the single intake question, pre-filled with the start URL, before crawling",
+      "Runs crawl_site.py with a run folder named content-audit-127.0.0.1-<date> in the launch folder, then prepare.py, and reads site_profile.md",
+      "Proposes two offerings (data platforms and demand forecasting) with definitions, boundaries and evidence, writes taxonomy.json with confirmed false, and waits for the user's confirmation before classifying",
+      "Classifies the 14 content pages through subagents (or itself, batch by batch, if no subagent tool) into labels/batch_00.json and gets check_labels.py labels to pass",
+      "Scores the homepage, the data-platform page and the forecasting page on the six value-proposition criteria with verbatim quotes, and check_labels.py valueprop passes",
+      "Reports that forecasting has no Interest page and no Action step, and that its service page has no onward step in the body (the contact link is navigation only)",
+      "Builds the report with build_report.py without unverified numbers, announces the HTML path with the 📄 marker, and names the ingest folder and what each export would add"
+    ]
+  },
+  {
+    "skills": ["content-audit"],
+    "query": "I dropped our Search Console, GA4, HubSpot and Google Ads exports into the ingest folder of the content audit run in this folder. Update the report.",
+    "files": ["content-audit-127.0.0.1-2026-01-31/"],
+    "expected_behavior": [
+      "Finds the existing run folder and asks whether to continue it, rather than starting a new crawl",
+      "Runs ingest.py load, reports each file's detected kind, the columns used and the date windows, and does not print or store contact names or emails",
+      "Re-runs analyze.py and updates narrative.json with findability, traffic and first-touch contact reads; data platforms is flagged for paid reliance",
+      "States which checks moved from not assessed to assessed, and says what changed compared with the site-only read"
+    ]
+  },
+  {
+    "skills": ["content-audit"],
+    "query": "Content audit for http://127.0.0.1:8766/index.html. Our offerings are data platforms, demand forecasting and an analytics training programme.",
+    "files": [],
+    "expected_behavior": [
+      "Still asks the intake question, pre-filled with the URL and the three offerings the user named",
+      "Keeps the training programme in the offering map with evidence 'user' and no main page, and says the site does not show it",
+      "Every cell of the training programme row is missing, and the report names that as a content gap rather than dropping the offering"
+    ]
+  },
+  {
+    "skills": ["content-audit"],
+    "query": "Here is a GA4 export with renamed columns (Visits instead of Sessions). Add it to the content audit.",
+    "files": ["ingest/custom-ga4.csv"],
+    "expected_behavior": [
+      "Runs ingest.py load, sees exit code 3 for the unrecognised file, shows its columns and asks the user what Visits means instead of guessing",
+      "After the user confirms, reruns load with --source and --column overrides and reports the mapping used"
+    ]
+  }
+]

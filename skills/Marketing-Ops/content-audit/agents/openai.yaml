@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Audit"
+  short_description: "Map every page to an offering and an AIDA stage, find where each buyer journey breaks, and say where to invest"
+  default_prompt: "Use $content-audit to audit my website's content; ask me for the start URL first, confirm the offering map with me, then classify, analyze, and build the report."

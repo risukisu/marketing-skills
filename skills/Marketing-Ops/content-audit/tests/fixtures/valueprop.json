@@ -1,0 +1,23 @@
+{"scopes": [
+ {"scope": "homepage", "url": "/index.html", "criteria": {
+  "category": {"score": 2, "quote": "Quillbridge builds data platforms and demand forecasts"},
+  "audience": {"score": 2, "quote": "for mid-size retailers"},
+  "outcome": {"score": 1, "quote": "One warehouse your analysts trust."},
+  "differentiation": {"score": 0, "note": "No reason given to pick Quillbridge over another consultancy"},
+  "proof": {"score": 2, "quote": "A 40-store grocer cut month-end close from nine days to two."},
+  "next_step": {"score": 2, "quote": "Book a call"}}},
+ {"scope": "data-platform", "url": "/services/data-platform.html", "criteria": {
+  "category": {"score": 2, "quote": "Data platforms for mid-size retailers"},
+  "audience": {"score": 2, "quote": "mid-size retailers"},
+  "outcome": {"score": 1, "quote": "A warehouse, pipelines and a semantic layer in twelve weeks."},
+  "differentiation": {"score": 1, "quote": "in twelve weeks"},
+  "proof": {"score": 1, "quote": "Read the grocer case study"},
+  "next_step": {"score": 2, "quote": "talk to an engineer"}}},
+ {"scope": "forecasting", "url": "/services/forecasting.html", "criteria": {
+  "category": {"score": 2, "quote": "Demand forecasting for retail buyers"},
+  "audience": {"score": 1, "quote": "retail buyers"},
+  "outcome": {"score": 1, "quote": "Weekly forecasts per store and SKU"},
+  "differentiation": {"score": 1, "quote": "explained in plain words"},
+  "proof": {"score": 0, "note": "No case study, client name or number"},
+  "next_step": {"score": 0, "note": "No call to action in the page body"}}}
+]}

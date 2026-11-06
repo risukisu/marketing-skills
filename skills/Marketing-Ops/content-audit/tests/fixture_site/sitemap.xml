@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>http://{HOST}/index.html</loc></url>
+  <url><loc>http://{HOST}/services/data-platform.html</loc></url>
+  <url><loc>http://{HOST}/services/forecasting.html</loc></url>
+  <url><loc>http://{HOST}/case-studies/retailer-platform.html</loc></url>
+  <url><loc>http://{HOST}/blog/what-is-a-data-platform.html</loc></url>
+  <url><loc>http://{HOST}/blog/data-warehouse-vs-lakehouse.html</loc></url>
+  <url><loc>http://{HOST}/blog/data-warehouse-vs-lakehouse-guide.html</loc></url>
+  <url><loc>http://{HOST}/blog/demand-forecasting-basics.html</loc></url>
+  <url><loc>http://{HOST}/blog/team-offsite.html</loc></url>
+  <url><loc>http://{HOST}/blog/excel-shortcuts.html</loc></url>
+  <url><loc>http://{HOST}/ebook/platform-checklist.html</loc></url>
+  <url><loc>http://{HOST}/contact.html</loc></url>
+  <url><loc>http://{HOST}/pricing.html</loc></url>
+  <url><loc>http://{HOST}/privacy.html</loc></url>
+  <url><loc>http://{HOST}/careers.html</loc></url>
+  <url><loc>http://{HOST}/private/secret.html</loc></url>
+</urlset>

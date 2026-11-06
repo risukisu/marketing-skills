@@ -1,0 +1,19 @@
+{
+ "title": "Content audit of Quillbridge",
+ "verdict": "Data platforms has a working journey from first read to the checklist download; forecasting has no path to a hand-raise and its demand never reaches a lead.",
+ "works": ["The data-platform service page links to the case study and the contact form."],
+ "doesnt": ["Forecasting has 0 Interest pages and no Action page linked from its pages."],
+ "channel_read": "Fix forecasting content before buying traffic for it.",
+ "journey_read": "Two offerings, four stages each.",
+ "offering_notes": {"data-platform": "Covered at every stage except a thin Attention layer.",
+                     "forecasting": "One service page and one blog post; nothing explains approaches or asks for contact."},
+ "valueprop_read": "The homepage states what and for whom; it never says why Quillbridge.",
+ "findability_read": "Most impressions come from an off-ICP spreadsheet tutorial.",
+ "traffic_read": "Paid search carries the data-platform service page.",
+ "content_state_read": "Two near-duplicate lakehouse posts.",
+ "priorities": [
+  {"rank": 1, "gap": "content", "offering": "forecasting", "stage": "interest", "action": "Write three approach guides for forecasting buyers", "evidence": "0 Interest pages", "handoff": "/content-strategy"},
+  {"rank": 2, "gap": "conversion_path", "offering": "forecasting", "stage": "desire", "action": "Add a contact step to the forecasting service page", "evidence": "No body link to an Action page", "handoff": "/cro"}
+ ],
+ "limits": ["Fixture data, not a real site."]
+}

@@ -1,0 +1,6 @@
+Record ID,First Name,Last Name,Email,First page seen,Lifecycle Stage,Original Source,Create Date
+101,Ada,Example,ada@example.test,https://www.quillbridge.example/blog/what-is-a-data-platform.html?utm_source=x,Lead,Organic search,2025-08-03 10:00
+102,Ben,Example,ben@example.test,https://www.quillbridge.example/services/data-platform.html,Marketing Qualified Lead,Paid search,2025-09-12 11:00
+103,Cy,Example,cy@example.test,https://www.quillbridge.example/blog/excel-shortcuts.html,Subscriber,Organic search,2025-10-01 09:00
+104,Di,Example,di@example.test,,Lead,Offline sources,2025-10-15 09:00
+105,Ed,Example,ed@example.test,https://www.quillbridge.example/contact.html,Opportunity,Direct traffic,2025-10-20 09:00

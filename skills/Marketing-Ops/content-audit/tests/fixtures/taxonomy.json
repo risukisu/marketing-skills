@@ -1,0 +1,16 @@
+{
+ "company": "Quillbridge",
+ "positioning": "Quillbridge builds data platforms and demand forecasts for mid-size retailers",
+ "icp": "Heads of data and finance at retailers with 20 to 200 stores",
+ "brand_terms": ["quillbridge"],
+ "offerings": [
+  {"id": "data-platform", "name": "Data platforms", "definition": "Designing and building a retail data warehouse, pipelines and semantic layer.",
+   "includes": ["warehouse", "lakehouse", "pipelines", "reporting layer"], "excludes": ["forecast models"],
+   "evidence": ["/services/data-platform.html", "/index.html"], "main_pages": ["/services/data-platform.html"]},
+  {"id": "forecasting", "name": "Demand forecasting", "definition": "Store and SKU demand forecasts for retail buyers.",
+   "includes": ["forecast", "demand planning"], "excludes": ["data platform build"],
+   "evidence": ["/services/forecasting.html"], "main_pages": ["/services/forecasting.html"]}
+ ],
+ "confirmed": true,
+ "confirmed_note": "Approved as proposed"
+}

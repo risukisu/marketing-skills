@@ -225,6 +225,12 @@
     {
       "category": "Marketing Ops",
       "group": "Strategy and decisions",
+      "command": "/content-audit",
+      "blurb": "Maps every page to an offering and an AIDA stage, finds where each buyer journey breaks, and says whether to invest in content, SEO, conversion or distribution."
+    },
+    {
+      "category": "Marketing Ops",
+      "group": "Strategy and decisions",
       "command": "/product-launch",
       "blurb": "Launch planning: messaging, assets, distribution, tiered launch systems."
     },

@@ -1,6 +1,6 @@
 ---
 name: content-strategy
-description: Build or audit an SEO-driven B2B content strategy on the 7-part Orbit Media framework (sales page core, content mission, original research, prospect questions, visuals, influencer collaboration, guest posting) and turn it into a quarterly content hub. Use when someone says "content strategy", "content plan", "content marketing plan", "content mission", "editorial calendar", "content hub", "content audit", "our blog doesn't generate leads", "blog isn't converting", or asks for an original research idea. Triggered from context, it offers help and asks before doing anything.
+description: Build or audit an SEO-driven B2B content strategy on the 7-part Orbit Media framework (sales page core, content mission, original research, prospect questions, visuals, influencer collaboration, guest posting) and turn it into a quarterly content hub. Use when someone says "content strategy", "content plan", "content marketing plan", "content mission", "editorial calendar", "content hub", "content audit", "our blog doesn't generate leads", "blog isn't converting", or asks for an original research idea. Triggered from context, it offers help and asks before doing anything. For a page-by-page inventory of a site by offering and AIDA stage (where the buyer journey breaks), use /content-audit instead.
 metadata:
   built: 2026-09-04
   author: risu (https://github.com/risukisu/)

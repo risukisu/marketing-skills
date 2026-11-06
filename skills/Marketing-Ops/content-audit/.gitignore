@@ -1,0 +1,9 @@
+# Run outputs never belong in the public repo. SKILL.md tells the model to run from the
+# launch folder and the scripts refuse a run folder inside the skill; this is the third guard.
+# Anchored to this folder so tests/fixtures/ (fictional data) still ships.
+/content-audit-*/
+/crawl*.json
+/metrics*.json
+/exports*.json
+/narrative*.json
+/ingest/

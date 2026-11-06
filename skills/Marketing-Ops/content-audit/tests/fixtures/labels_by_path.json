@@ -1,0 +1,16 @@
+{
+ "/index.html": ["cross", "desire", "homepage", "icp", "high"],
+ "/services/data-platform.html": ["data-platform", "desire", "service", "icp", "high"],
+ "/services/forecasting.html": ["forecasting", "desire", "service", "icp", "high"],
+ "/case-studies/retailer-platform.html": ["data-platform", "desire", "case-study", "icp", "high"],
+ "/blog/what-is-a-data-platform.html": ["data-platform", "attention", "blog", "icp", "high"],
+ "/blog/data-warehouse-vs-lakehouse.html": ["data-platform", "interest", "blog", "icp", "med"],
+ "/blog/data-warehouse-vs-lakehouse-guide.html": ["data-platform", "interest", "blog", "icp", "med"],
+ "/blog/demand-forecasting-basics.html": ["forecasting", "attention", "blog", "icp", "high"],
+ "/blog/team-offsite.html": ["brand", "attention", "news-pr", "unclear", "high"],
+ "/blog/excel-shortcuts.html": ["none", "attention", "blog", "off", "low"],
+ "/ebook/platform-checklist.html": ["data-platform", "action", "whitepaper-ebook", "icp", "high"],
+ "/contact.html": ["cross", "action", "contact-demo", "icp", "high"],
+ "/pricing.html": ["cross", "desire", "pricing", "icp", "high"],
+ "/about.html": ["brand", "desire", "about-team", "icp", "med"]
+}
