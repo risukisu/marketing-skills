@@ -44,6 +44,12 @@
     },
     {
       "category": "SEO",
+      "group": "Built here",
+      "command": "/internal-linking",
+      "blurb": "Crawls a site, finds orphan and under-linked pages, broken links and weak anchors, and proposes links with anchor text and a draft sentence each."
+    },
+    {
+      "category": "SEO",
       "group": "Specialists",
       "command": "/seo-technical",
       "blurb": "Crawlability, indexability, security, URLs, mobile, Core Web Vitals, JavaScript rendering, IndexNow."

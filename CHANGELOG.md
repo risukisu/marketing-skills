@@ -2,9 +2,13 @@
 
 Releases are tagged on `master`; notes live here and on the GitHub release.
 
-## Unreleased
+## v1.2.0 — 2026-11-06
+
+Two new skills, both built here, both with offline tests: a content audit that says where each offering's buyer journey breaks, and an internal-linking audit that proposes the links to add. The skillcraft.cloud shelf now lists both (51 skills).
 
 **New skill: `/content-audit`** (Marketing Ops). Diagnoses how a site's content works as an inbound lead channel. It crawls the site (standard library only), derives the offerings from the site as a whole and asks you to confirm them, then classifies every content page by offering and AIDA stage (Attention, Interest, Desire, Action) in parallel subagents, validated by a script. It scores value-proposition clarity on six criteria with a quote for every point, and finds where each offering's journey breaks: missing or thin stages, pages with no onward step in the body, Action pages without a form. After the first report it creates an `ingest` folder; Search Console, GA4, HubSpot and Google Ads exports dropped there add findability, traffic, first-touch contacts and paid reliance on the next run. The loader recognises the standard UI downloads by their columns, stops on anything it does not recognise, never reads contact details, and treats an export at a download row limit (Search Console's 1,000) as truncated, so a missing page reads as no data, not zero. Python computes every number; the report builder refuses a narrative number it cannot find in the metrics. Output: one self-contained HTML report (offering × AIDA map, a verdict per offering, priorities handed to other skills), a markdown source and a page-level CSV. `/content-strategy` now points page-inventory requests at it.
+
+**New skill: `/internal-linking`** (SEO). Audits a site's internal links and hands back the fixes. A standard-library crawler (robots.txt and sitemap aware) or a Screaming Frog import feeds an analyzer that finds orphan pages, under-linked priority pages, over-linked hubs, broken links, redirect chains, and generic or repeated anchors. It then proposes concrete links (source page, target page, anchor text, a draft sentence) and a top-20 action plan in one markdown report. Priority pages can come from GA4 or Search Console. Tested offline against a fixture site.
 
 ## v1.1.5 — 2026-10-02
 
