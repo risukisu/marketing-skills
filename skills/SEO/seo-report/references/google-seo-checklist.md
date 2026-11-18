@@ -370,14 +370,6 @@ When making recommendations, ground them in observable outcomes:
 
 ## Scoring Framework
 
-When generating the SEO report, use this framework to rate each area:
-
-| Rating | Symbol | Meaning |
-|--------|--------|---------|
-| Strong | [STRONG] | Performing well, minor optimizations possible |
-| Adequate | [ADEQUATE] | Meeting baseline but has improvement opportunities |
-| Needs Work | [NEEDS WORK] | Significant issues that likely impact rankings |
-| Critical | [CRITICAL] | Fundamental problems that must be fixed |
-| Not Assessed | [N/A] | Couldn't evaluate (missing data or tool access) |
+Rate each area with the five ratings defined in the rating table in SKILL.md, Step 3 (STRONG, ADEQUATE, NEEDS WORK, CRITICAL, N/A). That table is the only definition; do not redefine them here.
 
 Rate each section of the checklist and include specific evidence from the data to justify each rating.

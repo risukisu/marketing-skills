@@ -1,0 +1,40 @@
+[
+  {
+    "skills": ["seo-report"],
+    "query": "SEO report for northwind-bakery.example please. It's GA4 property 111111111. We haven't connected Search Console, only the GA4 MCP is set up.",
+    "files": [],
+    "expected_behavior": [
+      "Runs Step 0 first: lists candidate context files by name only and asks one question (use these / point elsewhere / paste / none) before pulling any data",
+      "Uses the given property ID directly (no account listing) and calls mcp__analytics-mcp__get_property_details for the report header",
+      "Runs the nine GA4 queries through mcp__analytics-mcp__run_report and makes no mcp__gsc__ call",
+      "The report header reads 'Data sources: GA4' and notes that GSC is not connected",
+      "The scorecard rates Search Visibility N/A, and section 5 holds the 'GSC data not available' block with the list of what is missing without GSC",
+      "Saves one file named seo-report-<site-name>-<YYYY-MM-DD>.md, then shows the Executive Summary and Scorecard in chat with the saved path"
+    ]
+  },
+  {
+    "skills": ["seo-report"],
+    "query": "How is fabrikam-tools.example doing in search? GA4 property 222222222, and the gsc MCP is connected for sc-domain:fabrikam-tools.example. Organic traffic dropped last month.",
+    "files": [],
+    "expected_behavior": [
+      "Runs Step 0 (lists candidate context files by name only and asks one question) before pulling any data, and carries the stated concern (last month's drop) into the analysis",
+      "Calls mcp__gsc__site_snapshot before the Phase 2 and Phase 3 GSC tools (mcp__gsc__quick_wins, mcp__gsc__ctr_opportunities, mcp__gsc__content_gaps, mcp__gsc__traffic_drops, mcp__gsc__content_decay, mcp__gsc__check_alerts, mcp__gsc__cannibalization_check)",
+      "The report header reads 'Data sources: GA4, GSC' and the scorecard gives Search Visibility a rating other than N/A",
+      "Section 5 lists top queries by impressions and high-impression, low-CTR queries or pages, not the 'GSC data not available' block",
+      "The month-over-month table shows organic sessions, users and engagement rate with a change column, and the Recommendations section addresses the drop with data from mcp__gsc__traffic_drops or mcp__gsc__content_decay",
+      "Every scorecard rating is one of STRONG, ADEQUATE, NEEDS WORK, CRITICAL, N/A"
+    ]
+  },
+  {
+    "skills": ["seo-report"],
+    "query": "Can you check SEO for contoso-studio.example? GA4 property 333333333. The site launched recently and GA4 shows only about 60 organic sessions in the last 90 days. No Search Console.",
+    "files": [],
+    "expected_behavior": [
+      "Runs Step 0 (lists candidate context files by name only and asks one question) before pulling any data",
+      "Frames the report as an SEO foundation assessment (what is missing) rather than an audit of existing performance, and says so in the report",
+      "Any area rated N/A states missing data or insufficient data as the reason",
+      "The report header reads 'Data sources: GA4' and Search Visibility is N/A",
+      "The 'Not Assessed (Requires Manual Check)' list names Rich Results Test, PageSpeed Insights, robots.txt and sitemap, title tags and meta descriptions, and internal linking"
+    ]
+  }
+]

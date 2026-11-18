@@ -15,9 +15,27 @@ description: >-
 
 Generate a data-driven SEO health report by pulling live analytics data and evaluating the site against Google's official search quality guidelines.
 
+Tests: `evals/evals.json`, three scenarios.
+
+## Setup
+
+Both servers run locally. Register them under exactly these names (`analytics-mcp`, `gsc`), since every `mcp__<server>__` tool name below depends on them; adjust the server name to your installation if you chose another.
+
+**GA4, required: `analytics-mcp`** ([googleanalytics/google-analytics-mcp](https://github.com/googleanalytics/google-analytics-mcp), Python 3.10+)
+1. `pipx install analytics-mcp` (or `python -m pip install analytics-mcp`)
+2. In a Google Cloud project, enable the Google Analytics Admin API and the Google Analytics Data API.
+3. Create read-only Application Default Credentials: `gcloud auth application-default login --scopes https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform --client-id-file client_secret.json`
+4. Add to the launch folder's `.mcp.json`: `"analytics-mcp": {"type": "stdio", "command": "analytics-mcp", "env": {"GOOGLE_APPLICATION_CREDENTIALS": "<credentials JSON path>", "GOOGLE_CLOUD_PROJECT": "<gcp project id>"}}` under `mcpServers`.
+
+**GSC, optional: `gsc`** ([Suganthan-Mohanadasan/Suganthans-GSC-MCP](https://github.com/Suganthan-Mohanadasan/Suganthans-GSC-MCP), Node.js 18+)
+- `npx -y suganthan-gsc-mcp setup --client code` runs the setup wizard, which signs in with Google, picks the property and registers the server as `gsc`. If it asks for an OAuth client JSON, create a Desktop-app OAuth client in a Google Cloud project with the Search Console API enabled.
+- Manual alternative, under `mcpServers`: `"gsc": {"command": "npx", "args": ["-y", "suganthan-gsc-mcp"], "env": {"GSC_AUTH_MODE": "oauth", "GSC_OAUTH_SECRETS_FILE": "<client secrets JSON path>", "GSC_SITE_URL": "sc-domain:<your site>", "GSC_SCOPES": "readonly"}}`
+
+Start a new session after registering; the tools appear as `mcp__analytics-mcp__*` and `mcp__gsc__*`.
+
 ## Before You Start
 
-This skill requires at minimum the **GA4 MCP** (`analytics-mcp`). The **GSC MCP** (`gsc`) adds search query data and indexing insights but is optional — the report adapts to whatever data sources are available.
+This skill requires at minimum the **GA4 MCP** (`analytics-mcp`). The **GSC MCP** (`gsc`) adds search query data and indexing insights but is optional — the report adapts to whatever data sources are available. Install and registration: see Setup above.
 
 Check which MCP servers are connected:
 - `mcp__analytics-mcp__*` tools → GA4 is available
@@ -112,45 +130,26 @@ For each area, assign a rating based on the evidence:
 | **CRITICAL** | Fundamental issues that likely hurt rankings |
 | **N/A** | Can't assess — missing data source or insufficient data |
 
-### What GA4 data tells you about each SEO area:
+### GA4 evidence per scorecard area
 
-**Content Quality (E-E-A-T signals):**
-- High engagement rates on topic clusters = expertise signals working
-- Returning organic visitors = building authority
-- Long session durations on in-depth content = satisfying user intent
-
-**Helpful Content signals:**
-- Pages with high traffic but low engagement = content not meeting user expectations
-- High bounce rates from organic = possible search intent mismatch
-- Declining organic traffic across the site = possible helpful content system impact
-
-**Technical health indicators:**
-- 404 pages appearing in data = broken links
-- Unusual traffic patterns = possible crawling issues
-- Very low organic percentage of total traffic = discoverability problems
-
-**Mobile performance:**
-- Engagement rate gap between mobile and desktop > 15% = mobile UX issues
-- Mobile bounce rate significantly higher = mobile-specific problems
-- Mobile traffic share declining = possible mobile rendering issues
-
-**Content performance patterns:**
-- Identify the top-performing content (high traffic + high engagement)
-- Identify underperformers (traffic but low engagement, or engagement but low traffic)
-- Look for content gaps (topic areas with no pages ranking)
+- **Content Quality / User Engagement:** red-flag a page in the top 25% of organic sessions with engagement rate < 40% or bounce rate > 70%, or any page with average session duration < 30 s (content not meeting search intent). Returning organic visitors count as an authority signal.
+- **Organic Traffic Trend:** site-wide organic decline → possible helpful content system impact.
+- **Technical Health:** 404 paths in the page data → broken links; unusual traffic patterns → possible crawling issues; very low organic share of total traffic → discoverability problem.
+- **Mobile Experience:** mobile engagement rate more than 15 pp below desktop → mobile UX issue and a mobile-first indexing risk; also flag a markedly higher mobile bounce rate or a declining mobile share.
+- **Landing Page Performance:** name top performers (high traffic + high engagement) and underperformers (traffic but low engagement, or engagement but low traffic); topic areas with no ranking pages are content gaps.
 
 ## Step 4: Generate the Report
 
 Save the report to a markdown file. Use this path pattern:
 - Default: `<ROOT>/writing/notes/seo-report-{site-name}-{YYYY-MM-DD}.md` under the current launch root
 - Machine-specific per-root output maps (day-job workspaces, portfolio setups) live in `~/.claude/skills/workspace.local.md` — if it exists and defines a destination for the current root, use that instead
+- If neither applies, ask the user where they want it saved
 
 **Portfolio mode:** when approved context (Step 0) shows the workspace manages a set of
 sites/companies, resolve **scope** first — one site or the set. Set scope → loop the
 active list, one report per site plus a short comparative summary. If analytics access isn't wired
 for a site yet, say so and offer what works without it (crawl-based on-page checks, public SERP
 context). Ask which scope if ambiguous.
-- Or ask the user where they want it saved
 
 ### Report Template
 
@@ -339,7 +338,7 @@ Reduce the date range to what's available. Note the limited data in the report a
 If `session_default_channel_group` doesn't include "Organic Search", the site might not be getting any search traffic at all. This is itself the finding — explain what it means and recommend foundational SEO work.
 
 ### GA4 quota limits
-If you hit API quota limits (the `run_report` tool can return quota info with `return_property_quota: true`), prioritize the most important queries and skip lower-priority ones. Note any skipped sections in the report.
+If you hit API quota limits (the `analytics-mcp:run_report` tool — Claude Code: `mcp__analytics-mcp__run_report` — can return quota info with `return_property_quota: true`), prioritize the most important queries and skip lower-priority ones. Note any skipped sections in the report.
 
 ## Important Notes
 

@@ -2,6 +2,8 @@
 
 This file contains the exact GA4 MCP tool calls needed for each section of the SEO report.
 
+Every report query below (all sections after Setup) is the argument object for `analytics-mcp:run_report` (Claude Code: `mcp__analytics-mcp__run_report`); adjust the server name to your installation.
+
 **IMPORTANT:** Despite the tool documentation saying to use snake_case (protobuf format), the API actually requires **camelCase** field names for dimensions and metrics. For example, use `pagePathPlusQueryString` NOT `pagePathPlusQueryString`. The snake_case versions return a 400 error. All examples below use the correct camelCase format.
 
 ## Table of Contents

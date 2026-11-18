@@ -6,12 +6,14 @@ description: "Generate a per-campaign marketing performance report (pipeline + c
 # campaign-report — per-campaign performance report
 
 Produces, for **one campaign** over a period (default: YTD): a **markdown source**, a self-contained
-**HTML report** in the client's design system, and, when the pack defines a target and the owner
-says go, **ships it**. Funnel metric definitions are `pipeline-analysis/definitions.md`; do not
-redefine them here.
+**HTML report** in the client's design system, and, when the context pack defines a target and the
+owner says go, **ships it**. Funnel metric definitions are `pipeline-analysis/definitions.md`; do
+not redefine them here.
 
 **Paths.** `references/…` is relative to this skill's folder. Every output, template, and
-publishing path comes from the client pack, never from the current directory.
+publishing path comes from the pack, never from the current directory.
+
+Tests: `evals/evals.json`, three scenarios (pack present, no pack, unlinked-deal reconcile).
 
 ## Step 0 — Company, campaign, and period (every run, one question)
 
@@ -110,6 +112,11 @@ tickets `/0-5/<id>`, pages `<website>/<path>`.
 One or two sentences of interpretation: cause → state → next action, and **who owns which open
 decision**. It surfaces, it never decides strategy. Top-of-report banner, mirrored in the markdown.
 Run `/copy-deslop` if it reads generic.
+
+Example (fictional: Acme · Spring launch, YTD): "The two partner webinars brought in 9 of the
+campaign's 14 leads, and 6 are now New Business MQLs worth €310k, but none has reached SQL because
+discovery calls are still being booked. Sales books calls with the four oldest MQLs this month
+(owner: Head of Sales); whether to fund a third webinar is open with the CMO."
 
 ### Step 7 — Ship (only if the pack defines a target and the owner says go)
 Follow the pack's publishing block exactly: file location and naming, metadata entry, build step,

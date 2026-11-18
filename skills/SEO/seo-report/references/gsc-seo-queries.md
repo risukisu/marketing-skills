@@ -1,8 +1,8 @@
 # GSC MCP Query Reference for SEO Reports
 
-The GSC MCP (Suganthans-GSC-MCP fork) provides 20 specialized tools for Google Search Console data. These tools go beyond raw data — many include built-in analysis like benchmarking, decay detection, and cannibalization checks.
+The GSC MCP (Suganthans-GSC-MCP fork) provides specialized tools for Google Search Console data. These tools go beyond raw data — many include built-in analysis like benchmarking, decay detection, and cannibalization checks.
 
-**Status:** The GSC MCP server is currently broken (hangs on initialize). This reference documents the tools for when it becomes available. The tool names use the prefix `mcp__gsc__`.
+The tool names use the prefix `mcp__gsc__` (the server registered as `gsc`); adjust the server name to your installation.
 
 ## Table of Contents
 
@@ -60,7 +60,7 @@ Pages that lost the most traffic recently, with root cause analysis. Critical fo
 ```
 Tool: mcp__gsc__content_decay
 ```
-Pages declining over three consecutive 30-day periods. Unlike traffic_drops (which catches sudden losses), this catches slow, steady decline — often the first sign that content is becoming outdated or competitors have improved.
+Pages declining over three consecutive 30-day periods. Unlike `mcp__gsc__traffic_drops` (which catches sudden losses), this catches slow, steady decline — often the first sign that content is becoming outdated or competitors have improved.
 
 ### Check Alerts
 ```
@@ -163,26 +163,26 @@ Verify numeric claims against live GSC data. Use for self-checking — before pu
 When GSC is available, run these in this order:
 
 ### Phase 1: Overview (run first)
-1. `site_snapshot` — baseline performance and trends
+1. `mcp__gsc__site_snapshot` — baseline performance and trends
 
 ### Phase 2: Opportunities (run in parallel)
-2. `quick_wins` — low-hanging keyword opportunities
-3. `ctr_opportunities` — title/description optimization targets
-4. `content_gaps` — new content opportunities
+2. `mcp__gsc__quick_wins` — low-hanging keyword opportunities
+3. `mcp__gsc__ctr_opportunities` — title/description optimization targets
+4. `mcp__gsc__content_gaps` — new content opportunities
 
 ### Phase 3: Problems (run in parallel)
-5. `traffic_drops` — recent losses
-6. `content_decay` — gradual decline
-7. `check_alerts` — severity-rated issues
-8. `cannibalization_check` — internal competition
+5. `mcp__gsc__traffic_drops` — recent losses
+6. `mcp__gsc__content_decay` — gradual decline
+7. `mcp__gsc__check_alerts` — severity-rated issues
+8. `mcp__gsc__cannibalization_check` — internal competition
 
 ### Phase 4: Deeper analysis (selective, based on findings)
-9. `ctr_vs_benchmark` — for pages flagged in Phase 2
-10. `topic_cluster_performance` — for content cluster evaluation
-11. `inspect_url` — for specific pages with issues
-12. `content_recommendations` — cross-check your recommendations
-13. `list_sitemaps` — technical health check
+9. `mcp__gsc__ctr_vs_benchmark` — for pages flagged in Phase 2
+10. `mcp__gsc__topic_cluster_performance` — for content cluster evaluation
+11. `mcp__gsc__inspect_url` — for specific pages with issues
+12. `mcp__gsc__content_recommendations` — cross-check your recommendations
+13. `mcp__gsc__list_sitemaps` — technical health check
 
 ### Phase 5: Actions (optional, user-directed)
-14. `submit_url` / `submit_batch` — if indexing issues found
-15. `submit_sitemap` — if sitemap issues found
+14. `mcp__gsc__submit_url` / `mcp__gsc__submit_batch` — if indexing issues found
+15. `mcp__gsc__submit_sitemap` — if sitemap issues found

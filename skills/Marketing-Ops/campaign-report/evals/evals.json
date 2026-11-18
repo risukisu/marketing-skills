@@ -1,0 +1,42 @@
+[
+  {
+    "skills": ["campaign-report"],
+    "query": "/campaign-report Acme \"Spring launch\" YTD",
+    "files": ["companies/acme/context/reporting.md"],
+    "expected_behavior": [
+      "Before reading the pack body or running any CRM or GA4 query, asks exactly one Step 0 question pre-filled with Acme, Spring launch, YTD to the end of the last full month, and the path of the pack it found (the file with 'pack: reporting' in its front-matter), then waits",
+      "After the go, asks in one Step 1 message for the authoritative lead list (offering to draft a candidate list for confirmation) and for the campaign page set, checking the slugs against the pack",
+      "Writes the markdown to the pack's campaign report path and builds the HTML from the pack's reference campaign report; writes nothing inside the skill folder",
+      "The report opens with a key takeaway banner of one or two sentences that names who owns each open decision, mirrored in the markdown",
+      "Any Account Management lead carries the AM flag, counts in the campaign roll-up, and never appears in New Business-only counts",
+      "The conversion section shows monthly counts and quarterly and YTD rates only, with no monthly rate, and flags YTD as the reliable rate",
+      "Does not push or publish the report until the owner explicitly says go, even when the pack defines a publishing target"
+    ]
+  },
+  {
+    "skills": ["campaign-report"],
+    "query": "Build the campaign report for Fabrikam's \"Partner summit\" campaign, YTD. We have no reporting pack set up anywhere and this is a one-off, so start with none.",
+    "files": [],
+    "expected_behavior": [
+      "Still asks the single Step 0 question, stating that no file with 'pack: reporting' was found and confirming the 'start with none' choice, then waits",
+      "In the Step 1 intake, collects the HubSpot portal id, the funnels, the GA4 property, and the output path in addition to the lead list and the campaign page set",
+      "Renders the HTML in the neutral default style, since no pack supplies a design system or reference report",
+      "Writes no pack, report, or other file inside the skill folder",
+      "An empty CRM or GA4 result is stated as empty in the report, not filled in",
+      "Skips the Step 7 publishing step, because no pack defines a target"
+    ]
+  },
+  {
+    "skills": ["campaign-report"],
+    "query": "/campaign-report Acme \"Spring launch\" YTD. Lead list from Sales: Globex (ticket 0-5/90001), Initech (ticket 0-5/90002), Umbrella Freight (ticket 0-5/90003). Page set as in the pack.",
+    "files": ["companies/acme/context/reporting.md"],
+    "expected_behavior": [
+      "Given ticket 0-5/90001 has no associated deal but a New Business deal named 'Globex - data platform' (0-3/70001) exists: runs a deal-name search for Globex, records the lead as unlinked-but-found, and counts the deal as an MQL by its createdate",
+      "Lists the missing Globex ticket-to-deal association under 'Data quality & technical notes' near the end of the report, with a one-sentence recommendation the owner can share, and never at the top of the report",
+      "Does not create or change any association in the live CRM without explicit approval",
+      "Given Initech's only deal is for a different offering: excludes Initech from the campaign counts and adds an audit note saying why",
+      "Given Umbrella Freight has neither an associated deal nor one found by deal-name search: keeps it as a lead with link status no-deal and does not count it as an MQL",
+      "The markdown records one link status for every lead: linked, unlinked-but-found, or no-deal"
+    ]
+  }
+]
