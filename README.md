@@ -45,7 +45,7 @@ Nothing here needs an API key to start. Connect Google Analytics and Search Cons
   <img src="./assets/readme/section-shelf.svg" width="100%" alt="Section 01 — The Shelf: one folder per skill, the folder name is the command.">
 </p>
 
-**49 skills, 4 categories.** Each skill is one folder with a `SKILL.md`; the folder name is the slash command.
+**52 skills, 4 categories.** Each skill is one folder with a `SKILL.md`; the folder name is the slash command.
 
 ### ✍️ Writing — `skills/Writing/`
 
