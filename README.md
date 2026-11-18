@@ -112,6 +112,7 @@ Two sources side by side: the vendored [claude-seo](https://github.com/AgriciDan
 | Skill | One line |
 |---|---|
 | `/beautify-github-readme` | Turns a repository README into a cohesive visual story; every marketer has a GitHub in 2026 |
+| `/design-studio` | A design proposal before anything is built: three or four directions for a site, app, artifact, report, deck or component. One improves what exists, one is written blind to it from a neutral brief, one sits between. Each gets rendered mocks, a switcher page and scores, then you pick |
 | `/frontend-design-anti-slop` | Builds or reviews web UI with real design taste; a named anti-pattern list for the generic AI look (purple gradients, rounded-xl, "Transform your X") |
 | `/cinemagraph` | Turns a static hero, chart or diagram into a seamless loop (animated WebP + PNG fallback, GIF on request, CSS-animated SVG for vector art). Light mode moves only what is already in the image; heavy mode adds moving elements and keeps ~95% of it. Ambient intensity keeps it to a few quiet layers; choreographed acts the image's content out beat by beat, like a product demo loop. Phase-parametric HTML rendered with Playwright, seam-checked |
 
@@ -144,6 +145,7 @@ marketing-skills/
 │   └── Visual/
 │       ├── beautify-github-readme/     SKILL.md + references/ + scripts/ (SVG render, motion GIF)
 │       ├── cinemagraph/                SKILL.md + scripts/ (probe, phase renderer) + tests + references/ + assets/template.html
+│       ├── design-studio/              SKILL.md + references/ + assets/switcher.html + evals/
 │       └── frontend-design-anti-slop/  SKILL.md + references/
 ├── assets/readme/                  hero, section headers, motion panels, social preview
 │   └── archive/                    superseded heroes with their sources

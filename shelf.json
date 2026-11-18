@@ -303,6 +303,12 @@
     {
       "category": "Visual",
       "group": "",
+      "command": "/design-studio",
+      "blurb": "Three or four design directions before anything is built, one written blind to what exists, shown as rendered mocks."
+    },
+    {
+      "category": "Visual",
+      "group": "",
       "command": "/frontend-design-anti-slop",
       "blurb": "Builds or reviews web UI with a named anti-pattern list for the generic AI look."
     },

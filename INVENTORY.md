@@ -10,7 +10,7 @@ pass 2026-07-23, kept current since.
 **Layout:** `skills/<Category>/<skill>`, four categories (Writing, SEO, Marketing Ops, Visual). Skills reach
 `~/.claude/skills` through links made by `install.ps1` / `install.sh`.
 
-## The skills — 51
+## The skills — 52
 
 | Skill | Domain | Source | License evidence | Verdict | Notes |
 |---|---|---|---|---|---|
@@ -56,6 +56,7 @@ pass 2026-07-23, kept current since.
 | content-strategy | Marketing Ops | Own; framework credited to Andy Crestodina (Orbit Media) | root MIT | MIT-clear | Built 2026-09-04. Original distillation, credit inline in SKILL.md + every reference; evals in `evals/`. Context is user-approved per run (scan launch dir → ask); legacy `references/*-context.local.md` packs offered only to the workspace they name (2026-09-30) |
 | content-audit | Marketing Ops | Own | root MIT | MIT-clear | Built 2026-11-06. Offering × AIDA content diagnosis: stdlib-only crawler, export loader (Search Console, GA4, HubSpot, Google Ads; contact details never read), analyzer, report builder with a number check; parallel classification subagents; offering map confirmed by the user before classification. Report stylesheet derived from the local html-report skill, design rules credited to good-css (MIT) and Impeccable (Apache-2.0) in its header. Fictional fixture site and exports; offline tests; evals in `evals/` (drafted, not yet run) |
 | frontend-design-anti-slop | Visual | Own (also listed on skillcraft.cloud/marketplace) | root MIT | MIT-clear | Added 2026-09-05 from the SkillCraft staging copy (`projects/skills-trader/docs/skills-staging/`); interactive intake built in |
+| design-studio | Visual | Own | root MIT | MIT-clear | Built 2026-11-17. Design proposals before any build: Refine (or Benchmark/On-brand), a Fresh direction written from a neutral brief in an isolated subagent (rank, then a real roll, then build), Bridge, optional Wildcard; rendered mocks plus a switcher page; stops for the pick. Ideas from Impeccable (pbakaus, Apache-2.0) rewritten, not copied; rules from good-css, Emil Kowalski's skills, Gentleface and taste-skill (all MIT) rewritten; Anthropic's Opus 5.5 prompting guidance; footer.design and Vercel's agent-skills linked only. Offers taste-skill and Vercel skills as companions after the pick, installs nothing. Evals in `evals/` with a fictional canary fixture (not yet run as a suite) |
 | cinemagraph | Visual | Own | root MIT | MIT-clear | Built 2026-09-15. Turns a static image into a seamless loop (light: move only what exists; heavy: add elements, keep ~95%). Choreographed intensity and CSS-animated SVG output added 2026-09-28. GIF palette sampled across the whole loop 2026-09-29 (v1.1.2), guarded by `tests/test_gif_palette.py`. WebP lossless-or-lossy choice with merged frames, frame-timed reset rule and in-loop snap check 2026-10-01 (v1.1.5), guarded by `tests/test_webp_encoding.py` and `tests/test_max_step.py`. Local-only Playwright + Pillow render, no network beyond Google Fonts at render time; evals in `evals/` (drafted, not yet run) |
 | cro | Marketing Ops | coreyhaines31/marketingskills v2.0.0 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Conversion audit of pages and forms |
 | customer-research | Marketing Ops | coreyhaines31/marketingskills v2.0.2 | MIT © 2025 Corey Haines (LICENSE in folder) | MIT-clear | Ported 2026-09-05: product-marketing-file lookup replaced by the per-run context setup step; related-skills list points at this library; credit inline. Three research modes: analyze assets, mine public signal, run interviews/surveys |
@@ -66,7 +67,7 @@ pass 2026-07-23, kept current since.
 | pipeline-analysis | Marketing Ops | Own | root MIT | MIT-clear | Genericized 2026-09-11 from a day-job skill. `compute_funnel.py` (stdlib) takes `--config` / `--targets` / `--reason-map`; funnel pipelines, stage ids, ticket stages, and AM sources come from the company's pack and its `reporting/*.json` engine files, kept in the launching workspace (never in the skill folder). Shipped `targets.json` is empty, `reason_map.json` is a starter; fixture ids are synthetic (9xxxxxxxx numbers and nil-pattern UUIDs, verified 2026-09-12 against the source portal — the 2026-09-11 ship carried real stage/pipeline ids by mistake, scrubbed from tree and history); 21 tests |
 | competitor-intel | Marketing Ops | Own | root MIT | MIT-clear | Added 2026-09-11. Supersedes the `risukisu/ci-agent` prototype. Deep tier reads the public LinkedIn Ad Library — ToS notice in `scripts/deep/scan.mjs` |
 
-**48 skills across 3 categories.**
+**52 skills across 4 categories.**
 
 ## Not vendored: data connections
 

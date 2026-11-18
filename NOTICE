@@ -7,7 +7,7 @@ skill keeps its upstream license, shipped as `LICENSE.txt` inside its own folder
 ## Original skills (root MIT)
 
 copy-deslop · copy-longform · writing-assistant · seo-report · internal-linking · linkedin-ads ·
-product-launch · content-strategy · content-audit · frontend-design-anti-slop
+product-launch · content-strategy · content-audit · frontend-design-anti-slop · design-studio
 
 Credited methodologies within original skills:
 - `linkedin-ads` is built on the AdConversion methodology (Silvia & AJ Perez,
@@ -15,6 +15,9 @@ Credited methodologies within original skills:
 - `product-launch` adapts Luke Harries' product launch guide — credited inline.
 - `content-audit` ships a report stylesheet whose design rules draw on good-css
   (vojtaholik, MIT) and Impeccable (pbakaus, Apache-2.0) — credited in the file header.
+- `design-studio` builds on ideas from Impeccable (pbakaus, Apache-2.0), rewritten in
+  its own words, and distils rules from good-css (vojtaholik), Emil Kowalski's skills,
+  Gentleface and taste-skill (Leonxlnx), all MIT — credited in SKILL.md and per file.
 
 ## Vendored skills (upstream licenses)
 

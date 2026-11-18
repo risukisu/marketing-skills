@@ -1,0 +1,140 @@
+{
+  "skill_name": "design-studio",
+  "note": "Scenarios and brands are fictional. 'turns' are scripted replies sent after the skill's planned waits. 'expectations' are what a grader checks in the transcript and the output folder; 'greps' are mechanical checks on the mock files. Fixtures live in evals/files/. The bookkeeping fixture plants canaries (accent oklch(0.55 0.14 200), Lora with Work Sans, the line \"Let's make your numbers add up\", the five-page nav) so a leak into Fresh is visible.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "redesign-existing-site-leak-canary",
+      "launch_dir": "evals/files/bookkeeping-site",
+      "prompt": "/design-studio Redesign this one-page site for my bookkeeping practice. It feels dated.",
+      "files": ["evals/files/bookkeeping-site/index.html", "evals/files/bookkeeping-site/styles.css", "evals/files/bookkeeping-site/CLAUDE.md"],
+      "turns": [
+        "Use the CLAUDE.md. Small-business owners in Leeds, mostly on a phone in the evening after work, indoors. They should book a free call. Material: three services (monthly books, VAT returns, payroll up to 25 staff), one fixed fee from £180 a month, one booking link, English only. It worked if more people book a call from a phone. The current version is index.html here. Keep the name and the fee. Stock-photo desks would feel wrong. It ships as a static site."
+      ],
+      "expectations": [
+        "Lists candidate context files by name only, with no git log and no file opened, and asks the intake questions in the same message, then waits",
+        "Says that auto-loaded files are already in context and keeps them out of the brief",
+        "Writes the neutral brief before opening index.html or styles.css; the brief has no colour, face, shape or style word, no page or section list, and no path or name pointing at the site",
+        "Runs the rank prompt in an isolated subagent, rolls with a tool after the ranked list returns, then sends the roll for the build; or states that Fresh was sequenced",
+        "proposal.md contains the CONTEXT SEEN line and an isolation label",
+        "Produces Refine, Fresh and Bridge (Wildcard only if distinct), each a full card with closed OKLCH tokens, named faces, Structure and Voice fields",
+        "fresh.html and the Fresh card contain none of the canaries: no oklch(0.55 0.14 200) or a hue within 20 degrees of 200 as the accent, no Lora or Work Sans, no 'add up' line, no Home · Services · Pricing · About · Contact nav",
+        "Bridge lists what it keeps and what it replaces",
+        "Checks every card against 'stock-photo desks'",
+        "Renders one HTML mock per direction plus the switcher page, with real content and no lorem ipsum",
+        "Ends with the four-column table and a one-sentence recommendation, then stops without building"
+      ],
+      "greps": [
+        "No mock contains a banned face name from references/bans.md section 4 outside a comment, unless the card's Avoids line earns it (Refine may keep Lora and Work Sans)",
+        "No mock contains border-radius: 999px or 9999px, except Refine if it keeps the incumbent's buttons and says so",
+        "No mock contains section labels matching >0[1-9]<",
+        "Body text containers set max-inline-size between 60ch and 75ch",
+        "No mock contains 'transition: all' or 'ease-in;'"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "new-report-no-incumbent",
+      "prompt": "/design-studio I need a design for our quarterly volunteer-impact report (HTML, also printed to PDF). Nothing exists yet.",
+      "files": [],
+      "turns": [
+        "No context. Readers are funders and local councillors, at a desk on a laptop or on paper. They should see what the quarter achieved and how to volunteer. Material: four totals for the quarter (meals, volunteers, hours, new pantries), three short stories, one volunteer sign-up link, English. It worked if a funder can quote the three main figures after a minute. Nothing exists. Glossy annual-report gloss and sad charity photos would feel wrong. HTML page, printed to A4."
+      ],
+      "expectations": [
+        "Uses Benchmark in place of Refine, naming two or three real products for their level of execution",
+        "Skips the identity lock and critique, and says what the leak check compares against instead",
+        "Treats the surface as Read mode",
+        "Does not invent a monthly series to fill a chart; uses a table for the totals, or labels any chart data as demonstration",
+        "Mocks use A4 frames, with print styles that turn off animation and print the sign-up as its URL",
+        "Does not invoke design-taste-frontend at any point",
+        "Asks where the mocks should go, since there is no project, then continues without a further stop",
+        "Stops after the proposal"
+      ],
+      "greps": [
+        "Every mock has an @media print block",
+        "Numeric table cells use tabular-nums"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "nextjs-dashboard-companions",
+      "prompt": "/design-studio Give me design options for the admin dashboard in this Next.js app.",
+      "files": ["package.json with a next dependency", "app/admin/page.tsx"],
+      "turns": [
+        "No context files. Support staff on desktop monitors in an office, all day. They triage refund requests. Material: a queue of requests with customer, amount, status and age; filters by status; one detail panel. It worked if a refund is approved in under 30 seconds. The current page is app/admin/page.tsx. Keep the stack. Nothing else must stay. Next.js on Vercel.",
+        "I pick Bridge."
+      ],
+      "expectations": [
+        "Treats the surface as Operate mode: the direction lends its faces, colours, density and a single signature move; navigation and controls stay conventional",
+        "Mocks show a working screen with realistic data, plus empty and error states",
+        "Does not offer Vercel skills before the pick",
+        "After the pick, offers web-design-guidelines and vercel-react-best-practices, and never deploy-to-vercel or vercel-cli-with-tokens"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "passive-trigger",
+      "prompt": "Ugh, this landing page looks so AI-made. Can you do something about it?",
+      "files": ["index.html"],
+      "expectations": [
+        "Offers the proposal in one or two sentences and waits for a yes before any work",
+        "Does not start editing index.html",
+        "If the person says yes, labels Fresh 'brief written after seeing the current design' when the page is already in the conversation"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "screenshot-in-intake",
+      "launch_dir": "evals/files/bookkeeping-site",
+      "prompt": "/design-studio New look for this site please.",
+      "turns": [
+        "Here's a screenshot of the current home page [image attached]. Same audience as the site says. Phone, evening. Three services, one fee, booking link. More calls booked. Static site."
+      ],
+      "expectations": [
+        "Still writes the brief from the intake answers and still isolates Fresh",
+        "Labels Fresh 'brief written after seeing the current design' in the proposal"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "component-only",
+      "launch_dir": "evals/files/bookkeeping-site",
+      "prompt": "/design-studio Give me options for the pricing section only. The rest of the site stays.",
+      "turns": [
+        "Use the CLAUDE.md. Small-business owners on a phone. They should pick a plan. Material: three plans (from £180, £320, £540 a month), what each includes, one booking link. It worked if people book the right plan. The current site is here. Keep everything outside pricing. Static site."
+      ],
+      "expectations": [
+        "Uses the component variant: the brief carries a fixed_identity block with the site's real tokens",
+        "Fresh and Wildcard vary structure, density and interaction, and their Palette and Type fields read 'uses the fixed identity'",
+        "Mocks show the section in place inside the existing page"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "no-subagent-tool",
+      "setup": "Run in a harness or agent with no subagent-spawning tool.",
+      "prompt": "/design-studio Design a one-page site for a piano tuner. Nothing exists yet.",
+      "turns": [
+        "No context. Homeowners and schools, on a phone, daytime. Book a tuning. Material: two services, a price from £85, a phone number, a booking form, English. More bookings. Nothing exists. Nothing must stay. Static site."
+      ],
+      "expectations": [
+        "Writes the ranked candidate list to a file before rolling",
+        "Writes Fresh and Wildcard cards and mocks before step 4",
+        "States in the proposal that Fresh was sequenced rather than isolated"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "slides-and-email-media",
+      "prompt": "/design-studio Design directions for our quarterly all-hands deck and the email that announces it.",
+      "turns": [
+        "No context. Staff, on a big screen in a meeting room and on laptops; the email on phones. Understand the quarter and come to the meeting. Material: twelve slides (three data slides), one email with a date, time and link. People turn up and remember the three numbers. Nothing exists. Slides in PowerPoint, email as HTML."
+      ],
+      "expectations": [
+        "Slide mocks use a 1920 by 1080 frame with body type at least 24 pt",
+        "The email mock is a 600 px single column with a system font stack and no web fonts assumed",
+        "Card Type fields name faces that fit each medium"
+      ]
+    }
+  ]
+}
