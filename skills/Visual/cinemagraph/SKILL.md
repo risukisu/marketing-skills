@@ -113,6 +113,8 @@ For a vector redraw that ships as a **CSS-animated SVG**, write the same timelin
 
 ## 6. Render
 
+If Pillow or Playwright is missing: `pip install pillow playwright && python -m playwright install chromium`.
+
 ```
 python scripts/render_loop.py page.html out.webp --frames 40 --duration 80 --width 1300 --height 820
 ```

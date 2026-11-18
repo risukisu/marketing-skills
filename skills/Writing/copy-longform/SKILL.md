@@ -46,7 +46,7 @@ If the user has not done a voice rule conversation before, also ask:
 ## Step 2 — Load grounding material
 
 Before producing any edits, load:
-- The full source text. For PDFs, use `pypdf` extraction to a staging file. For URLs, use the `defuddle` skill. For Notion/Google Docs, ask the user to export or paste.
+- The full source text. For PDFs, use `pypdf` extraction to a staging file (`pip install pypdf` if missing). For URLs, use the `defuddle` skill. For Notion/Google Docs, ask the user to export or paste.
 - Voice template references (other chapters, prior writing the user wants to match).
 - Any decision documents (locked-decisions file, brand voice guide, style guide).
 - SME / reviewer comments if provided as a separate file.

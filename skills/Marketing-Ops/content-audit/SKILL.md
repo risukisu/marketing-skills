@@ -1,20 +1,17 @@
 ---
 name: content-audit
 description: >-
-  Diagnose how a website's content works as an inbound lead channel. Crawls the site, derives the
-  offerings from the site as a whole (confirmed by the user), classifies every page by offering and
-  AIDA stage (Attention, Interest, Desire, Action) with parallel subagents, scores value-proposition
-  clarity, and finds where each offering's buyer journey breaks: missing or thin stages, pages with
-  no onward step, content that is not found in search, traffic that does not convert. Optional
-  Search Console, GA4, HubSpot and Google Ads exports, dropped into an ingest folder after the
-  first run, add findability, traffic and first-touch leads. Python does every count. Output is one
-  readable HTML report plus markdown and a page-level CSV, ending in a per-offering verdict
-  (content, findability, conversion or distribution gap) and priorities handed to other skills. Use
-  when the user says "/content-audit", "content audit", "content gap analysis", "AIDA audit",
-  "journey gaps", "which offering lacks decision content", "does our content generate leads", or
-  wants to know whether to invest in content, SEO, distribution or paid. Not the 7-part strategy
-  audit (/content-strategy), not an internal-link audit (/internal-linking), not a technical SEO
-  audit (/seo-audit).
+  Diagnoses how a website's content works as an inbound lead channel. Crawls the site, derives the
+  offerings (confirmed by the user), classifies every page by offering and AIDA stage, scores
+  value-proposition clarity, and finds where each offering's buyer journey breaks: missing or thin
+  stages, dead-end pages, content not found in search, traffic that does not convert. Optional
+  Search Console, GA4, HubSpot and Google Ads exports add findability, traffic and first-touch
+  leads. Outputs an HTML report, markdown and a page-level CSV, ending in a per-offering verdict and
+  priorities for other skills. Use when the user says "/content-audit", "content audit", "content
+  gap analysis", "AIDA audit", "journey gaps", "which offering lacks decision content", "does our
+  content generate leads", or wants to know whether to invest in content, SEO, distribution or paid.
+  Not the 7-part strategy audit (/content-strategy), internal-link audit (/internal-linking) or
+  technical SEO audit (/seo-audit).
 ---
 
 # /content-audit — offering × AIDA content diagnosis

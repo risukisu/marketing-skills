@@ -6,6 +6,15 @@ aliases: [<optional short names>]
 
 # <Client> — RevOps reporting context pack
 
+## Contents
+
+- [1. Identity](#1-identity)
+- [2. HubSpot](#2-hubspot)
+- [3. Analytics](#3-analytics)
+- [4. Reporting](#4-reporting)
+- [5. Definitions that override the defaults](#5-definitions-that-override-the-defaults)
+- [6. House style](#6-house-style)
+
 > Save a copy inside the workspace you launch reports from, next to the company's other context
 > (e.g. `companies/<company>/context/reporting.md`), and fill every `<...>`. **Never save it inside
 > a skill folder**: the skills library is a public repository. The front-matter above is how the

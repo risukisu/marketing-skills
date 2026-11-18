@@ -1,5 +1,12 @@
 # Part 1: The sales page core
 
+## Contents
+
+- Why this part exists
+- Method (Pick a phrase you can eventually win, Optimize to rank, Optimize to convert, Specificity test)
+- Checklist
+- Questions to ask the user
+
 Distilled from Andy Crestodina / Orbit Media. Sources:
 https://www.orbitmedia.com/blog/content-strategy-framework/ (part 1),
 https://www.orbitmedia.com/blog/types-of-website-visitors/,

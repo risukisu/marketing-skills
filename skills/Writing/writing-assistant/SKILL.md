@@ -111,8 +111,8 @@ Activated when the writer asks for a draft, rough version, or "write me somethin
 - Keep it rough — this is raw material for them to rewrite, not finished copy
 - **Always write to a file** (they keep it open in preview on another monitor). **Pick the destination with the selector rule — never blanket-default to any single folder:**
   - Derive the *contextual* home (the project / campaign / site the piece is about) and the *launch-folder* home (the project you're currently working in).
-  - If they agree on an obvious home, save there and report the path. If they disagree or it's ambiguous, present a destination picker (contextual / launch-folder / editorial default `<ROOT>\writing\{type}` / custom path) and let the writer choose.
-  - Standalone personal editorial (blog, newsletter, LinkedIn, notes) → the personal root's `writing\{type}`. Work/company content → per the destination rules in the workspace voice file (if it has any) or the launch root's `CLAUDE.md`. Project- or campaign-attached copy lives WITH the project/campaign, not in `writing\`. Full rule: see the launch root's `CLAUDE.md` "Where Content Goes".
+  - If they agree on an obvious home, save there and report the path. If they disagree or it's ambiguous, present a destination picker (contextual / launch-folder / editorial default `<ROOT>/writing/{type}` / custom path) and let the writer choose.
+  - Standalone personal editorial (blog, newsletter, LinkedIn, notes) → the personal root's `writing/{type}`. Work/company content → per the destination rules in the workspace voice file (if it has any) or the launch root's `CLAUDE.md`. Project- or campaign-attached copy lives WITH the project/campaign, not in `writing/`. Full rule: see the launch root's `CLAUDE.md` "Where Content Goes".
   - Reuse the chosen path for every revision — don't create new files per iteration. If the writer specifies a path, use it.
 - Update the same file on each revision — don't create new files for each draft iteration.
 - After writing/updating the file, shut up. Don't explain what you did or ask if they like it. Wait for their feedback.

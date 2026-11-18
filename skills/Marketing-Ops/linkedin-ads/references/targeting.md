@@ -1,5 +1,13 @@
 # Targeting, Audience Sizing & Budget
 
+## Contents
+
+- Build the audience in the Audience Insights tool first
+- Audience sizing
+- The budget model
+- Stretching a small budget
+- When to segment (and when not to)
+
 The whole game on LinkedIn is precision, because you're paying a premium for
 every impression. This file covers how to build the right audience, size it,
 and translate that into a budget that can actually do something.
@@ -69,8 +77,8 @@ Inputs and starting points:
 
 **Always run the script instead of doing this by hand:**
 ```
-python scripts/budget_calc.py forward --audience 85000 --cpm 20 --frequency 3 --penetration 80
-python scripts/budget_calc.py reverse --budget 5000 --cpm 45 --frequency 3 --penetration 80
+python ~/.claude/skills/linkedin-ads/scripts/budget_calc.py forward --audience 85000 --cpm 20 --frequency 3 --penetration 80
+python ~/.claude/skills/linkedin-ads/scripts/budget_calc.py reverse --budget 5000 --cpm 45 --frequency 3 --penetration 80
 ```
 `forward` = audience → budget needed. `reverse` = budget → max affordable
 audience. Worked example: 85k audience × 80% × 3 ÷ 1000 × $20 = **~$4,000/mo**.

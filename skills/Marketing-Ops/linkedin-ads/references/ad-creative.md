@@ -1,5 +1,12 @@
 # Ad Creative - Thought Leader Ads, Conversation Ads & Copy
 
+## Contents
+
+- Thought Leader Ads (TLAs)
+- Conversation Ads
+- Writing the copy - B2B services principles
+- Output format when drafting ads
+
 How to write the ads. Remember: the format serves the strategy. Pick the
 strategy first (see `references/strategy-and-measurement.md`), then use these
 formats to execute it. When you draft copy, scrub AI-writing tells - the

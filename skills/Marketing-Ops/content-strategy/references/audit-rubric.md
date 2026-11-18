@@ -1,5 +1,13 @@
 # Audit rubric
 
+## Contents
+
+- How to score
+- Rubric (1. Sales page core, 2. Mission statement, 3. Original research, 4. Prospect questions, 5. Visuals, 6. Influencer collaboration, 7. Guest posting / PR)
+- The 1% test
+- Ranking the gaps
+- Scorecard template
+
 Scores an existing content program against the seven parts of the Orbit Media
 framework (Andy Crestodina,
 https://www.orbitmedia.com/blog/content-strategy-framework/). The adoption

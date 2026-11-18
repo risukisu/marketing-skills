@@ -16,6 +16,15 @@ project. This skill deliberately works in two roots at once, so every script inv
 needs the skill folder's own path in front of it (written `<skill>/scripts/…`), while
 `competitor-intel/…` arguments stay relative to the project.
 
+## Setup
+
+- **Default tier:** `bash`, `curl`, `sed`, `grep`, `awk`, `tr`, `head`, `sort` and `mktemp`.
+  Preinstalled on macOS and Linux; on Windows, Git for Windows (Git Bash) ships them all.
+  Nothing to install.
+- **Deep tier (optional):** Node 20 or newer (`node -v`; install from nodejs.org), then once,
+  from the skill folder: `cd <skill>/scripts/deep && npm install && npx playwright install
+  chromium` (about 310 MB). Intake offers this step; see `references/troubleshooting.md`.
+
 ## Routing
 
 Check for `competitor-intel/company.md` in the current working directory.

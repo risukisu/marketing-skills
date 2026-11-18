@@ -1,6 +1,6 @@
 ---
 name: marketing-monthly
-description: "Generate the monthly marketing board snapshot for a company: headline metrics (pipeline value, MQL, leads, web traffic) vs the prior month, quarter progress vs targets with YTD sparklines, traffic by campaign, what-we're-learning insights, and a per-lead journey section, as a self-contained HTML report plus a markdown companion. Use when the user says \"/marketing-monthly\", \"monthly board report\", \"marketing monthly\", \"marketing snapshot for [month]\", or asks for the next edition of the board-prep marketing report. NOT a single campaign's report (campaign-report) and NOT the RevOps diagnostic (pipeline-analysis). Company, CRM ids, GA4 property, templates, and output paths come from a context pack in the workspace you launch from, chosen per run from the company and period you pass (e.g. /marketing-monthly September Acme); nothing client-specific lives in this skill."
+description: "Generates the monthly marketing board snapshot for a company: headline metrics (pipeline value, MQL, leads, web traffic) vs the prior month, quarter progress vs targets with YTD sparklines, traffic by campaign, what-we're-learning insights, and a per-lead journey section, as a self-contained HTML report plus a markdown companion. Use when the user says \"/marketing-monthly\", \"monthly board report\", \"marketing monthly\", \"marketing snapshot for [month]\", or asks for the next edition of the board-prep marketing report. NOT a single campaign's report (campaign-report) and NOT the RevOps diagnostic (pipeline-analysis). Company, CRM ids, GA4 property, templates, and output paths come from a context pack in the launch workspace, chosen per run from the company and period given (e.g. /marketing-monthly September Acme); nothing client-specific lives in this skill."
 ---
 
 # /marketing-monthly — monthly board snapshot
@@ -65,10 +65,13 @@ skill's folder never stores company data: the library is a public repository.
   month. Confirm the quarter's MQL and SQL targets from the pack; ask if they changed.
 
 ### Step 2 — Pull data
-Substitute every id from the pack.
+Substitute every id from the pack. Tools: the HubSpot MCP connector (Claude Code prefix
+`mcp__claude_ai_HubSpot__`, as in `pipeline-analysis`) and GA4's `analytics-mcp` (Claude Code
+prefix `mcp__analytics-mcp__`); adjust the server names to your installation.
 
 **Deals, New Business pipelines, current + prior month**, by `createdate`:
-`search_crm_objects(objectType="deals", filters: pipeline EQ <id>, createdate GTE/LT <epoch ms>;
+`mcp__claude_ai_HubSpot__search_crm_objects` with
+`(objectType="deals", filters: pipeline EQ <id>, createdate GTE/LT <epoch ms>;
 properties: dealname, dealstage, amount, deal_currency_code, amount_in_home_currency, createdate,
 hubspot_owner_id)`. Repeat per NB pipeline and per month.
 
@@ -78,7 +81,8 @@ hs_pipeline_stage, content`.
 **YTD per month** (sparklines): ticket counts per month; NB deals per month with MQL = all created,
 SQL = subset at SQL stage or later.
 
-**GA4 site-wide traffic**: `run_report(property_id=<pack>, date_ranges=[current, prior],
+**GA4 site-wide traffic**: `analytics-mcp:run_report` (Claude Code:
+`mcp__analytics-mcp__run_report`) with `(property_id=<pack>, date_ranges=[current, prior],
 metrics=[sessions, totalUsers, engagedSessions, screenPageViews],
 dimensions=[sessionDefaultChannelGroup])` plus a `month` breakdown Jan→today for the sparkline.
 Apply the pack's site-wide exclusions.

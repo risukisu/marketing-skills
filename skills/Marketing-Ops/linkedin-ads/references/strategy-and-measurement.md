@@ -1,5 +1,13 @@
 # Strategy, Offers & Measurement
 
+## Contents
+
+- Starter strategies, cheapest-ROI first
+- Offers - the highest-leverage thing you can fix
+- Measurement - prove ROI without lying to yourself
+- Design the experiment before you spend
+- Don't let tech outrun fundamentals
+
 This file covers *what* to run and *how to prove it worked* - the parts that
 separate teams who dominate LinkedIn from teams who quietly defund it. Pick the
 strategy first; the format and settings serve the strategy, never the reverse.

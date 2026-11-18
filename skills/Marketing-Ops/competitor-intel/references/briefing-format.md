@@ -1,5 +1,16 @@
 # Briefing format
 
+## Contents
+
+- Sections
+  - Ordering rule for page-drawn lists
+  - 1. Executive summary
+  - 2. Comparison table
+  - 3. Per competitor (with its quoting rule)
+  - 4. Recommendations
+  - 5. Data notes
+- Style
+
 This is the contract for `briefing.md`, the one artifact in this skill a human actually reads.
 `SKILL.md` generates `briefing.md` from `changes.json` (produced per `references/diff-rules.md`)
 plus the current run's snapshots. Follow this file literally — the test is that two runs given

@@ -124,11 +124,15 @@ reference for depth:
 ## The budget calculator (use it, don't eyeball it)
 
 LinkedIn budget is deterministic math, so run the script rather than guessing  - 
-it keeps you honest about what a given budget can actually reach:
+it keeps you honest about what a given budget can actually reach.
+
+**Setup:** requires Python 3 on PATH (`python` or `python3`); standard library
+only (`argparse`, `sys`), nothing to install. Run it from the launch folder by
+its full path:
 
 ```
-python scripts/budget_calc.py forward --audience 85000 --cpm 20 --frequency 3 --penetration 80
-python scripts/budget_calc.py reverse --budget 5000 --cpm 45 --frequency 3 --penetration 80
+python ~/.claude/skills/linkedin-ads/scripts/budget_calc.py forward --audience 85000 --cpm 20 --frequency 3 --penetration 80
+python ~/.claude/skills/linkedin-ads/scripts/budget_calc.py reverse --budget 5000 --cpm 45 --frequency 3 --penetration 80
 ```
 
 `forward` = "I know my audience, what budget do I need?"; `reverse` = "I have $X,
@@ -187,3 +191,5 @@ cold traffic *before* you waste $3k learning it. When they ask for something
 specific (a budget plan, a campaign structure, ad copy), produce the artifact  - 
 don't just lecture. Save drafts to a file when the user will want to review or
 reuse them.
+
+Tests: `evals/evals.json`, three scenarios.

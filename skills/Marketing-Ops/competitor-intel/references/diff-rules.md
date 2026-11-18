@@ -1,5 +1,17 @@
 # Diff rules
 
+## Contents
+
+- 0. Snapshot rigidity contract
+- 1. Normalize before comparing
+- 2. Match pages in this precedence
+- 3. Emit exactly these change kinds
+- 4. Report nothing else
+- 5. Baseline runs
+- 6. Schema drift guard
+- `changes.json` shape
+- Worked example
+
 These rules turn two snapshots (previous run + current run) into `changes.json`. Follow them
 literally and in order. The diff step has no script — you are the diff engine — so treat this
 file as an algorithm, not a suggestion.

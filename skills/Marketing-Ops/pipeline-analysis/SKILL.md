@@ -1,6 +1,6 @@
 ---
 name: pipeline-analysis
-description: "Run a HubSpot RevOps pipeline and conversion analysis over a period (a quarter, a year, a custom or trailing range) and return a diagnosis-first report: verdict (binding constraint A–F with owner and value), reverse-funnel scorecard, New Business full diagnostic (flow plane, diagnosis plane, cohort conversion, velocity, sources), Account Management condensed, reconciliation, method note. Markdown by default; HTML on request. Use when the user says \"/pipeline-analysis\", \"run a pipeline analysis\", \"revops analysis\", \"conversion analysis for [period]\", or asks how leads, MQLs, and SQLs converted over a period. NOT the monthly board snapshot (that is marketing-monthly) and NOT a single campaign's report (that is campaign-report). Company and CRM ids come from a context pack in the workspace you launch from, chosen per run from the company and period you pass (e.g. /pipeline-analysis Q3 Acme); nothing client-specific lives in this skill."
+description: "Runs a HubSpot RevOps pipeline and conversion analysis over a period (a quarter, a year, a custom or trailing range) and returns a diagnosis-first report: verdict (binding constraint A–F with owner and value), reverse-funnel scorecard, New Business full diagnostic (flow plane, diagnosis plane, cohort conversion, velocity, sources), Account Management condensed, reconciliation, method note. Markdown by default; HTML on request. Use when the user says \"/pipeline-analysis\", \"run a pipeline analysis\", \"revops analysis\", \"conversion analysis for [period]\", or asks how leads, MQLs, and SQLs converted over a period. NOT the monthly board snapshot (that is marketing-monthly) and NOT a single campaign's report (that is campaign-report). Company and CRM ids come from a context pack in the launch workspace, chosen per run from the company and period given (e.g. /pipeline-analysis Q3 Acme); nothing client-specific lives in this skill."
 ---
 
 # pipeline-analysis — RevOps funnel & conversion analysis
@@ -11,6 +11,12 @@ and `marketing-monthly` point at it rather than redefining metrics.
 
 **Paths in this file.** `compute_funnel.py`, `definitions.md`, `references/…` are relative to
 **this skill's folder**. Output paths come from the client pack, never from the current directory.
+
+## Setup
+
+- **Python 3.8+ on PATH** (python.org, or `winget install Python.Python.3.12` on Windows) runs
+  `compute_funnel.py` and `test_compute_funnel.py`. Stdlib only, no pip installs.
+- **HubSpot MCP connector** (`mcp__claude_ai_HubSpot__*`) for the Step 2 data pull.
 
 ## Step 0 — Company and period (every run, one question)
 

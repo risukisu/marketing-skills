@@ -1,5 +1,15 @@
 # Classification rubric
 
+## Contents
+
+- The offering
+- The AIDA stage
+- Content type
+- Audience fit
+- Confidence and evidence
+- Subagent brief
+- Worked examples (fictional company: a data consultancy for retailers)
+
 Every content page gets one row: an **offering**, an **AIDA stage**, a **content type**, an
 **audience fit**, a **confidence** and a piece of **evidence**. Subagents classify; Python counts.
 This file is the whole brief a subagent needs, together with `taxonomy.json` and its batch file.

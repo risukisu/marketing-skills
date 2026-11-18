@@ -109,6 +109,7 @@ When analyzing text:
    ```
    defuddle parse https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing --md
    ```
+   If not installed: `npm install -g defuddle`
 
    **Claude Windows App / web / any environment:** use the Wikipedia REST API directly — it's designed for programmatic access and won't block:
    ```

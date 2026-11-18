@@ -1,5 +1,16 @@
 # Campaign Setup & Launch Walkthrough
 
+## Contents
+
+- The hierarchy
+- Naming conventions matter (LinkedIn reporting is bad)
+- Choosing the objective
+- The non-negotiable traps (walk these every launch)
+- Budget & schedule
+- Bidding
+- Ads
+- Post-launch hygiene
+
 The click-by-click for launching without bleeding budget. On LinkedIn, a single
 checkbox is often the difference between focused spend and waste - so when you
 walk a user through this, be explicit about each trap.

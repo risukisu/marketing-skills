@@ -1,5 +1,20 @@
 # Pipeline metric definitions — source of truth
 
+## Contents
+
+- [1. Objects](#1-objects)
+- [2. Two-plane model](#2-two-plane-model)
+- [3. Failure-mode taxonomy](#3-failure-mode-taxonomy)
+- [4. Sales-Accept gate (Gate 1)](#4-sales-accept-gate-gate-1)
+- [5. Reason map](#5-reason-map)
+- [6. B and C are inferred (directional)](#6-b-and-c-are-inferred-directional)
+- [7. Two-lens conversion](#7-two-lens-conversion)
+- [8. Targets](#8-targets)
+- [9. Reverse-funnel goal-seek](#9-reverse-funnel-goal-seek)
+- [10. Scope](#10-scope)
+- [11. Data quality](#11-data-quality)
+- [Supplementary definitions](#supplementary-definitions)
+
 These rules are the single source of truth for `/pipeline-analysis`; `/campaign-report` and
 `/marketing-monthly` point here instead of redefining metrics. The **rules** are generic and live
 in this file. The **ids** (pipelines, stages, ticket stages, fields, targets, loss reasons) are

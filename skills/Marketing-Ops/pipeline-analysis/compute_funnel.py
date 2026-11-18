@@ -1,6 +1,6 @@
 """Deterministic RevOps funnel engine for the pipeline-analysis skill.
 
-Stdlib only (no installs). Reads a normalized JSON (see DESIGN.md / definitions.md
+Stdlib only (no installs). Reads a normalized JSON (see definitions.md
 data model) and emits, for EACH configured funnel independently, computed cohorts /
 funnel / velocity / sources / flags / conversions. Rules mirror definitions.md —
 keep the two in sync.
